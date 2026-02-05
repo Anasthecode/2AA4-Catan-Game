@@ -21,6 +21,9 @@ public class Board {
 	private Map<AxialPosition, Tile> tiles; // 19 Tiles
 	private Map<NodePosition, Node> nodes; // 54 Nodes
 	private Map<EdgePosition, Edge> edges; // 72 Edges
+
+	private AxialPosition centre;
+	private int size;
 	
 	/**
 	 * 
@@ -30,23 +33,28 @@ public class Board {
 		nodes = new HashMap<>();
 		edges = new HashMap<>();
 
+		centre = new AxialPosition(0, 0);
+		size = CatanSettings.BOARD_RADIUS;
+
 		addTiles();
 	}
 
 	private void addTiles() {
-		AxialPosition centre = new AxialPosition(0, 0);
-		int radius = CatanSettings.BOARD_RADIUS;
-
-		int tileIndex = 0;
+		int tokenIndex = 0, tileIndex = 0;
 		addTile(centre,
-				CatanSettings.TOKEN_LAYOUT[tileIndex], CatanSettings.STANDARD_BOARD_LAYOUT[tileIndex]);
-		for (int ring = 1; ring <= radius; ring++) {
-			tileIndex++;
+				CatanSettings.TOKEN_LAYOUT[tokenIndex], CatanSettings.STANDARD_BOARD_LAYOUT[tileIndex]);
+		for (int ring = 1; ring <= size; ring++) {
 			AxialPosition currentTilePosition = centre.add(Direction.DOWNLEFT.getVector().scale(ring));
 			for (int i = 0; i < 6; i++) {
 				for (int j = 0; j < ring; j++) {
+					if (CatanSettings.STANDARD_BOARD_LAYOUT[tileIndex] != TileType.DESERT) {
+						tokenIndex++;
+					}
+					
+					tileIndex++;
+
 					addTile(currentTilePosition,
-							CatanSettings.TOKEN_LAYOUT[tileIndex], CatanSettings.STANDARD_BOARD_LAYOUT[tileIndex]);
+							CatanSettings.TOKEN_LAYOUT[tokenIndex], CatanSettings.STANDARD_BOARD_LAYOUT[tileIndex]);
 					// Enum is laid out such that indexing Direction.values()[i] will be correct
 					currentTilePosition = currentTilePosition.neighbour(Direction.values()[i]);
 				}
@@ -55,6 +63,10 @@ public class Board {
 	}
 
 	private void addTile(AxialPosition position, int token, TileType type) {
+		if (type == TileType.DESERT) {
+			token = 0;
+		}
+
 		Tile tile = new Tile(position, token, type);
 		assignNodesToTile(tile);
 		assignEdgesToTile(tile);
@@ -73,7 +85,7 @@ public class Board {
 				endNode.addEdge(edge);
 			}
 		}
-
+		
 		tiles.put(position, tile);
 	}
 
@@ -135,8 +147,17 @@ public class Board {
 	 */
 	public String toString() {
 		StringBuilder sb = new StringBuilder("Board: ");
-		for (AxialPosition position : tiles.keySet()) {
-			sb.append(tiles.get(position).toString() + position + " ");
+		sb.append("(" + tiles.get(centre).getTileType() + ", " +
+				tiles.get(centre).getPosition() + ", " + tiles.get(centre).getToken() + ")\n");
+		for (int ring = 1; ring <= size; ring++) {
+			AxialPosition currentTilePosition = centre.add(Direction.DOWNLEFT.getVector().scale(ring));
+			for (int i = 0; i < 6; i++) {
+				for (int j = 0; j < ring; j++) {
+					Tile tile = tiles.get(currentTilePosition);
+					sb.append("(" + tile + ", " + tile.getPosition() + ", " + tile.getToken() + ")\n");
+					currentTilePosition = currentTilePosition.neighbour(Direction.values()[i]);
+				}
+			}
 		}
 
 		return sb.toString();

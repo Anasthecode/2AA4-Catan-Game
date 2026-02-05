@@ -4,6 +4,8 @@
 
 package board;
 
+import java.util.Objects;
+
 /************************************************************/
 /**
  * 
@@ -73,5 +75,32 @@ public class AxialPosition {
 	@Override
 	public String toString() {
 		return "(" + q + ", " + r + ")";
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (obj == null) {
+			return false;
+		}
+
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		AxialPosition otherPos = (AxialPosition) obj;
+		if (q == otherPos.getQ() && r == otherPos.getR()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(q, r);
 	}
 }

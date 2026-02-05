@@ -66,15 +66,6 @@ public class Edge {
 		this.endNode = endNode;
 	}
 
-	/**
-	 * 
-	 * @param startNode 
-	 * @return 
-	 */
-	/* public Node traverseEdge(Node startNode) {
-		
-	} */
-
 	public EdgePosition getPosition() {
 		return position;
 	}
