@@ -4,6 +4,8 @@
 
 package board;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import structures.Road;
@@ -18,12 +20,50 @@ public class Edge {
 	 */
 	private Road road;
 	private EdgePosition position;
-	private List<Node> connectedNodes;
+	private Node startNode;
+	private Node endNode;
 
 	/**
 	 * 
 	 */
-	public Edge() {
+	public Edge(EdgePosition position) {
+		this.position = position;
+		road = null;
+		startNode = null;
+		endNode = null;
+	}
+
+	public List<NodePosition> endpoints() {
+		List<NodePosition> endNodes = new ArrayList<>();
+		switch (position.getRelativeLocation()) {
+			case NORTHEAST:
+				endNodes.add(new NodePosition(
+					position.getQ() + 1, position.getR() - 1, RelativeNodeLocation.SOUTH));
+				endNodes.add(new NodePosition(
+					position.getQ(), position.getR(), RelativeNodeLocation.NORTH));
+				break;
+			
+			case NORTHWEST:
+				endNodes.add(
+					new NodePosition(position.getQ(), position.getR(), RelativeNodeLocation.NORTH));
+				endNodes.add(
+					new NodePosition(position.getQ(), position.getR() - 1, RelativeNodeLocation.SOUTH));
+				break;
+
+			case WEST:
+				endNodes.add(
+					new NodePosition(position.getQ(), position.getR() - 1, RelativeNodeLocation.SOUTH));
+				endNodes.add(
+					new NodePosition(position.getQ() - 1, position.getR() + 1, RelativeNodeLocation.NORTH));
+				break;
+		}
+		
+		return endNodes;
+	}
+
+	public void setNodes(Node startNode, Node endNode) {
+		this.startNode = startNode;
+		this.endNode = endNode;
 	}
 
 	/**
@@ -31,7 +71,12 @@ public class Edge {
 	 * @param startNode 
 	 * @return 
 	 */
-	public Node getEnd(Node startNode) {
+	/* public Node traverseEdge(Node startNode) {
+		
+	} */
+
+	public EdgePosition getPosition() {
+		return position;
 	}
 
 	/**
@@ -39,6 +84,7 @@ public class Edge {
 	 * @param road 
 	 */
 	public void placeRoad(Road road) {
+		this.road = road;
 	}
 
 	/**
@@ -47,5 +93,34 @@ public class Edge {
 	 */
 	public Road getRoad() {
 		return road;
+	}
+
+	@Override
+	public String toString() {
+		return position.toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (obj == null) {
+			return false;
+		}
+
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		Edge otherEdge = (Edge) obj;
+		if (position.getQ() == otherEdge.getPosition().getQ() &&
+				position.getR() == otherEdge.getPosition().getR() &&
+				position.getRelativeLocation() == otherEdge.getPosition().getRelativeLocation()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

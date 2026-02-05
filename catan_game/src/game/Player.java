@@ -41,8 +41,8 @@ public abstract class Player {
 	 * 
 	 * @return 
 	 */
-	public EnumMap<Resource, Integer> getInventory() {
-	}
+	/* public EnumMap<Resource, Integer> getInventory() {
+	} */
 
 	/**
 	 * 
@@ -71,8 +71,8 @@ public abstract class Player {
 	 * 
 	 * @return 
 	*/
-	public String toString() {
-	}
+	/* public String toString() {
+	} */
 	
 	/**
 	 * 

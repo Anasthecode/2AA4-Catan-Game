@@ -48,28 +48,29 @@ public class Game {
 	 * 
 	 * @return 
 	 */
-	public List<Player> getPlayers() {
-	}
+	/* public List<Player> getPlayers() {
+
+	} */
 
 	/**
 	 * 
 	 * @return 
 	 */
-	public Board getBoard() {
-	}
+	/* public Board getBoard() {
+	} */
 
 	/**
 	 * 
 	 * @param name 
 	 * @return 
 	 */
-	public String searchPlayer(String name) {
-	}
+	/* public String searchPlayer(String name) {
+	} */
 
 	/**
 	 * 
 	 * @return 
 	 */
-	public String toString() {
-	}
+	/* public String toString() {
+	} */
 }

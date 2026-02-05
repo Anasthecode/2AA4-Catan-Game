@@ -4,6 +4,8 @@
 
 package board;
 
+import java.util.Objects;
+
 /************************************************************/
 /**
  * 
@@ -19,11 +21,18 @@ public class NodePosition {
 	private int r;
 	private RelativeNodeLocation location;
 
+	public NodePosition(int q, int r, RelativeNodeLocation location) {
+		this.q = q;
+		this.r = r;
+		this.location = location;
+	}
+
 	/**
 	 * 
 	 * @return 
 	 */
 	public int getQ() {
+		return q;
 	}
 
 	/**
@@ -31,6 +40,7 @@ public class NodePosition {
 	 * @return 
 	 */
 	public int getR() {
+		return r;
 	}
 
 	/**
@@ -38,11 +48,36 @@ public class NodePosition {
 	 * @return 
 	 */
 	public RelativeNodeLocation getRelativeLocation() {
+		return location;
 	}
 
 	/**
 	 * 
 	 */
-	public void equals() {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (obj == null) {
+			return false;
+		}
+
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		NodePosition otherPos = (NodePosition) obj;
+		if (q == otherPos.getQ() && r == otherPos.getR() && location == otherPos.getRelativeLocation()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+			return Objects.hash(q, r, getRelativeLocation());
 	}
 }

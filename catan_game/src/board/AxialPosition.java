@@ -9,6 +9,25 @@ package board;
  * 
  */
 public class AxialPosition {
+	public enum Direction {
+		RIGHT(new AxialPosition(1, 0)),
+		UPRIGHT(new AxialPosition(1, -1)),
+		UPLEFT(new AxialPosition(0, -1)),
+		LEFT(new AxialPosition(-1, 0)),
+		DOWNLEFT(new AxialPosition(-1, 1)),
+		DOWNRIGHT(new AxialPosition(0, 1));
+
+		private final AxialPosition vector;
+
+		private Direction(AxialPosition vector) {
+			this.vector = vector;
+		}
+
+		public AxialPosition getVector() {
+			return vector;
+		}
+	}
+
 	/**
 	 * 
 	 */
@@ -17,6 +36,11 @@ public class AxialPosition {
 	 * 
 	 */
 	private int r;
+
+	public AxialPosition(int q, int r) {
+		this.q = q;
+		this.r = r;
+	}
 
 	/**
 	 * 
@@ -34,9 +58,20 @@ public class AxialPosition {
 		return r;
 	}
 
-	/**
-	 * 
-	 */
-	public void equals() {
+	public AxialPosition add(AxialPosition vector) {
+		return new AxialPosition(q + vector.getQ(), r + vector.getR());
+	}
+
+	public AxialPosition neighbour(Direction direction) {
+		return add(direction.getVector());
+	}
+
+	public AxialPosition scale(int factor) {
+		return new AxialPosition(q * factor, r * factor);
+	}
+
+	@Override
+	public String toString() {
+		return "(" + q + ", " + r + ")";
 	}
 }

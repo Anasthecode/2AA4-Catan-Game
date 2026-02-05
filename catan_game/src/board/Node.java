@@ -4,6 +4,7 @@
 
 package board;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import structures.SettlementStructure;
@@ -19,7 +20,34 @@ public class Node {
 	/**
 	 * 
 	 */
-	public Node() {
+	public Node(NodePosition position) {
+		this.position = position;
+		structure = null;
+
+		edges = new ArrayList<>();
+	}
+
+	public Node(int q, int r, RelativeNodeLocation location, List<Edge> edges) {
+		this.position = new NodePosition(q, r, location);
+		structure = null;
+
+		this.edges = edges;
+	}
+
+	public void addEdge(Edge edge) {
+		if (edges.size() >= 3) {
+			throw new IllegalStateException("Node cannot have more than 3 edges");
+		}
+
+		edges.add(edge);
+	}
+
+	public List<Edge> getEdges() {
+		return new ArrayList<>(edges);
+	}
+
+	public NodePosition getPosition() {
+		return position;
 	}
 
 	/**
@@ -27,6 +55,11 @@ public class Node {
 	 * @param structure 
 	 */
 	public void setStructure(SettlementStructure structure) {
+		if (structure != null) {
+			throw new IllegalStateException("Node already has a structure");
+		}
+
+		this.structure = structure;
 	}
 
 	/**
@@ -34,12 +67,18 @@ public class Node {
 	 * @return 
 	 */
 	public SettlementStructure getStructure() {
+		return structure;
 	}
 
 	/**
 	 * 
-	 * @param string 
+	 *
 	 */
-	public void toString(String string) {
+	public String toString() {
+		if (structure != null) {
+			return structure.toString();
+		} else {
+			return "Empty Node";
+		}
 	}
 }

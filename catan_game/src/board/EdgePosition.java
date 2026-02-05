@@ -4,6 +4,8 @@
 
 package board;
 
+import java.util.Objects;
+
 /************************************************************/
 /**
  * 
@@ -19,8 +21,10 @@ public class EdgePosition {
 	private int r;
 	private RelativeEdgeLocation location;
 
-	public EdgePosition(int q, int r, RelativeEdgeLocation direction) {
-
+	public EdgePosition(int q, int r, RelativeEdgeLocation location) {
+		this.q = q;
+		this.r = r;
+		this.location = location;
 	}
 
 	/**
@@ -28,6 +32,7 @@ public class EdgePosition {
 	 * @return 
 	 */
 	public int getQ() {
+		return q;
 	}
 
 	/**
@@ -35,6 +40,7 @@ public class EdgePosition {
 	 * @return 
 	 */
 	public int getR() {
+		return r;
 	}
 
 	/**
@@ -42,5 +48,38 @@ public class EdgePosition {
 	 * @return 
 	 */
 	public RelativeEdgeLocation getRelativeLocation() {
+		return location;
+	}
+
+	@Override
+	public String toString() {
+		return "(" + q + ", " + r + ", " + location + ")";
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (obj == null) {
+			return false;
+		}
+
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		EdgePosition otherPos = (EdgePosition) obj;
+		if (q == otherPos.getQ() && r == otherPos.getR() && location == otherPos.getRelativeLocation()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(q, r, getRelativeLocation());
 	}
 }

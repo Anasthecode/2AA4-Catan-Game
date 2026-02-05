@@ -4,7 +4,10 @@
 
 package board;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /************************************************************/
 /**
@@ -18,13 +21,10 @@ public class Tile {
 	/**
 	 * 
 	 */
-	private boolean blockedByRobber;
-	/**
-	 * 
-	 */
 	private int numberTokenValue;
-	private List<Node> intersections;
 	private AxialPosition position;
+	private Map<NodePosition, Node> intersections;
+	private Map<EdgePosition, Edge> edges;
 
 	/**
 	 * 
@@ -32,14 +32,77 @@ public class Tile {
 	 * @param type 
 	 * @param nodes 
 	 */
-	public Tile(int token, TileType type) {
+	public Tile(AxialPosition position, int token, TileType type) {
+		this.position = position;
+		numberTokenValue = token;
+		tileType = type;
+
+		intersections = new HashMap<>();
+		edges = new HashMap<>();
+	}
+
+	public void addNode(Node node) {
+		if (intersections.size() >= 6) {
+			throw new IllegalStateException("Tile cannot have more than 6 nodes");
+		}
+
+		intersections.put(node.getPosition(), node);
+	}
+
+	public void addEdge(Edge edge) {
+		if (edges.size() >= 6) {
+			throw new IllegalStateException("Tile cannot have more than 6 edges");
+		}
+
+		edges.put(edge.getPosition(), edge);
+	}
+
+	public List<NodePosition> corners() {
+		List<NodePosition> cornerNodePositions = new ArrayList<>();
+		cornerNodePositions.add(
+			new NodePosition(position.getQ() + 1, position.getR() - 1, RelativeNodeLocation.SOUTH));
+		cornerNodePositions.add(
+			new NodePosition(position.getQ(), 		position.getR(), 		 RelativeNodeLocation.NORTH));
+		cornerNodePositions.add(
+			new NodePosition(position.getQ(), 		position.getR() - 1, RelativeNodeLocation.SOUTH));
+		cornerNodePositions.add(
+			new NodePosition(position.getQ() - 1, position.getR() + 1, RelativeNodeLocation.NORTH));
+		cornerNodePositions.add(
+			new NodePosition(position.getQ(), 		position.getR(), 		 RelativeNodeLocation.SOUTH));
+		cornerNodePositions.add(
+			new NodePosition(position.getQ(), 		position.getR() + 1, RelativeNodeLocation.NORTH));
+
+		return cornerNodePositions;
+	}
+
+	public List<EdgePosition> borders() {
+		List<EdgePosition> borderEdgePositions = new ArrayList<>();
+		borderEdgePositions.add(
+			new EdgePosition(position.getQ() + 1, position.getR(), 		 RelativeEdgeLocation.WEST));
+		borderEdgePositions.add(
+			new EdgePosition(position.getQ(), 		position.getR(), 		 RelativeEdgeLocation.NORTHEAST));
+		borderEdgePositions.add(
+			new EdgePosition(position.getQ(), 		position.getR(), 		 RelativeEdgeLocation.NORTHWEST));
+		borderEdgePositions.add(
+			new EdgePosition(position.getQ(), 		position.getR(), 		 RelativeEdgeLocation.WEST));
+		borderEdgePositions.add(
+			new EdgePosition(position.getQ() - 1, position.getR() + 1, RelativeEdgeLocation.NORTHEAST));
+		borderEdgePositions.add(
+			new EdgePosition(position.getQ(), 		position.getR() + 1, RelativeEdgeLocation.NORTHWEST));
+
+		return borderEdgePositions;
+	}
+
+	public AxialPosition getPosition() {
+		return position;
 	}
 
 	/**
 	 * 
 	 * @return 
 	 */
-	public void getTileType() {
+	public TileType getTileType() {
+		return tileType;
 	}
 
 	/**
@@ -47,27 +110,19 @@ public class Tile {
 	 * @return 
 	 */
 	public int getToken() {
-	}
-
-	/**
-	 * 
-	 * @param robber 
-	 */
-	public void setBlockedByRobber(boolean robber) {
+		return numberTokenValue;
 	}
 
 	/**
 	 * 
 	 * @return 
 	 */
-	public boolean isBlockedByRobber() {
+	public Node getNode(NodePosition nodePosition) {
+		return intersections.get(nodePosition);
 	}
 
-	/**
-	 * 
-	 * @return 
-	 */
-	public List<Node> getNodes() {
+	public Edge getEdge(EdgePosition edgePosition) {
+		return edges.get(edgePosition);
 	}
 
 	/**
@@ -75,5 +130,6 @@ public class Tile {
 	 * @return 
 	 */
 	public String toString() {
+		return tileType.toString();
 	}
 }

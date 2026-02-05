@@ -4,8 +4,12 @@
 
 package board;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import board.AxialPosition.Direction;
+import game.CatanSettings;
 import structures.Road;
 import structures.SettlementStructure;
 
@@ -14,14 +18,91 @@ import structures.SettlementStructure;
  * 
  */
 public class Board {
-	private List<Tile> tiles; // 19 Tiles
-	private List<Node> nodes; // 54 Nodes
-	private List<Edge> edges; // 72 Edges
+	private Map<AxialPosition, Tile> tiles; // 19 Tiles
+	private Map<NodePosition, Node> nodes; // 54 Nodes
+	private Map<EdgePosition, Edge> edges; // 72 Edges
 	
 	/**
 	 * 
 	 */
 	public Board() {
+		tiles = new HashMap<>();
+		nodes = new HashMap<>();
+		edges = new HashMap<>();
+
+		addTiles();
+	}
+
+	private void addTiles() {
+		AxialPosition centre = new AxialPosition(0, 0);
+		int radius = CatanSettings.BOARD_RADIUS;
+
+		int tileIndex = 0;
+		addTile(centre,
+				CatanSettings.TOKEN_LAYOUT[tileIndex], CatanSettings.STANDARD_BOARD_LAYOUT[tileIndex]);
+		for (int ring = 1; ring <= radius; ring++) {
+			tileIndex++;
+			AxialPosition currentTilePosition = centre.add(Direction.DOWNLEFT.getVector().scale(ring));
+			for (int i = 0; i < 6; i++) {
+				for (int j = 0; j < ring; j++) {
+					addTile(currentTilePosition,
+							CatanSettings.TOKEN_LAYOUT[tileIndex], CatanSettings.STANDARD_BOARD_LAYOUT[tileIndex]);
+					// Enum is laid out such that indexing Direction.values()[i] will be correct
+					currentTilePosition = currentTilePosition.neighbour(Direction.values()[i]);
+				}
+			}
+		}
+	}
+
+	private void addTile(AxialPosition position, int token, TileType type) {
+		Tile tile = new Tile(position, token, type);
+		assignNodesToTile(tile);
+		assignEdgesToTile(tile);
+
+		for (EdgePosition edgePosition : tile.borders()) {
+			Edge edge = tile.getEdge(edgePosition);
+			Node startNode = nodes.get(edge.endpoints().get(0));
+			Node endNode = nodes.get(edge.endpoints().get(1));
+			edge.setNodes(startNode, endNode);
+
+			if (!startNode.getEdges().contains(edge)) {
+				startNode.addEdge(edge);
+			}
+
+			if (!endNode.getEdges().contains(edge)) {
+				endNode.addEdge(edge);
+			}
+		}
+
+		tiles.put(position, tile);
+	}
+
+	private void assignNodesToTile(Tile tile) {
+		List<NodePosition> tileNodePositions = tile.corners();
+
+		for (NodePosition nodePosition : tileNodePositions) {
+			if (!nodes.containsKey(nodePosition)) {
+				Node nodeToBeAdded = new Node(nodePosition);
+				tile.addNode(nodeToBeAdded);
+				nodes.put(nodePosition, nodeToBeAdded);
+			} else {
+				tile.addNode(nodes.get(nodePosition));
+			}
+		}
+	}
+
+	private void assignEdgesToTile(Tile tile) {
+		List<EdgePosition> tileEdgePositions = tile.borders();
+
+		for (EdgePosition edgePosition : tileEdgePositions) {
+			if (!edges.containsKey(edgePosition)) {
+				Edge edgeToBeAdded = new Edge(edgePosition);
+				tile.addEdge(edgeToBeAdded);
+				edges.put(edgePosition, edgeToBeAdded);
+			} else {
+				tile.addEdge(edges.get(edgePosition));
+			}
+		}
 	}
 
 	/**
@@ -29,16 +110,11 @@ public class Board {
 	 * @param index 
 	 * @return 
 	 */
-	public Tile getTile(int index) {
+	public Tile getTile(AxialPosition position) {
+		return tiles.get(position);
 	}
 
-	/**
-	 * 
-	 * @return 
-	 */
-	public String toString() {
-	}
-
+	
 	/**
 	 * 
 	 * @param road 
@@ -49,7 +125,20 @@ public class Board {
 	/**
 	 * 
 	 * @param structure 
-	 */
+	*/
 	public void placeStructure(SettlementStructure structure) {
+	}
+
+	/**
+	 * 
+	 * @return 
+	 */
+	public String toString() {
+		StringBuilder sb = new StringBuilder("Board: ");
+		for (AxialPosition position : tiles.keySet()) {
+			sb.append(tiles.get(position).toString() + position + " ");
+		}
+
+		return sb.toString();
 	}
 }

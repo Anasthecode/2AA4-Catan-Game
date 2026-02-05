@@ -26,5 +26,6 @@ public class Dice {
 	 * @return 
 	 */
 	public int[] rollDice(int numDice) {
+		return new int[] {0, 0};
 	}
 }
