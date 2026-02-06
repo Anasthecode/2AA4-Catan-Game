@@ -5,8 +5,11 @@
 package actions;
 
 import board.Board;
+import board.Node;
 import board.NodePosition;
 import game.Player;
+import structures.City;
+import structures.Settlement;
 
 /************************************************************/
 /**
@@ -21,6 +24,8 @@ public class BuildSettlement implements Action {
 	 * 
 	 */
 	public BuildSettlement(Player player, Board board, NodePosition nodePosition) {
+
+        execute();
 	}
 
 	/**
@@ -28,5 +33,10 @@ public class BuildSettlement implements Action {
 	 */
 	@Override
 	public void execute() {
+
+        Settlement newSettlement = new Settlement(player);
+        Node currentNode = board.getCorrespondingNode(nodePosition);
+
+        currentNode.setStructure(newSettlement);
 	}
 }
