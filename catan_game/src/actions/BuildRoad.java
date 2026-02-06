@@ -5,8 +5,10 @@
 package actions;
 
 import board.Board;
+import board.Edge;
 import board.EdgePosition;
 import game.Player;
+import structures.Road;
 
 /************************************************************/
 /**
@@ -27,5 +29,10 @@ public class BuildRoad implements Action {
 	 * 
 	 */
 	public void execute() {
+
+        Road newRoad = new Road(player);
+        Edge currentEdge = board.getCorrespondingEdge(edgePosition);
+
+        currentEdge.placeRoad(newRoad);
 	}
 }

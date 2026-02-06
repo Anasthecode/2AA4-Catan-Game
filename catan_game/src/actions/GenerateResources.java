@@ -22,5 +22,7 @@ public class GenerateResources implements Action {
 	 * 
 	 */
 	public void execute() {
+
+
 	}
 }
