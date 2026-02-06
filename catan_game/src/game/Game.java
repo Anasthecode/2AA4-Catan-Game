@@ -27,6 +27,7 @@ public class Game {
 	 */
 	private static Random rng;
 	private Dice dice;
+    private Board board;
 
 	/**
 	 * 
@@ -34,7 +35,9 @@ public class Game {
 	 * @param board 
 	 * @param players 
 	 */
-	public Game(int turns, Board board) {
+	public Game(int turns, Board currentBoard) {
+
+        board = currentBoard;
 	}
 
 	/**
@@ -56,8 +59,10 @@ public class Game {
 	 * 
 	 * @return 
 	 */
-	/* public Board getBoard() {
-	} */
+    public Board getBoard() {
+
+        return board;
+    }
 
 	/**
 	 * 

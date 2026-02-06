@@ -4,6 +4,7 @@
 
 package actions;
 
+import board.Board;
 import game.Game;
 
 /************************************************************/
@@ -23,6 +24,10 @@ public class GenerateResources implements Action {
 	 */
 	@Override
 	public void execute() {
+
+        Board currentBoard = game.getBoard();
+
+        //Adds calling dice rolls etc etc..
 
 
 	}
