@@ -93,6 +93,14 @@ public class Tile {
 		return borderEdgePositions;
 	}
 
+	public void generateResource(int roll) {
+		if (roll == numberTokenValue) {
+			for (Node node : intersections.values()) {
+				node.notifyStructureOfResource(tileType.getProducedResource());
+			}
+		}
+	}
+
 	public AxialPosition getPosition() {
 		return position;
 	}

@@ -5,9 +5,9 @@
 package board;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import game.Player;
 import structures.Road;
 
 /************************************************************/
@@ -61,6 +61,14 @@ public class Edge {
 		return endNodes;
 	}
 
+	public Node getStartNode() {
+		return startNode;
+	}
+
+	public Node getEndNode() {
+		return endNode;
+	}
+
 	public void setNodes(Node startNode, Node endNode) {
 		this.startNode = startNode;
 		this.endNode = endNode;
@@ -70,12 +78,43 @@ public class Edge {
 		return position;
 	}
 
+	public boolean hasRoad() {
+		return road != null;
+	}
+
+	public boolean canPlaceRoad(Player player) {
+		if (!startNode.hasStructure() && !endNode.hasStructure()) {
+			return false;
+		}
+
+		if (startNode.getStructure().getOwner().equals(player) ||
+				endNode.getStructure().getOwner().equals(player)) {
+			return true;
+		}
+
+		for (Edge edge : startNode.getEdges()) {
+			if (edge.hasRoad() && edge.getRoad().getOwner().equals(player)) {
+				return true;
+			}
+		}
+		
+		for (Edge edge : endNode.getEdges()) {
+			if (edge.hasRoad() && edge.getRoad().getOwner().equals(player)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	/**
 	 * 
 	 * @param road 
 	 */
 	public void placeRoad(Road road) {
-		this.road = road;
+		if (canPlaceRoad(road.getOwner())) {
+			this.road = road;
+		}
 	}
 
 	/**
@@ -97,11 +136,7 @@ public class Edge {
 			return true;
 		}
 
-		if (obj == null) {
-			return false;
-		}
-
-		if (getClass() != obj.getClass()) {
+		if (obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
 

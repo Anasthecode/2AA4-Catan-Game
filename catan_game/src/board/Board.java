@@ -141,6 +141,12 @@ public class Board {
 	public void placeStructure(SettlementStructure structure) {
 	}
 
+	public void notifyTilesOfRoll(int roll) {
+		for (Tile tile : tiles.values()) {
+			tile.generateResource(roll);
+		}
+	}
+
 	/**
 	 * 
 	 * @return 

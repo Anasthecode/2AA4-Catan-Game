@@ -5,7 +5,6 @@
 package structures;
 
 import game.Player;
-
 /************************************************************/
 /**
  * 
@@ -21,6 +20,7 @@ public abstract class Structure {
 	 * @param owner 
 	 */
 	public Structure(Player owner) {
+		this.owner = owner;
 	}
 	
 	/**

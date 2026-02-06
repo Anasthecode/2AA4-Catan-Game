@@ -7,6 +7,7 @@ package board;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.Resource;
 import structures.SettlementStructure;
 
 /************************************************************/
@@ -32,6 +33,10 @@ public class Node {
 		structure = null;
 
 		this.edges = edges;
+	}
+
+	public void notifyStructureOfResource(Resource resource) {
+		structure.giveResourceToPlayer(resource);
 	}
 
 	public void addEdge(Edge edge) {
@@ -60,6 +65,10 @@ public class Node {
 		}
 
 		this.structure = structure;
+	}
+
+	public boolean hasStructure() {
+		return structure != null;
 	}
 
 	/**

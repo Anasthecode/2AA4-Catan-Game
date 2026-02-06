@@ -5,6 +5,7 @@
 package structures;
 
 import game.Player;
+import game.Resource;
 
 /************************************************************/
 /**
@@ -27,4 +28,6 @@ public abstract class SettlementStructure extends Structure {
 	public int getVP() {
 		return victoryPoints;
 	}
+
+	public abstract void giveResourceToPlayer(Resource resource);
 }

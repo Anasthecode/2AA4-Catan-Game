@@ -5,6 +5,7 @@
 package structures;
 
 import game.Player;
+import game.Resource;
 
 /************************************************************/
 /**
@@ -20,5 +21,10 @@ public class City extends SettlementStructure{
 	public City(Player owner) {
 		super(owner);
 		victoryPoints = 2;
+	}
+
+	@Override
+	public void giveResourceToPlayer(Resource resource) {
+		
 	}
 }
