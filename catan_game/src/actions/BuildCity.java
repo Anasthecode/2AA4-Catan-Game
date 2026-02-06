@@ -5,8 +5,10 @@
 package actions;
 
 import board.Board;
+import board.Node;
 import board.NodePosition;
 import game.Player;
+import structures.City;
 
 /************************************************************/
 /**
@@ -20,12 +22,19 @@ public class BuildCity implements Action {
 	 * 
 	 */
 	public BuildCity(Player player, Board board, NodePosition nodePosition) {
-	}
+
+        execute();
+    }
 
 	/**
 	 * 
 	 */
 	@Override
 	public void execute() {
+
+        City newCity = new City(player);
+        Node currentNode = board.getCorrespondingNode(nodePosition);
+
+        currentNode.setStructure(newCity);
 	}
 }
