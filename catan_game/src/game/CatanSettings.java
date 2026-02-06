@@ -15,6 +15,7 @@ public class CatanSettings {
       config.load(reader); 
     } catch (IOException e) {
       e.printStackTrace();
+      System.exit(1);
     }
   }
 

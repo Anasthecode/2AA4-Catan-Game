@@ -7,6 +7,7 @@ package board;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.Player;
 import game.Resource;
 import structures.SettlementStructure;
 
@@ -39,6 +40,48 @@ public class Node {
 		structure.giveResourceToPlayer(resource);
 	}
 
+	public boolean hasStructure() {
+		return structure != null;
+	}
+
+	public boolean canPlaceStructure(Player player) {
+		boolean connectedRoad = false;
+		for (Edge edge : edges) {
+			if (edge.hasRoad() && edge.getRoad().getOwner().equals(player)) {
+				connectedRoad = true;
+			}
+		}
+
+		if (!connectedRoad) {
+			return false;
+		}
+
+		// Distance rule
+		boolean distanceRule = true;
+		for (Edge edge : edges) {
+			Node otherNode;
+			if (edge.getStartNode().equals(this)) {
+				otherNode = edge.getEndNode();
+			} else {
+				otherNode = edge.getStartNode();
+			}
+
+			if (otherNode.hasStructure()) {
+				distanceRule = false;
+			}
+		}
+
+		return distanceRule;
+	}
+
+	public void placeStructure(SettlementStructure structure) {
+		if (canPlaceStructure(structure.getOwner())) {
+			this.structure = structure;
+		} else {
+			throw new IllegalStateException("Cannot place structure at " + position);
+		}
+	}
+
 	public void addEdge(Edge edge) {
 		if (edges.size() >= 3) {
 			throw new IllegalStateException("Node cannot have more than 3 edges");
@@ -53,22 +96,6 @@ public class Node {
 
 	public NodePosition getPosition() {
 		return position;
-	}
-
-	/**
-	 * 
-	 * @param structure 
-	 */
-	public void setStructure(SettlementStructure structure) {
-		if (structure != null) {
-			throw new IllegalStateException("Node already has a structure");
-		}
-
-		this.structure = structure;
-	}
-
-	public boolean hasStructure() {
-		return structure != null;
 	}
 
 	/**

@@ -4,8 +4,8 @@
 
 package game;
 
-import java.util.EnumMap;
-
+import java.util.HashMap;
+import java.util.Map;
 import structures.Structure;
 
 /************************************************************/
@@ -16,17 +16,27 @@ public abstract class Player {
 	/**
 	 * 
 	 */
-	private String playerName;
+	private final String playerName;
 	/**
 	 * 
 	 */
-	private EnumMap<Resource, Integer>[] inventory;
+	private HashMap<Resource, Integer> inventory;
 
 	/**
 	 * 
 	 * @param name 
 	 */
 	public Player(String name) {
+		playerName = name;
+		inventory = new HashMap<>();
+		initiateMap();
+	}
+
+	private void initiateMap() {
+
+		for (Resource resource : Resource.values()) {
+			inventory.put(resource, 0);
+		}
 	}
 
 	/**
@@ -37,43 +47,52 @@ public abstract class Player {
 		return playerName;
 	}
 
-	/**
-	 * 
-	 * @return 
-	 */
-	/* public EnumMap<Resource, Integer> getInventory() {
-	} */
-
-	/**
-	 * 
-	 * @param resource 
-	 */
-	public void addResource(Resource resource) {
+	public Map<Resource, Integer> getInventory() {
+		return this.inventory;
 	}
 
-	
-	
+	public Integer getResource (Resource resource) {
+		return inventory.get(resource);
+	}
+
+	public void addResource(Resource material, int number) {
+		int value = inventory.get(material) + number;
+		inventory.put(material, value);
+	}
+
+
+
 	/**
 	 * 
 	 */
 	public void removeResource() {
 	}
 
-	
+
 	/**
 	 * 
 	 * @param structure 
 	*/
 	public void build(Structure structure) {
 	}
-	
-	/**
-	 * 
-	 * @return 
-	*/
-	/* public String toString() {
-	} */
-	
+
+	@Override
+	public String toString() {
+		StringBuilder res = new StringBuilder();
+
+		res.append(this.playerName);
+		res.append(" Resources: \n");
+		for (Map.Entry<Resource, Integer> entry : this.inventory.entrySet()) {
+			res.append("\t");
+			res.append(entry.getKey());
+			res.append(" : ");
+			res.append(entry.getValue());
+			res.append("\n");
+		}
+
+		return res.toString();
+	}
+
 	/**
 	 * 
 	 */
