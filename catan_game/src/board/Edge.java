@@ -7,7 +7,6 @@ package board;
 import java.util.ArrayList;
 import java.util.List;
 
-import actions.Action;
 import game.Player;
 import structures.Road;
 
@@ -88,8 +87,8 @@ public class Edge {
 			return false;
 		}
 
-		if (startNode.getStructure().getOwner().equals(player) ||
-				endNode.getStructure().getOwner().equals(player)) {
+		if ((startNode.hasStructure() && startNode.getStructure().getOwner().equals(player)) ||
+				(endNode.hasStructure() && endNode.getStructure().getOwner().equals(player))) {
 			return true;
 		}
 
