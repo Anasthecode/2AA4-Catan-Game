@@ -16,6 +16,7 @@ public class BuildSettlement implements Action {
 	private Player player;
 	private Board board;
 	private NodePosition nodePosition;
+
 	/**
 	 * 
 	 */
@@ -25,6 +26,7 @@ public class BuildSettlement implements Action {
 	/**
 	 * 
 	 */
+	@Override
 	public void execute() {
 	}
 }
