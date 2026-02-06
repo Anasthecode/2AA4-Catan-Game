@@ -57,7 +57,21 @@ public class Node {
 		}
 
 		// Distance rule
-		return true;
+		boolean distanceRule = true;
+		for (Edge edge : edges) {
+			Node otherNode;
+			if (edge.getStartNode().equals(this)) {
+				otherNode = edge.getEndNode();
+			} else {
+				otherNode = edge.getStartNode();
+			}
+
+			if (otherNode.hasStructure()) {
+				distanceRule = false;
+			}
+		}
+
+		return distanceRule;
 	}
 
 	public void placeStructure(SettlementStructure structure) {
