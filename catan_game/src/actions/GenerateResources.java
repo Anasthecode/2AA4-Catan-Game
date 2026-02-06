@@ -23,5 +23,7 @@ public class GenerateResources implements Action {
 	 */
 	@Override
 	public void execute() {
+
+
 	}
 }

@@ -89,6 +89,16 @@ public class Board {
 		tiles.put(position, tile);
 	}
 
+    public Node getCorrespondingNode(NodePosition currentNodePosition) {
+
+        return nodes.get(currentNodePosition);
+    }
+
+    public Edge getCorrespondingEdge(EdgePosition currentEdgePosition) {
+
+        return edges.get(currentEdgePosition);
+    }
+
 	private void assignNodesToTile(Tile tile) {
 		List<NodePosition> tileNodePositions = tile.corners();
 
