@@ -7,6 +7,7 @@ package board;
 import java.util.ArrayList;
 import java.util.List;
 
+import actions.Action;
 import game.Player;
 import structures.Road;
 
@@ -114,6 +115,8 @@ public class Edge {
 	public void placeRoad(Road road) {
 		if (canPlaceRoad(road.getOwner())) {
 			this.road = road;
+		} else {
+			throw new IllegalStateException("Cannot place road at " + position);
 		}
 	}
 
