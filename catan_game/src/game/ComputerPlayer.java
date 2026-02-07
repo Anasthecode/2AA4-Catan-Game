@@ -19,10 +19,12 @@ public class ComputerPlayer extends Player {
 
 
 	/**
-	 * 
+	 * @return NOTE: Boolean so we can see if the player won or not, aka continue or not
 	 */
 	@Override
-	public void makeMove() {
+	public boolean makeMove() {
+        if(getVP() == 10) return false; // Base winning case
+        return true; // Placeholder for now
 	}
 
 	/**

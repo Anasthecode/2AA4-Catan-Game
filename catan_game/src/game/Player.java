@@ -22,6 +22,8 @@ public abstract class Player {
 	 */
 	private HashMap<Resource, Integer> inventory;
 
+    private int VP;
+
 	/**
 	 * 
 	 * @param name 
@@ -54,6 +56,10 @@ public abstract class Player {
 	public Integer getResource (Resource resource) {
 		return inventory.get(resource);
 	}
+
+    public Integer getVP() { return VP; }
+
+    public void setVP(int n) { VP += n; }
 
 	public void addResource(Resource material, int number) {
 		int value = inventory.get(material) + number;
@@ -94,7 +100,7 @@ public abstract class Player {
 	}
 
 	/**
-	 * 
+	 * @return NOTE: Boolean so we can see if the player won or not, aka continue or not
 	 */
-	public abstract void makeMove();
+	public abstract boolean makeMove();
 }

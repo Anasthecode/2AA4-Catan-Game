@@ -3,29 +3,18 @@
 // --------------------------------------------------------
 
 package game;
-/************************************************************/
-/**
- * 
- */
+
 public class Dice {
-	/**
-	 * 
-	 */
-	private int sides;
+	private final static int SIDES = 6;
 
 	/**
 	 * 
-	 * @param sides 
+	 * @param n [Number of dice to roll]
+	 * @return Returns n rolled dice values all added together
 	 */
-	public Dice(int sides) {
-	}
-
-	/**
-	 * 
-	 * @param numDice 
-	 * @return 
-	 */
-	public int[] rollDice(int numDice) {
-		return new int[] {0, 0};
+	public int rollDice(int n) {
+        int total = 0;
+        for(int i = 0; i < n; i++) { total += (int)(Math.random() * SIDES) + 1; }
+        return total;
 	}
 }
