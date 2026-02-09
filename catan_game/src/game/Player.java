@@ -31,6 +31,9 @@ public abstract class Player {
 	public Player(String name) {
 		playerName = name;
 		inventory = new EnumMap<>(Resource.class);
+		for (Resource resource : Resource.values()) {
+			inventory.put(resource, 0);
+		}
 		
 	}
 
