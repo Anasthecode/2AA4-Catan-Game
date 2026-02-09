@@ -14,96 +14,85 @@ import java.util.Random;
 import board.Board;
 
 public class Game {
-    // 'final' because not changing, 'static' because class exclusive
-	private final int TURNS;
-	private final List<Player> PLAYERS;
-	private static Random rng;
-	private final Dice DICE;
-    private final Board BOARD;
-    private static int indexCurrentPlayer;
+	private int turns;
+	private List<Player> players;
+	private Random rng;
+	private Dice dice;
+    private Board board;
+    private int currentPlayerIndex;
+
 	/**
 	 * 
 	 * @param turns [Unchanging number of turns of the game]
-	 * @param currentBoard [Unchanging board, ie a single board doesnt get replaced by another obj]
+	 * @param board [Unchanging board, ie a single board doesnt get replaced by another obj]
 	 * @param players [Unchanging number of players]
 	 */
-	public Game(int turns, Board currentBoard, List<Player> players) {
-        TURNS = turns;
-        PLAYERS = players;
-        DICE = new Dice();
-        BOARD = currentBoard;
-        // Index of first player
-        indexCurrentPlayer = 0;
+	public Game(int turns, Board board, List<Player> players) {
+        this.turns = turns;
+        this.players = players;
+        this.board = board;
+        dice = new Dice(rng);
+        currentPlayerIndex = 0; // First player to go is at index 0
 	}
 
 	/**
 	 * @return Returns the player list
 	 */
-	public List<Player> getPlayers() { return PLAYERS; }
+	public List<Player> getPlayers() {
+        return players;
+    }
 
 	/**
 	 * @return Returns the board obj
 	 */
-    public Board getBoard() { return BOARD; }
+    public Board getBoard() {
+        return board;
+    }
 
 	/**
 	 * @param name [Using the name of the searching player]
 	 * @return Get the resources of a player with a given name, otherwise return null.
 	 */
 	public Map<Resource, Integer> searchPlayer(String name) {
-        if(PLAYERS.isEmpty()) return null;
-        for(Player player : PLAYERS) {
+        if(players.isEmpty()) return null;
+
+        for(Player player : players) {
             if(player.getName().equals(name)) return player.getInventory();
         }
-        return null;
 
+        return null;
 	}
 
-    /**
-     * Plays a single turn of the game.
-     * @return Return whether to continue the game or not
-     */
-    public boolean playTurn() {
-        Player currentPlayer = PLAYERS.get(indexCurrentPlayer);
-        System.out.println("\n" + currentPlayer.getName() + "'s turn");
+    public int rollDice() {
+        return dice.rollDice(2);
+    }
 
-        // Roll dice
-        int roll = DICE.rollDice(2);
-
-        // Generate resources based on roll - INCOMPLETE
-        if (roll != 7) {
-//            GenerateResources generateResources = new GenerateResources(this, roll);
-//            generateResources.execute();
-        } else {
-            System.out.println("Rolled 7! Robber activated (not implemented)");
-        }
-
-        // Player makes their move
-        boolean cont = currentPlayer.makeMove();
-
-        // End turn - INCOMPLETE
-//        EndTurn endTurn = new EndTurn(this, currentPlayer);
-//        endTurn.execute();
-        indexCurrentPlayer = (indexCurrentPlayer + 1) % PLAYERS.size();
-
-        return cont; // Return if we continue the game after this turn or not
+    public void endGame() {
+        System.out.println("\nGame over!");
+        displayResults();
     }
 
     /**
      * Starts and runs the game.
      */
     public void play() {
-        System.out.println("Starting Catan game with " + PLAYERS.size() + " players");
-        System.out.println("Playing for " + TURNS + " turns");
+        System.out.println("Starting Catan game with " + players.size() + " players");
+        System.out.println("Playing for " + turns + " turns");
 
-        for (int i = 0; i < TURNS; i++) {
-            System.out.println("\n========== Turn " + (i + 1) + " ==========");
-            boolean cont = playTurn();
-            if(!cont) break; // End game if the VP points are reached
+        for (int i = 0; i < turns; i++) {
+            if (checkWinCondition()) {
+                endGame();
+                return;
+            }
+
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+
+            Player currentPlayer = players.get(currentPlayerIndex);
+            System.out.println("\n" + currentPlayer.getName() + "'s turn");
+            currentPlayer.makeMove();
         }
 
-        System.out.println("\nGame over!");
-        displayResults();
+        endGame();
     }
 
     /**
@@ -111,12 +100,21 @@ public class Game {
      */
     private void displayResults() {
         System.out.println("\nFinal Standings:");
-        for (Player player : PLAYERS) {
+        for (Player player : players) {
             int victoryPoints = player.getVP();
             System.out.println(player.getName() + ": " + victoryPoints + " VP");
         }
     }
 
+    private boolean checkWinCondition() {
+        for (Player player : players) {
+            if (player.getVP() >= CatanSettings.WINNING_VP_COUNT) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 	/**
 	 * 
 	 * @return 

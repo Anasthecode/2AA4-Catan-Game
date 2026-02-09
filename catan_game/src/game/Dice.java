@@ -4,8 +4,15 @@
 
 package game;
 
+import java.util.Random;
+
 public class Dice {
-	private final static int SIDES = 6;
+	private int SIDES = 6;
+	private Random rng;
+
+	public Dice(Random rng) {
+		this.rng = rng;
+	}
 
 	/**
 	 * 
@@ -14,7 +21,10 @@ public class Dice {
 	 */
 	public int rollDice(int n) {
         int total = 0;
-        for(int i = 0; i < n; i++) { total += (int)(Math.random() * SIDES) + 1; }
+        for(int i = 0; i < n; i++) {
+					total += rng.nextInt(SIDES) + 1; 
+				}
+
         return total;
 	}
 }

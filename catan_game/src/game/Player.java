@@ -4,7 +4,7 @@
 
 package game;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import structures.Structure;
 
@@ -20,9 +20,9 @@ public abstract class Player {
 	/**
 	 * 
 	 */
-	private HashMap<Resource, Integer> inventory;
+	private EnumMap<Resource, Integer> inventory;
 
-    private int VP;
+	private int VP;
 
 	/**
 	 * 
@@ -30,15 +30,8 @@ public abstract class Player {
 	 */
 	public Player(String name) {
 		playerName = name;
-		inventory = new HashMap<>();
-		initiateMap();
-	}
-
-	private void initiateMap() {
-
-		for (Resource resource : Resource.values()) {
-			inventory.put(resource, 0);
-		}
+		inventory = new EnumMap<>(Resource.class);
+		
 	}
 
 	/**
@@ -57,9 +50,13 @@ public abstract class Player {
 		return inventory.get(resource);
 	}
 
-    public Integer getVP() { return VP; }
+	public Integer getVP() {
+		return VP; 
+	}
 
-    public void setVP(int n) { VP += n; }
+	public void addVP(int n) {
+		VP += n;
+	}
 
 	public void addResource(Resource material, int number) {
 		int value = inventory.get(material) + number;

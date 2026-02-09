@@ -23,8 +23,7 @@ public class ComputerPlayer extends Player {
 	 */
 	@Override
 	public boolean makeMove() {
-        if(getVP() == 10) return false; // Base winning case
-        return true; // Placeholder for now
+    
 	}
 
 	/**
