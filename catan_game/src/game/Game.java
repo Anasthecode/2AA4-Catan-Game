@@ -5,6 +5,7 @@
 // Location of its directory
 package game;
 
+import java.util.ArrayList;
 // All the java directories we import
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class Game {
 	 * @return Returns the player list
 	 */
 	public List<Player> getPlayers() {
-        return players;
+        return new ArrayList<>(players);
     }
 
 	/**
