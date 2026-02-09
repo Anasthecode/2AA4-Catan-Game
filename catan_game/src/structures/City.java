@@ -6,6 +6,7 @@ package structures;
 
 import game.Player;
 import game.Resource;
+import java.util.EnumMap;
 
 /************************************************************/
 /**
@@ -18,6 +19,14 @@ public class City extends SettlementStructure{
 	 * @param location 
 	 * @param VP 
 	 */
+
+	private static final EnumMap<Resource, Integer> COST;
+    
+	static {
+		COST = new EnumMap<>(Resource.class);
+		COST.put(Resource.WHEAT, 2);
+		COST.put(Resource.ORE, 3);
+	}
 	public City(Player owner) {
 		super(owner);
 		victoryPoints = 2;
@@ -26,5 +35,10 @@ public class City extends SettlementStructure{
 	@Override
 	public void giveResourceToPlayer(Resource resource) {
 		
+	}
+
+	@Override
+	public EnumMap<Resource, Integer> getCost() {
+		return new EnumMap<>(COST);
 	}
 }

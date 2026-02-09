@@ -3,35 +3,52 @@
 // --------------------------------------------------------
 
 package game;
+import structures.City;
+import structures.Road;
+import structures.Settlement;
 
-/************************************************************/
-/**
- * 
- */
 public class ComputerPlayer extends Player {
-	/**
-	 * 
-	 * @param name 
-	 */
-	public ComputerPlayer(String name) {
-		super(name);
-	}
-
-
-	/**
-	 * @return NOTE: Boolean so we can see if the player won or not, aka continue or not
-	 */
+    
+    public ComputerPlayer(String name) {
+        super(name);
+    }
+    
 	@Override
 	public boolean makeMove() {
-    
-	}
-
-	/**
-	 * 
-	 * @return 
-	 */
-	@Override
-	public String toString() {
-		return getName();
-	}
+		System.out.println(getName() + "'s turn (Computer)");
+			
+		boolean builtSomething = false;
+		City city = new City(this);
+		if (canAfford(city)) {
+			build(city);
+			System.out.println("Successfully built a City!");
+			builtSomething = true;
+		}
+		
+		if (!builtSomething) {
+			Settlement settlement = new Settlement(this);
+			if (canAfford(settlement)) {
+					build(settlement); 
+					System.out.println("Successfully built a Settlement!");
+					builtSomething = true;
+			}
+		}
+		
+		if (!builtSomething) {
+				Road road = new Road(this);
+				if (canAfford(road)) {
+					build(road);
+					System.out.println("Successfully built a Road!");
+					builtSomething = true;
+				}
+		}
+			
+		if (!builtSomething) {
+				System.out.println("Cannot afford to build anything.");
+		}
+		
+		System.out.println(getName() + " ends their turn.\n");
+		
+		return getVictoryPoints() >= 10;
+    }
 }
