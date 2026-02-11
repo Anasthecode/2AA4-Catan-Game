@@ -19,22 +19,16 @@ public class City extends SettlementStructure{
 	 * @param location 
 	 * @param VP 
 	 */
-
-	private final EnumMap<Resource, Integer> COST;
-    
-	static {
-		
-	}
-	public City(Player owner) {
+	public City(Player owner, EnumMap<Resource, Integer> cost) {
 		super(owner);
-		victoryPoints = 2;
+        victoryPoints = 2;
 		COST.put(Resource.WHEAT, 2);
 		COST.put(Resource.ORE, 3);
 	}
 
 	@Override
 	public void giveResourceToPlayer(Resource resource) {
-		
+		getOwner().addResource(resource, 1);
 	}
 
 	@Override

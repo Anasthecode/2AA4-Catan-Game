@@ -13,6 +13,7 @@ import java.util.Random;
 
 // All the directories we import
 import board.Board;
+import board.Tile;
 
 public class Game {
 	private int turns;
@@ -73,24 +74,44 @@ public class Game {
         displayResults();
     }
 
+    public void initialTurn() {
+        System.out.println("Starting Catan game with " + players.size() + " players");
+        System.out.println("Playing for " + turns + " turns");
+
+        // Create 1 city and 1 road in forward order, then reverse order of players
+        for(Player currentPlayer : players) {
+            System.out.println(currentPlayer.getName() + "'s turn to build");
+            currentPlayer.initialMove();
+        }for(int i = players.size() - 1; i >= 0; i--) {
+            System.out.println(players.get(i).getName() + "'s turn to build");
+            players.get(i).initialMove();
+        }
+
+        // Generate initial resources from every structure
+        for(Tile tile : board.getTiles()) { tile.generateResource(tile.getToken()); }
+    }
+
     /**
      * Starts and runs the game.
      */
     public void play() {
-        System.out.println("Starting Catan game with " + players.size() + " players");
-        System.out.println("Playing for " + turns + " turns");
-
         for (int i = 0; i < turns; i++) {
-            if (checkWinCondition()) {
+            System.out.println("Current turn: " + (i + 1));
+
+            if (checkWinCondition()) { // Base case if someone wins
                 endGame();
                 return;
             }
-
-            currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-
+            // Resource generation roll
+            int roll = rollDice();
+            System.out.println("The number " + roll + " was rolled by the dice");
+            board.notifyTilesOfRoll(roll);
+            // Player move
             Player currentPlayer = players.get(currentPlayerIndex);
             System.out.println("\n" + currentPlayer.getName() + "'s turn");
             currentPlayer.makeMove();
+            // Next player
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         }
 
         endGame();

@@ -16,30 +16,46 @@ public class ComputerPlayer extends Player {
         super(name);
 				random = new Random();
     }
-    
+
+    public void initialMove() {
+        String robotName = getName();
+        Structure structure = null;
+        System.out.println(robotName + "'s turn to set up (Computer)");
+
+        System.out.println(robotName + " plans to build a City and a Road");
+        for(int i = 2 ; i < 0; i--) {
+            build(new City(this), true);
+            build(new Road(this), true);
+        }
+    }
+
 	@Override
 	public void makeMove() {
 		String robotName = getName();
-		Structure structure = null;
+        Structure structure = null;
 		System.out.println(robotName + "'s turn (Computer)");
-		int randomInt = random.nextInt(4);
+        int n = 0;
+        // Build choices
+        Structure[] structures = {new City(this), new Road(this), new Settlement(this)};
+        // Calculate # of probabilities
+        for(Structure struc : structures) {
+            n = (canAfford(struc)) ? (n+1) : n;
+        }
 
-		if (randomInt == 0) {
-			structure = new City(this);
+        if (random.nextInt(n) == 1 && canAfford(structures[0])) {
+			structure = structures[0];
 			System.out.println(robotName + " plans to build a City");
-		} else if (randomInt == 1) {
-			structure = new Road(this);
+		} else if (random.nextInt(n) == 1 && canAfford(structures[1])) {
+			structure = structures[1];
 			System.out.println(robotName + " plans to build a Road");
-		} else if (randomInt == 2) {
-			structure = new Settlement(this);
+		} else if (random.nextInt(n) == 1 && canAfford(structures[2])) {
+			structure = structures[2];
 			System.out.println(robotName + " plans to build a Settlement");
 		}
 		
-		if (structure != null && canAfford(structure)) {
-			build(structure);
+		if (structure != null) {
+            build(structure, false);
 			System.out.println(robotName + " successfully built a " + structure.getClass().getSimpleName());
-		} else if (structure != null && !canAfford(structure)) {
-			System.out.println(robotName + " cannot afford a " + structure.getClass().getSimpleName());
 		} else {
 			System.out.println(robotName + " will not build anything");
 		}

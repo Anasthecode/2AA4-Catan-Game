@@ -57,7 +57,7 @@ public abstract class Player {
 		inventory.put(resource, value);
 	}
 
-	public boolean canAfford(Structure structure) {
+public boolean canAfford(Structure structure) {
     Map<Resource, Integer> cost = structure.getCost();
     
     for (Map.Entry<Resource, Integer> entry : cost.entrySet()) {
@@ -76,12 +76,12 @@ public abstract class Player {
 
 	public void build(Structure structure) {
     Map<Resource, Integer> cost = structure.getCost();
-    for (Map.Entry<Resource, Integer> entry : cost.entrySet()) {
-			Resource resource = entry.getKey();
-			int required = entry.getValue();
-			int current = inventory.get(resource);
-			inventory.put(resource, current - required);
-    }
+        for (Map.Entry<Resource, Integer> entry : cost.entrySet()) {
+                Resource resource = entry.getKey();
+                int required = entry.getValue();
+                int current = inventory.get(resource);
+                inventory.put(resource, current - required);
+        }
 	}
 
 
@@ -104,5 +104,6 @@ public abstract class Player {
 		return res.toString();
 	}
 
+    public abstract void initialMove();
 	public abstract void makeMove();
 }

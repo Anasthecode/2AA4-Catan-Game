@@ -20,7 +20,6 @@ public class Road extends Structure{
 
 	public Road(Player owner) {
 		super(owner);
-		COST = new EnumMap<>(Resource.class);
 		COST.put(Resource.BRICK, 1);
 		COST.put(Resource.WOOD, 1);
 	}

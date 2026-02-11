@@ -18,8 +18,6 @@ public class Settlement extends SettlementStructure{
 	 * @param location 
 	 * @param VP 
 	 */
-
-
 	public Settlement(Player owner) {
 		super(owner);
 		victoryPoints = 2;
@@ -33,7 +31,7 @@ public class Settlement extends SettlementStructure{
 
 	@Override
 	public void giveResourceToPlayer(Resource resource) {
-		
+        getOwner().addResource(resource, 1);
 	}
 
   @Override

@@ -4,6 +4,7 @@
 
 package board;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -135,6 +136,8 @@ public class Board {
 	public Tile getTile(AxialPosition position) {
 		return tiles.get(position);
 	}
+
+    public ArrayList<Tile> getTiles() { return new ArrayList<Tile>(tiles.values()); }
 
 	
 	/**
