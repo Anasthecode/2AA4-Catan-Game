@@ -44,17 +44,20 @@ public class BuildSettlement implements Action {
 			if (node.getStructure() != null || !node.distanceRule()) {
 				System.out.println(player.getName() + " attempted to build a settlement but failed.");
 			} else {
-				node.placeSettlement(settlement);
+				node.placeSettlement(settlement, game);
+				System.out.println(player.getName() + " setup a settlement at " + nodePosition);
 			}
-		}
-    if (!player.canAfford(settlement.getCost())) {
-			System.out.println(player.getName() +
-					" attempted to build a new settlement but could not afford it.");
-		} else if (!node.canPlaceSettlement(player)) {
-			System.out.println(player.getName() + " attempted to build a new settlement but failed.");
 		} else {
-			player.build(settlement);
-			node.placeSettlement(settlement);
+			if (!player.canAfford(settlement.getCost())) {
+				System.out.println(player.getName() +
+						" attempted to build a new settlement but could not afford it.");
+			} else if (!node.canPlaceSettlement(player)) {
+				System.out.println(player.getName() + " attempted to build a new settlement but failed.");
+			} else {
+				player.build(settlement);
+				node.placeSettlement(settlement, game);
+				System.out.println(player.getName() + " placed a settlement at " + nodePosition);
+			}
 		}
 	}
 }

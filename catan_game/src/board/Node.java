@@ -7,6 +7,8 @@ package board;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.Game;
+import game.GameState;
 import game.Player;
 import game.Resource;
 import structures.City;
@@ -39,6 +41,8 @@ public class Node {
 	}
 
 	public void notifyStructureOfResource(Resource resource) {
+		System.out.println(structure.getOwner().getName() + " recieved " + structure.getVP() + " " +
+				resource.toString().toLowerCase());
 		structure.giveResourceToPlayer(resource);
 	}
 
@@ -92,8 +96,8 @@ public class Node {
 		return false;
 	}
 
-	public void placeSettlement(Settlement settlement) {
-		if (canPlaceSettlement(settlement.getOwner())) {
+	public void placeSettlement(Settlement settlement, Game game) {
+		if (canPlaceSettlement(settlement.getOwner()) || game.getState() == GameState.SETUP) {
 			this.structure = settlement;
 		} else {
 			throw new IllegalStateException("Cannot place settlement at " + position);

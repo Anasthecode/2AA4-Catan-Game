@@ -5,10 +5,9 @@
 // Location of its directory
 package game;
 
-import java.util.ArrayList;
 // All the java directories we import
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 // All the directories we import
 import board.Board;
@@ -18,7 +17,6 @@ public class Game {
   private int currentTurn;
   private List<Player> players;
   private int currentPlayerIndex;
-  private Random rng;
   private Dice dice;
   private Board board;
   private GameState gameState;
@@ -30,12 +28,12 @@ public class Game {
    *                another obj]
    * @param players [Unchanging number of players]
    */
-  public Game(int turns, Board board, List<Player> players) {
+  public Game(int turns, Board board, List<Player> players, Dice dice) {
     this.turns = turns;
     currentTurn = 1; // Starting at turn 1
     this.players = players;
     this.board = board;
-    dice = new Dice(rng);
+    this.dice = dice;
     currentPlayerIndex = 0; // First player to go is at index 0
     gameState = GameState.SETUP;
   }
@@ -70,7 +68,11 @@ public class Game {
   public void play() {
     System.out.println("Starting Catan game with " + players.size() + " players");
     System.out.println("Playing for " + turns + " turns");
-    System.out.println("\n" + players.get(currentPlayerIndex).getName() + "'s turn");
+
+    setup();
+    System.out.println("\n############### GAME START ###############");
+    System.out.println("\n##### " + players.get(currentPlayerIndex).getName() + "'s turn #####");
+    generateResources();
 
     while (currentTurn <= turns && !checkWinCondition()) {
       processPlayerTurn();
@@ -79,18 +81,44 @@ public class Game {
     endGame();
   }
 
+  private void setup() {
+    System.out.println("############### SETUP PHASE ###############");
+    for (int i = 0; i < players.size(); i++) {
+      currentPlayerIndex = i;
+      System.out.println("\n##### " + players.get(currentPlayerIndex).getName() + "'s turn #####\n");
+      processPlayerTurn();
+    }
+
+    for (int i = players.size() - 1; i >= 0; i--) {
+      currentPlayerIndex = i;
+      System.out.println("\n##### " + players.get(currentPlayerIndex).getName() + "'s turn #####");
+      processPlayerTurn();
+    }
+
+    System.out.println("\n############### SETUP OVER ###############");
+    gameState = GameState.PLAYING;
+  }
+
   private void processPlayerTurn() {
     players.get(currentPlayerIndex).onTurn(this);
   }
 
   public void onEndTurn() {
-    if (currentPlayerIndex == players.size() - 1) {
+    if (currentPlayerIndex == players.size() - 1 && gameState == GameState.PLAYING) {
       currentTurn++;
     }
 
-    currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-    System.out.println("\n" + players.get(currentPlayerIndex).getName() + "'s turn");
-    board.notifyTilesOfRoll(rollDice());
+    if (gameState == GameState.PLAYING) {
+      currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+      System.out.println("\n##### " + players.get(currentPlayerIndex).getName() + "'s turn #####");
+      generateResources();
+    }
+  }
+
+  private void generateResources() {
+    int roll = rollDice();
+    System.out.println(players.get(currentPlayerIndex).getName() + " rolled a " + roll);
+    board.notifyTilesOfRoll(roll);
   }
 
   /**

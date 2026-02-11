@@ -96,7 +96,9 @@ public class Tile {
 	public void generateResource(int roll) {
 		if (roll == numberTokenValue) {
 			for (Node node : intersections.values()) {
-				node.notifyStructureOfResource(tileType.getProducedResource());
+				if (node.hasStructure()) {
+					node.notifyStructureOfResource(tileType.getProducedResource());
+				}
 			}
 		}
 	}

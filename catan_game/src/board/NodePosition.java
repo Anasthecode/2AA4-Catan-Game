@@ -80,4 +80,9 @@ public class NodePosition {
 	public int hashCode() {
 			return Objects.hash(q, r, getRelativeLocation());
 	}
+
+	@Override
+	public String toString() {
+		return "(" + q + ", " + r + ", " + location + ")";
+	}
 }

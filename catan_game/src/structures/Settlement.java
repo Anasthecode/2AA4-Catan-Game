@@ -19,7 +19,7 @@ public class Settlement extends SettlementStructure{
 	 */
 	public Settlement(Player owner) {
 		super(owner);
-		victoryPoints = 2;
+		victoryPoints = 1;
 		COST.put(Resource.BRICK, 1);
 		COST.put(Resource.WOOD, 1);
 		COST.put(Resource.WHEAT, 1);
@@ -30,6 +30,6 @@ public class Settlement extends SettlementStructure{
 
 	@Override
 	public void giveResourceToPlayer(Resource resource) {
-        getOwner().addResource(resource, 1);
+		getOwner().addResource(resource, 1);
 	}
 }

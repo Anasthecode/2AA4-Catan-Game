@@ -5,6 +5,7 @@
 package actions;
 
 import board.Board;
+import board.Edge;
 import board.EdgePosition;
 import game.Game;
 import game.GameState;
@@ -37,21 +38,24 @@ public class BuildRoad implements Action {
 	@Override
 	public void execute() {
 		Road road = new Road(player);
+		Edge edge = board.getEdges().get(edgePosition);
 		if (game.getState() == GameState.SETUP) {
-			if (board.getEdges().get(edgePosition).getRoad() != null) {
+			if (edge.getRoad() != null) {
 				System.out.println(player.getName() + " cannot place setup road there.");
 			} else {
-				board.getEdges().get(edgePosition).placeRoad(road);
+				edge.placeRoad(road, game);
+				System.out.println(player.getName() + " setup a road at " + edgePosition);
 			}
 		} else {
 			if (!player.canAfford(road.getCost())) {
 				System.out.println(player.getName() +
 						" attempted to build a new road but could not afford it.");
-			} else if (!board.getEdges().get(edgePosition).canPlaceRoad(player)) {
+			} else if (!edge.canPlaceRoad(player)) {
 				System.out.println(player.getName() + " attempted to build a new road but failed.");
 			} else {
 				player.build(road);
-				board.getEdges().get(edgePosition).placeRoad(road);
+				edge.placeRoad(road, game);
+				System.out.println(player.getName() + " placed a road at " + edgePosition);
 			}
 		}
 	}
