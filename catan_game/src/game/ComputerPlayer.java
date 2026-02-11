@@ -50,11 +50,11 @@ public class ComputerPlayer extends Player {
       for (Node node : game.getBoard().getNodes().values()) {
         if (node.getStructure() == null && node.distanceRule()) {
           possibleSettlementPlacements.add(
-              new BuildSettlement(this, game.getBoard(), node.getPosition()));
+              new BuildSettlement(this, game, node.getPosition()));
 
           for (Edge edge : node.getEdges()) {
             if (edge.getRoad() == null) {
-              possibleRoadPlacements.add(new BuildRoad(this, game.getBoard(), edge.getPosition()));
+              possibleRoadPlacements.add(new BuildRoad(this, game, edge.getPosition()));
             }
           }
         }
@@ -69,7 +69,7 @@ public class ComputerPlayer extends Player {
 
       for (Node node : game.getBoard().getNodes().values()) {
         if (node.canPlaceSettlement(this) && canAfford(new Settlement(this).getCost())) {
-          actionsToReturn.add(new BuildSettlement(this, game.getBoard(), node.getPosition()));
+          actionsToReturn.add(new BuildSettlement(this, game, node.getPosition()));
         }
 
         if (node.canPlaceCity(this) && canAfford(new City(this).getCost())) {
@@ -79,7 +79,7 @@ public class ComputerPlayer extends Player {
 
       for (Edge edge : game.getBoard().getEdges().values()) {
         if (edge.canPlaceRoad(this) && canAfford(new Road(this).getCost())) {
-          actionsToReturn.add(new BuildRoad(this, game.getBoard(), edge.getPosition()));
+          actionsToReturn.add(new BuildRoad(this, game, edge.getPosition()));
         }
       }
     }
