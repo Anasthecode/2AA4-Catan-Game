@@ -5,6 +5,8 @@
 package structures;
 
 import game.Player;
+import game.Resource;
+import java.util.EnumMap;
 /************************************************************/
 /**
  * 
@@ -14,14 +16,17 @@ public abstract class Structure {
 	 * 
 	 */
 	private Player owner;
-	
+	protected final EnumMap<Resource, Integer> COST;
 	/**
 	 * 
 	 * @param owner 
 	 */
 	public Structure(Player owner) {
 		this.owner = owner;
+		COST = new EnumMap<>(Resource.class);
 	}
+
+	public abstract EnumMap<Resource, Integer> getCost();
 	
 	/**
 	 * 

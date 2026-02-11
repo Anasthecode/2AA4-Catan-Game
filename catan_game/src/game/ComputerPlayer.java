@@ -3,52 +3,47 @@
 // --------------------------------------------------------
 
 package game;
+import java.util.Random;
 import structures.City;
 import structures.Road;
 import structures.Settlement;
+import structures.Structure;
 
 public class ComputerPlayer extends Player {
-    
+
+    private Random random;
     public ComputerPlayer(String name) {
         super(name);
+				random = new Random();
     }
     
 	@Override
-	public boolean makeMove() {
-		System.out.println(getName() + "'s turn (Computer)");
-			
-		boolean builtSomething = false;
-		City city = new City(this);
-		if (canAfford(city)) {
-			build(city);
-			System.out.println("Successfully built a City!");
-			builtSomething = true;
+	public void makeMove() {
+		String robotName = getName();
+		Structure structure = null;
+		System.out.println(robotName + "'s turn (Computer)");
+		int randomInt = random.nextInt(4);
+
+		if (randomInt == 0) {
+			structure = new City(this);
+			System.out.println(robotName + " plans to build a City");
+		} else if (randomInt == 1) {
+			structure = new Road(this);
+			System.out.println(robotName + " plans to build a Road");
+		} else if (randomInt == 2) {
+			structure = new Settlement(this);
+			System.out.println(robotName + " plans to build a Settlement");
 		}
 		
-		if (!builtSomething) {
-			Settlement settlement = new Settlement(this);
-			if (canAfford(settlement)) {
-					build(settlement); 
-					System.out.println("Successfully built a Settlement!");
-					builtSomething = true;
-			}
+		if (structure != null && canAfford(structure)) {
+			build(structure);
+			System.out.println(robotName + " successfully built a " + structure.getClass().getSimpleName());
+		} else if (structure != null && !canAfford(structure)) {
+			System.out.println(robotName + " cannot afford a " + structure.getClass().getSimpleName());
+		} else {
+			System.out.println(robotName + " will not build anything");
 		}
 		
-		if (!builtSomething) {
-				Road road = new Road(this);
-				if (canAfford(road)) {
-					build(road);
-					System.out.println("Successfully built a Road!");
-					builtSomething = true;
-				}
-		}
-			
-		if (!builtSomething) {
-				System.out.println("Cannot afford to build anything.");
-		}
-		
-		System.out.println(getName() + " ends their turn.\n");
-		
-		return getVictoryPoints() >= 10;
+		System.out.println(robotName + " ends their turn.\n");
     }
 }

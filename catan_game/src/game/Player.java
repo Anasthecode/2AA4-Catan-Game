@@ -17,17 +17,9 @@ public abstract class Player {
 	 * 
 	 */
 	private final String playerName;
-	/**
-	 * 
-	 */
-	private EnumMap<Resource, Integer> inventory;
+	private final EnumMap<Resource, Integer> inventory;
+	private int victoryPoints;
 
-	private int VP;
-
-	/**
-	 * 
-	 * @param name 
-	 */
 	public Player(String name) {
 		playerName = name;
 		inventory = new EnumMap<>(Resource.class);
@@ -37,57 +29,70 @@ public abstract class Player {
 		
 	}
 
-	/**
-	 * 
-	 * @return 
-	 */
 	public String getName() {
 		return playerName;
 	}
 
 	public Map<Resource, Integer> getInventory() {
-		return this.inventory;
+		return new EnumMap<>(this.inventory);
 	}
 
 	public Integer getResource (Resource resource) {
 		return inventory.get(resource);
 	}
 
-	public Integer getVP() {
-		return VP; 
+	public Integer getVictoryPoints() {
+		return victoryPoints; 
 	}
 
-	public void addVP(int n) {
-		VP += n;
+	public void addVictoryPoints(int n) {
+		victoryPoints += n;
 	}
 
-	public void addResource(Resource material, int number) {
-		int value = inventory.get(material) + number;
-		inventory.put(material, value);
+	public void addResource(Resource resource, int number) {
+		int value = inventory.get(resource) + number;
+		if (value < 0) {
+			throw new ArithmeticException("Can't have negative resources");
+		}
+		inventory.put(resource, value);
 	}
 
+	public boolean canAfford(Structure structure) {
+    Map<Resource, Integer> cost = structure.getCost();
+    
+    for (Map.Entry<Resource, Integer> entry : cost.entrySet()) {
+			Resource resource = entry.getKey(); 
+			int requiredAmount = entry.getValue(); 
+			
+			int playerAmount = inventory.getOrDefault(resource, 0);
+			
+			if (playerAmount < requiredAmount) {
+					return false;
+			}
+    }
+    
+    return true;
+}
 
-
-	/**
-	 * 
-	 */
-	public void removeResource() {
-	}
-
-
-	/**
-	 * 
-	 * @param structure 
-	*/
 	public void build(Structure structure) {
+    Map<Resource, Integer> cost = structure.getCost();
+    for (Map.Entry<Resource, Integer> entry : cost.entrySet()) {
+			Resource resource = entry.getKey();
+			int required = entry.getValue();
+			int current = inventory.get(resource);
+			inventory.put(resource, current - required);
+    }
 	}
+
 
 	@Override
 	public String toString() {
 		StringBuilder res = new StringBuilder();
 
 		res.append(this.playerName);
-		res.append(" Resources: \n");
+		res.append("\nVP: ");
+		res.append(victoryPoints);
+		res.append("Resources: \n");
 		for (Map.Entry<Resource, Integer> entry : this.inventory.entrySet()) {
 			res.append("\t");
 			res.append(entry.getKey());
@@ -99,8 +104,5 @@ public abstract class Player {
 		return res.toString();
 	}
 
-	/**
-	 * @return NOTE: Boolean so we can see if the player won or not, aka continue or not
-	 */
-	public abstract boolean makeMove();
+	public abstract void makeMove();
 }

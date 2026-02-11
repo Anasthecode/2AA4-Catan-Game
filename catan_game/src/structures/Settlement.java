@@ -6,6 +6,7 @@ package structures;
 
 import game.Player;
 import game.Resource;
+import java.util.EnumMap;
 
 /************************************************************/
 /**
@@ -17,13 +18,26 @@ public class Settlement extends SettlementStructure{
 	 * @param location 
 	 * @param VP 
 	 */
+
+
 	public Settlement(Player owner) {
 		super(owner);
 		victoryPoints = 2;
+		COST.put(Resource.BRICK, 1);
+		COST.put(Resource.WOOD, 1);
+		COST.put(Resource.WHEAT, 1);
+		COST.put(Resource.SHEEP, 1);
 	}
+
+
 
 	@Override
 	public void giveResourceToPlayer(Resource resource) {
 		
 	}
+
+  @Override
+  public EnumMap<Resource, Integer> getCost() {
+		return new EnumMap<>(COST); // Returns a copy of the original, not the actual thing
+  }
 }
