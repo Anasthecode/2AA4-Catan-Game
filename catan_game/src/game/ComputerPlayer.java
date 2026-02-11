@@ -45,22 +45,23 @@ public class ComputerPlayer extends Player {
     List<Action> actionsToReturn = new ArrayList<>();
 
     if (game.getState() == GameState.SETUP) {
-      List<Action> possibleSettlementPlacements = new ArrayList<>();
-      List<Action> possibleRoadPlacements = new ArrayList<>();
+      List<Node> possibleSettlementNodes = new ArrayList<>();
       for (Node node : game.getBoard().getNodes().values()) {
         if (node.getStructure() == null && node.distanceRule()) {
-          possibleSettlementPlacements.add(
-              new BuildSettlement(this, game, node.getPosition()));
-
-          for (Edge edge : node.getEdges()) {
-            if (edge.getRoad() == null) {
-              possibleRoadPlacements.add(new BuildRoad(this, game, edge.getPosition()));
-            }
-          }
+          possibleSettlementNodes.add(node);
         }
       }
 
-      actionsToReturn.add(possibleSettlementPlacements.get(rng.nextInt(possibleSettlementPlacements.size())));
+      Node settlementNode = possibleSettlementNodes.get(rng.nextInt(possibleSettlementNodes.size()));
+      List<Action> possibleRoadPlacements = new ArrayList<>();
+
+      for (Edge edge : settlementNode.getEdges()) {
+        if (edge.getRoad() == null) {
+          possibleRoadPlacements.add(new BuildRoad(this, game, edge.getPosition()));
+        }
+      }
+      
+      actionsToReturn.add(new BuildSettlement(this, game, settlementNode.getPosition()));
       actionsToReturn.add(possibleRoadPlacements.get(rng.nextInt(possibleRoadPlacements.size())));
       actionsToReturn.add(new EndTurn(this, game));
 
