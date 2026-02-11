@@ -16,17 +16,14 @@ public abstract class Structure {
 	 * 
 	 */
 	private Player owner;
-	protected final EnumMap<Resource, Integer> COST;
+	protected final EnumMap<Resource, Integer> COST = new EnumMap<>(Resource.class);
 	/**
 	 * 
 	 * @param owner 
 	 */
 	public Structure(Player owner) {
 		this.owner = owner;
-		COST = new EnumMap<>(Resource.class);
 	}
-
-	public abstract EnumMap<Resource, Integer> getCost();
 	
 	/**
 	 * 
@@ -36,4 +33,7 @@ public abstract class Structure {
 		return owner;
 	}
 
+	public EnumMap<Resource, Integer> getCost() {
+		return new EnumMap<Resource, Integer>(COST);
+	}
 }

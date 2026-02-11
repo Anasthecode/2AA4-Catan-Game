@@ -4,16 +4,12 @@
 
 package board;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import board.AxialPosition.Direction;
 import game.CatanSettings;
-import structures.Road;
-import structures.SettlementStructure;
-
 /************************************************************/
 /**
  * 
@@ -25,7 +21,7 @@ public class Board {
 
 	private AxialPosition centre;
 	private int size;
-	
+
 	/**
 	 * 
 	 */
@@ -51,7 +47,7 @@ public class Board {
 					if (CatanSettings.STANDARD_BOARD_LAYOUT[tileIndex] != TileType.DESERT) {
 						tokenIndex++;
 					}
-					
+
 					tileIndex++;
 
 					addTile(currentTilePosition,
@@ -86,19 +82,9 @@ public class Board {
 				endNode.addEdge(edge);
 			}
 		}
-		
+
 		tiles.put(position, tile);
 	}
-
-    public Node getCorrespondingNode(NodePosition currentNodePosition) {
-
-        return nodes.get(currentNodePosition);
-    }
-
-    public Edge getCorrespondingEdge(EdgePosition currentEdgePosition) {
-
-        return edges.get(currentEdgePosition);
-    }
 
 	private void assignNodesToTile(Tile tile) {
 		List<NodePosition> tileNodePositions = tile.corners();
@@ -128,30 +114,16 @@ public class Board {
 		}
 	}
 
-	/**
-	 * 
-	 * @param index 
-	 * @return 
-	 */
-	public Tile getTile(AxialPosition position) {
-		return tiles.get(position);
+	public Map<AxialPosition, Tile> getTiles() {
+		return new HashMap<AxialPosition, Tile>(tiles);
 	}
 
-    public ArrayList<Tile> getTiles() { return new ArrayList<Tile>(tiles.values()); }
-
-	
-	/**
-	 * 
-	 * @param road 
-	 */
-	public void placeRoad(Road road) {
+	public Map<NodePosition, Node> getNodes() {
+		return new HashMap<NodePosition, Node>(nodes);
 	}
 
-	/**
-	 * 
-	 * @param structure 
-	*/
-	public void placeStructure(SettlementStructure structure) {
+	public Map<EdgePosition, Edge> getEdges() {
+		return new HashMap<EdgePosition, Edge>(edges);
 	}
 
 	public void notifyTilesOfRoll(int roll) {
@@ -162,7 +134,7 @@ public class Board {
 
 	/**
 	 * 
-	 * @return 
+	 * @return
 	 */
 	public String toString() {
 		StringBuilder sb = new StringBuilder("Board: ");

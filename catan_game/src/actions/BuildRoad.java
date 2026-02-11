@@ -32,7 +32,7 @@ public class BuildRoad implements Action {
 	public void execute() {
 
         Road newRoad = new Road(player);
-        Edge currentEdge = board.getCorrespondingEdge(edgePosition);
+        Edge currentEdge = board.getEdge(edgePosition);
 
         currentEdge.placeRoad(newRoad);
 	}

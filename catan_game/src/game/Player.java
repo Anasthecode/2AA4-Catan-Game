@@ -6,6 +6,7 @@ package game;
 
 import java.util.EnumMap;
 import java.util.Map;
+
 import structures.Structure;
 
 /************************************************************/
@@ -26,7 +27,6 @@ public abstract class Player {
 		for (Resource resource : Resource.values()) {
 			inventory.put(resource, 0);
 		}
-		
 	}
 
 	public String getName() {
@@ -37,12 +37,12 @@ public abstract class Player {
 		return new EnumMap<>(this.inventory);
 	}
 
-	public Integer getResource (Resource resource) {
+	public Integer getResource(Resource resource) {
 		return inventory.get(resource);
 	}
 
-	public Integer getVictoryPoints() {
-		return victoryPoints; 
+	public int getVictoryPoints() {
+		return victoryPoints;
 	}
 
 	public void addVictoryPoints(int n) {
@@ -57,33 +57,30 @@ public abstract class Player {
 		inventory.put(resource, value);
 	}
 
-public boolean canAfford(Structure structure) {
-    Map<Resource, Integer> cost = structure.getCost();
-    
-    for (Map.Entry<Resource, Integer> entry : cost.entrySet()) {
-			Resource resource = entry.getKey(); 
-			int requiredAmount = entry.getValue(); 
-			
-			int playerAmount = inventory.getOrDefault(resource, 0);
-			
-			if (playerAmount < requiredAmount) {
-					return false;
-			}
-    }
-    
-    return true;
-}
+	public boolean canAfford(Map<Resource, Integer> cost) {
+		for (Map.Entry<Resource, Integer> entry : cost.entrySet()) {
+			Resource resource = entry.getKey();
+			int requiredAmount = entry.getValue();
 
-	public void build(Structure structure) {
-    Map<Resource, Integer> cost = structure.getCost();
-        for (Map.Entry<Resource, Integer> entry : cost.entrySet()) {
-                Resource resource = entry.getKey();
-                int required = entry.getValue();
-                int current = inventory.get(resource);
-                inventory.put(resource, current - required);
-        }
+			int playerAmount = inventory.getOrDefault(resource, 0);
+
+			if (playerAmount < requiredAmount) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
+	public void build(Structure structure) {
+		Map<Resource, Integer> cost = structure.getCost();
+		for (Map.Entry<Resource, Integer> entry : cost.entrySet()) {
+			Resource resource = entry.getKey();
+			int required = entry.getValue();
+			int current = inventory.get(resource);
+			inventory.put(resource, current - required);
+		}
+	}
 
 	@Override
 	public String toString() {
@@ -104,6 +101,5 @@ public boolean canAfford(Structure structure) {
 		return res.toString();
 	}
 
-    public abstract void initialMove();
-	public abstract void makeMove();
+	public abstract void onTurn(Game game);
 }

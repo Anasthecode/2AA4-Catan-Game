@@ -33,7 +33,7 @@ public class BuildCity implements Action {
 	public void execute() {
 
         City newCity = new City(player);
-        Node currentNode = board.getCorrespondingNode(nodePosition);
+        Node currentNode = board.getNode(nodePosition);
 
         currentNode.setStructure(newCity);
 	}

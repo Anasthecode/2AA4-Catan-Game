@@ -9,6 +9,8 @@ import java.util.List;
 
 import game.Player;
 import game.Resource;
+import structures.City;
+import structures.Settlement;
 import structures.SettlementStructure;
 
 /************************************************************/
@@ -44,7 +46,7 @@ public class Node {
 		return structure != null;
 	}
 
-	public boolean canPlaceStructure(Player player) {
+	public boolean canPlaceSettlement(Player player) {
 		boolean connectedRoad = false;
 		for (Edge edge : edges) {
 			if (edge.hasRoad() && edge.getRoad().getOwner().equals(player)) {
@@ -52,11 +54,15 @@ public class Node {
 			}
 		}
 
-		if (!connectedRoad) {
+		if (!connectedRoad || structure != null) {
 			return false;
 		}
 
 		// Distance rule
+		return distanceRule();
+	}
+
+	public boolean distanceRule() {
 		boolean distanceRule = true;
 		for (Edge edge : edges) {
 			Node otherNode;
@@ -74,11 +80,31 @@ public class Node {
 		return distanceRule;
 	}
 
-	public void placeStructure(SettlementStructure structure) {
-		if (canPlaceStructure(structure.getOwner())) {
-			this.structure = structure;
+	public boolean canPlaceCity(Player player) {
+		if (structure == null) {
+			return false;
+		}
+
+		if (structure instanceof Settlement && structure.getOwner().equals(player)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public void placeSettlement(Settlement settlement) {
+		if (canPlaceSettlement(settlement.getOwner())) {
+			this.structure = settlement;
 		} else {
-			throw new IllegalStateException("Cannot place structure at " + position);
+			throw new IllegalStateException("Cannot place settlement at " + position);
+		}
+	}
+
+	public void placeCity(City city) {
+		if (canPlaceCity(city.getOwner())) {
+			this.structure = city;
+		} else {
+			throw new IllegalStateException("Cannot place city at " + position);
 		}
 	}
 

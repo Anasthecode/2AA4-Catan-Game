@@ -35,7 +35,7 @@ public class BuildSettlement implements Action {
 	public void execute() {
 
         Settlement newSettlement = new Settlement(player);
-        Node currentNode = board.getCorrespondingNode(nodePosition);
+        Node currentNode = board.getNode(nodePosition);
 
         currentNode.setStructure(newSettlement);
 	}

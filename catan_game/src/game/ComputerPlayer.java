@@ -3,63 +3,94 @@
 // --------------------------------------------------------
 
 package game;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import actions.Action;
+import actions.BuildCity;
+import actions.BuildRoad;
+import actions.BuildSettlement;
+import actions.EndTurn;
+import board.Edge;
+import board.Node;
 import structures.City;
 import structures.Road;
 import structures.Settlement;
-import structures.Structure;
 
 public class ComputerPlayer extends Player {
 
-    private Random random;
-    public ComputerPlayer(String name) {
-        super(name);
-				random = new Random();
+  private Random rng;
+
+  public ComputerPlayer(String name, Random rng) {
+    super(name);
+    this.rng = rng;
+  }
+
+  @Override
+  public void onTurn(Game game) {
+    List<Action> availableActions = getAvailableActions(game);
+
+    if (game.getState() == GameState.SETUP) {
+      for (Action action : availableActions) {
+        action.execute();
+      }
+    } else {
+      availableActions.get(rng.nextInt(availableActions.size())).execute();
     }
+  }
 
-    public void initialMove() {
-        String robotName = getName();
-        Structure structure = null;
-        System.out.println(robotName + "'s turn to set up (Computer)");
+  private List<Action> getAvailableActions(Game game) {
+    List<Action> actionsToReturn = new ArrayList<>();
 
-        System.out.println(robotName + " plans to build a City and a Road");
-        for(int i = 2 ; i < 0; i--) {
-            build(new City(this), true);
-            build(new Road(this), true);
+    if (game.getState() == GameState.SETUP) {
+      List<Action> possibleSettlementPlacements = new ArrayList<>();
+      List<Action> possibleRoadPlacements = new ArrayList<>();
+      for (Node node : game.getBoard().getNodes().values()) {
+        boolean unfilledEdges = false;
+        for (Edge edge : node.getEdges()) {
+          if (edge.getRoad() == null) {
+            unfilledEdges = true;
+          }
         }
-    }
 
-	@Override
-	public void makeMove() {
-		String robotName = getName();
-        Structure structure = null;
-		System.out.println(robotName + "'s turn (Computer)");
-        int n = 0;
-        // Build choices
-        Structure[] structures = {new City(this), new Road(this), new Settlement(this)};
-        // Calculate # of probabilities
-        for(Structure struc : structures) {
-            n = (canAfford(struc)) ? (n+1) : n;
+        if (node.getStructure() == null && node.distanceRule() && unfilledEdges) {
+          possibleSettlementPlacements.add(
+              new BuildSettlement(this, game.getBoard(), node.getPosition()));
+
+          for (Edge edge : node.getEdges()) {
+            if (edge.getRoad() == null) {
+              possibleRoadPlacements.add(new BuildRoad(this, game.getBoard(), edge.getPosition()));
+            }
+          }
+        }
+      }
+
+      actionsToReturn.add(possibleSettlementPlacements.get(rng.nextInt(possibleSettlementPlacements.size())));
+      actionsToReturn.add(possibleRoadPlacements.get(rng.nextInt(possibleRoadPlacements.size())));
+      actionsToReturn.add(new EndTurn(this, game));
+
+    } else {
+      actionsToReturn.add(new EndTurn(this, game));
+
+      for (Node node : game.getBoard().getNodes().values()) {
+        if (node.canPlaceSettlement(this) && canAfford(new Settlement(this).getCost())) {
+          actionsToReturn.add(new BuildSettlement(this, game.getBoard(), node.getPosition()));
         }
 
-        if (random.nextInt(n) == 1 && canAfford(structures[0])) {
-			structure = structures[0];
-			System.out.println(robotName + " plans to build a City");
-		} else if (random.nextInt(n) == 1 && canAfford(structures[1])) {
-			structure = structures[1];
-			System.out.println(robotName + " plans to build a Road");
-		} else if (random.nextInt(n) == 1 && canAfford(structures[2])) {
-			structure = structures[2];
-			System.out.println(robotName + " plans to build a Settlement");
-		}
-		
-		if (structure != null) {
-            build(structure, false);
-			System.out.println(robotName + " successfully built a " + structure.getClass().getSimpleName());
-		} else {
-			System.out.println(robotName + " will not build anything");
-		}
-		
-		System.out.println(robotName + " ends their turn.\n");
+        if (node.canPlaceCity(this) && canAfford(new City(this).getCost())) {
+          actionsToReturn.add(new BuildCity(this, game.getBoard(), node.getPosition()));
+        }
+      }
+
+      for (Edge edge : game.getBoard().getEdges().values()) {
+        if (edge.canPlaceRoad(this) && canAfford(new Road(this).getCost())) {
+          actionsToReturn.add(new BuildRoad(this, game.getBoard(), edge.getPosition()));
+        }
+      }
     }
+
+    return actionsToReturn;
+  }
 }
