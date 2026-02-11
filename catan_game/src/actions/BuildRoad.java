@@ -6,6 +6,8 @@ package actions;
 
 import board.Board;
 import board.EdgePosition;
+import game.Game;
+import game.GameState;
 import game.Player;
 import structures.Road;
 
@@ -15,16 +17,18 @@ import structures.Road;
  */
 public class BuildRoad implements Action {
 	private Player player;
+	private Game game;
 	private Board board;
 	private EdgePosition edgePosition;
 
 	/**
 	 * 
 	 */
-	public BuildRoad(Player player, Board board, EdgePosition edgePosition) {
+	public BuildRoad(Player player, Game game, EdgePosition edgePosition) {
 		this.player = player;
-		this.board = board;
+		this.game = game;
 		this.edgePosition = edgePosition;
+		board = game.getBoard();
 	}
 
 	/**
@@ -33,14 +37,22 @@ public class BuildRoad implements Action {
 	@Override
 	public void execute() {
 		Road road = new Road(player);
-		if (!player.canAfford(road.getCost())) {
-			System.out.println(player.getName() +
-					" attempted to build a new road but could not afford it.");
-		} else if (!board.getEdges().get(edgePosition).canPlaceRoad(player)) {
-			System.out.println(player.getName() + " attempted to build a new road but failed.");
+		if (game.getState() == GameState.SETUP) {
+			if (board.getEdges().get(edgePosition).getRoad() != null) {
+				System.out.println(player.getName() + " cannot place setup road there.");
+			} else {
+				board.getEdges().get(edgePosition).placeRoad(road);
+			}
 		} else {
-			player.build(road);
-			board.getEdges().get(edgePosition).placeRoad(road);
+			if (!player.canAfford(road.getCost())) {
+				System.out.println(player.getName() +
+						" attempted to build a new road but could not afford it.");
+			} else if (!board.getEdges().get(edgePosition).canPlaceRoad(player)) {
+				System.out.println(player.getName() + " attempted to build a new road but failed.");
+			} else {
+				player.build(road);
+				board.getEdges().get(edgePosition).placeRoad(road);
+			}
 		}
 	}
 }

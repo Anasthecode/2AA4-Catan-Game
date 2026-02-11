@@ -48,14 +48,7 @@ public class ComputerPlayer extends Player {
       List<Action> possibleSettlementPlacements = new ArrayList<>();
       List<Action> possibleRoadPlacements = new ArrayList<>();
       for (Node node : game.getBoard().getNodes().values()) {
-        boolean unfilledEdges = false;
-        for (Edge edge : node.getEdges()) {
-          if (edge.getRoad() == null) {
-            unfilledEdges = true;
-          }
-        }
-
-        if (node.getStructure() == null && node.distanceRule() && unfilledEdges) {
+        if (node.getStructure() == null && node.distanceRule()) {
           possibleSettlementPlacements.add(
               new BuildSettlement(this, game.getBoard(), node.getPosition()));
 

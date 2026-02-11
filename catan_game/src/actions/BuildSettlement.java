@@ -4,8 +4,12 @@
 
 package actions;
 
+
+import board.Node;
 import board.Board;
 import board.NodePosition;
+import game.Game;
+import game.GameState;
 import game.Player;
 import structures.Settlement;
 
@@ -15,16 +19,18 @@ import structures.Settlement;
  */
 public class BuildSettlement implements Action {
 	private Player player;
+	private Game game;
 	private Board board;
 	private NodePosition nodePosition;
 
 	/**
 	 * 
 	 */
-	public BuildSettlement(Player player, Board board, NodePosition nodePosition) {
+	public BuildSettlement(Player player, Game game, NodePosition nodePosition) {
 		this.player = player;
-    this.board = board;
     this.nodePosition = nodePosition;
+		this.game = game;
+    board = game.getBoard();
 	}
 
 	/**
@@ -33,14 +39,22 @@ public class BuildSettlement implements Action {
 	@Override
 	public void execute() {
     Settlement settlement = new Settlement(player);
+		Node node = board.getNodes().get(nodePosition);
+		if (game.getState() == GameState.SETUP) {
+			if (node.getStructure() != null || !node.distanceRule()) {
+				System.out.println(player.getName() + " attempted to build a settlement but failed.");
+			} else {
+				node.placeSettlement(settlement);
+			}
+		}
     if (!player.canAfford(settlement.getCost())) {
 			System.out.println(player.getName() +
 					" attempted to build a new settlement but could not afford it.");
-		} else if (!board.getNodes().get(nodePosition).canPlaceSettlement(player)) {
+		} else if (!node.canPlaceSettlement(player)) {
 			System.out.println(player.getName() + " attempted to build a new settlement but failed.");
 		} else {
 			player.build(settlement);
-			board.getNodes().get(nodePosition).placeSettlement(settlement);
+			node.placeSettlement(settlement);
 		}
 	}
 }
