@@ -5,7 +5,6 @@
 package actions;
 
 import board.Board;
-import board.Edge;
 import board.EdgePosition;
 import game.Player;
 import structures.Road;
@@ -23,6 +22,9 @@ public class BuildRoad implements Action {
 	 * 
 	 */
 	public BuildRoad(Player player, Board board, EdgePosition edgePosition) {
+		this.player = player;
+		this.board = board;
+		this.edgePosition = edgePosition;
 	}
 
 	/**
@@ -30,10 +32,15 @@ public class BuildRoad implements Action {
 	 */
 	@Override
 	public void execute() {
-
-        Road newRoad = new Road(player);
-        Edge currentEdge = board.getEdge(edgePosition);
-
-        currentEdge.placeRoad(newRoad);
+		Road road = new Road(player);
+		if (!player.canAfford(road.getCost())) {
+			System.out.println(player.getName() +
+					" attempted to build a new road but could not afford it.");
+		} else if (!board.getEdges().get(edgePosition).canPlaceRoad(player)) {
+			System.out.println(player.getName() + " attempted to build a new road but failed.");
+		} else {
+			player.build(road);
+			board.getEdges().get(edgePosition).placeRoad(road);
+		}
 	}
 }

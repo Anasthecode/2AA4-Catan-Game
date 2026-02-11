@@ -5,7 +5,6 @@
 package actions;
 
 import board.Board;
-import board.Node;
 import board.NodePosition;
 import game.Player;
 import structures.City;
@@ -22,19 +21,25 @@ public class BuildCity implements Action {
 	 * 
 	 */
 	public BuildCity(Player player, Board board, NodePosition nodePosition) {
-
-        execute();
-    }
+		this.player = player;
+		this.board = board;
+		this.nodePosition = nodePosition;
+	}
 
 	/**
 	 * 
 	 */
 	@Override
 	public void execute() {
-
-        City newCity = new City(player);
-        Node currentNode = board.getNode(nodePosition);
-
-        currentNode.setStructure(newCity);
+		City city = new City(player);
+    if (!player.canAfford(city.getCost())) {
+			System.out.println(player.getName() +
+					" attempted to build a new city but could not afford it.");
+		} else if (!board.getNodes().get(nodePosition).canPlaceCity(player)) {
+			System.out.println(player.getName() + " attempted to build a new city but failed.");
+		} else {
+			player.build(city);
+			board.getNodes().get(nodePosition).placeCity(city);
+		}
 	}
 }

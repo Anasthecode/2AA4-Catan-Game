@@ -5,10 +5,8 @@
 package actions;
 
 import board.Board;
-import board.Node;
 import board.NodePosition;
 import game.Player;
-import structures.City;
 import structures.Settlement;
 
 /************************************************************/
@@ -24,8 +22,9 @@ public class BuildSettlement implements Action {
 	 * 
 	 */
 	public BuildSettlement(Player player, Board board, NodePosition nodePosition) {
-
-        execute();
+		this.player = player;
+    this.board = board;
+    this.nodePosition = nodePosition;
 	}
 
 	/**
@@ -33,10 +32,15 @@ public class BuildSettlement implements Action {
 	 */
 	@Override
 	public void execute() {
-
-        Settlement newSettlement = new Settlement(player);
-        Node currentNode = board.getNode(nodePosition);
-
-        currentNode.setStructure(newSettlement);
+    Settlement settlement = new Settlement(player);
+    if (!player.canAfford(settlement.getCost())) {
+			System.out.println(player.getName() +
+					" attempted to build a new settlement but could not afford it.");
+		} else if (!board.getNodes().get(nodePosition).canPlaceSettlement(player)) {
+			System.out.println(player.getName() + " attempted to build a new settlement but failed.");
+		} else {
+			player.build(settlement);
+			board.getNodes().get(nodePosition).placeSettlement(settlement);
+		}
 	}
 }

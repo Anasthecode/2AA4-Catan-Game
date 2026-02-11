@@ -62,7 +62,7 @@ public class Game {
     return dice.rollDice(2);
   }
 
-  public void endGame() {
+  private void endGame() {
     System.out.println("\nGame over!");
     displayResults();
   }

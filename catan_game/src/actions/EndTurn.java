@@ -18,6 +18,8 @@ public class EndTurn implements Action {
 	 * 
 	 */
 	public EndTurn(Player player, Game game) {
+		this.player = player;
+		this.game = game;
 	}
 
 	/**
@@ -25,6 +27,7 @@ public class EndTurn implements Action {
 	 */
 	@Override
 	public void execute() {
-		
+		System.out.println(player.getName() + " has ended their turn. ");
+		game.onEndTurn();
 	}
 }
