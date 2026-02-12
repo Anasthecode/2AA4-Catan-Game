@@ -41,6 +41,15 @@ public abstract class Player {
 		return inventory.get(resource);
 	}
 
+	public int getResourceCountTotal() {
+		int total = 0;
+		for (Resource resource : inventory.keySet()) {
+			total += inventory.get(resource);
+		}
+
+		return total;
+	}
+
 	public int getVictoryPoints() {
 		return victoryPoints;
 	}

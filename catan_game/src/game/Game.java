@@ -75,8 +75,9 @@ public class Game {
     System.out.println("\n##### " + players.get(currentPlayerIndex).getName() + "'s turn #####");
     generateResources();
 
-    while (currentTurn < turns && !checkWinCondition()) {
+    while (gameState != GameState.END ) {
       processPlayerTurn();
+      checkWinCondition();
     }
 
     endGame();
@@ -113,8 +114,12 @@ public class Game {
     if (currentPlayerIndex == players.size() - 1 && gameState == GameState.PLAYING) {
       System.out.println("\nVictory Point Standings:");
       displayVPStandings();
-      currentTurn++;
-      System.out.println("\n########## TURN " + currentTurn + " ###############");
+      if (currentTurn < turns) {
+        currentTurn++;
+        System.out.println("\n########## TURN " + currentTurn + " ###############");
+      } else {
+        gameState = GameState.END;
+      }
     }
 
     if (gameState == GameState.PLAYING) {
@@ -146,14 +151,12 @@ public class Game {
     }
   }
 
-  private boolean checkWinCondition() {
+  private void checkWinCondition() {
     for (Player player : players) {
       if (player.getVictoryPoints() >= CatanSettings.WINNING_VP_COUNT) {
-        return true;
+        gameState = GameState.END;
       }
     }
-
-    return false;
   }
 
   @Override

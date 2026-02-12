@@ -66,8 +66,6 @@ public class ComputerPlayer extends Player {
       actionsToReturn.add(new EndTurn(this, game));
 
     } else {
-      actionsToReturn.add(new EndTurn(this, game));
-
       for (Node node : game.getBoard().getNodes().values()) {
         if (node.canPlaceSettlement(this) && canAfford(new Settlement(this).getCost())) {
           actionsToReturn.add(new BuildSettlement(this, game, node.getPosition()));
@@ -82,6 +80,12 @@ public class ComputerPlayer extends Player {
         if (edge.canPlaceRoad(this) && canAfford(new Road(this).getCost())) {
           actionsToReturn.add(new BuildRoad(this, game, edge.getPosition()));
         }
+      }
+
+      // Only allow the player to end their turn if they either have less
+      // than 7 cards or they can't build anything
+      if (getResourceCountTotal() < 7 || actionsToReturn.isEmpty()) {
+        actionsToReturn.add(new EndTurn(this, game));
       }
     }
 
