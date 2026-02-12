@@ -44,6 +44,7 @@ public class BuildSettlement implements Action {
 			if (node.getStructure() != null || !node.distanceRule()) {
 				System.out.println(player.getName() + " attempted to build a settlement but failed.");
 			} else {
+				player.addVictoryPoints(1);
 				node.placeSettlement(settlement, game);
 				System.out.println(player.getName() + " setup a settlement at " + nodePosition);
 			}

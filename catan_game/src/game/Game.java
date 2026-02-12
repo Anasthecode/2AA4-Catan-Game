@@ -111,11 +111,14 @@ public class Game {
 
   public void onEndTurn() {
     if (currentPlayerIndex == players.size() - 1 && gameState == GameState.PLAYING) {
+      System.out.println("\nVictory Point Standings:");
+      displayVPStandings();
       currentTurn++;
       System.out.println("\n########## TURN " + currentTurn + " ###############");
     }
 
     if (gameState == GameState.PLAYING) {
+
       currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
       System.out.println("\n##### " + players.get(currentPlayerIndex).getName() + "'s turn #####");
       generateResources();
@@ -133,6 +136,10 @@ public class Game {
    */
   private void displayResults() {
     System.out.println("\nFinal Standings:");
+    displayVPStandings();
+  }
+
+  private void displayVPStandings() {
     for (Player player : players) {
       int victoryPoints = player.getVictoryPoints();
       System.out.println(player.getName() + ": " + victoryPoints + " VP");

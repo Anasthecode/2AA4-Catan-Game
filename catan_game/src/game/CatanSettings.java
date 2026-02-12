@@ -19,7 +19,7 @@ public class CatanSettings {
     }
   }
 
-  public static final int TURNS = Integer.valueOf(config.getProperty("turns"));
+  public static final int TURNS = Math.min(Integer.valueOf(config.getProperty("turns")), 8192);
   public static final int WINNING_VP_COUNT = Integer.valueOf(config.getProperty("winning_vp"));
   public static final long RNG_SEED = Long.valueOf(config.getProperty("rng_seed"));
 
