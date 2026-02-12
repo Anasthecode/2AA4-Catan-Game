@@ -55,6 +55,7 @@ public class BuildSettlement implements Action {
 				System.out.println(player.getName() + " attempted to build a new settlement but failed.");
 			} else {
 				player.build(settlement);
+				player.addVictoryPoints(1);
 				node.placeSettlement(settlement, game);
 				System.out.println(player.getName() + " placed a settlement at " + nodePosition);
 			}

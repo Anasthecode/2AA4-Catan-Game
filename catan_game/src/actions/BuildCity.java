@@ -41,6 +41,7 @@ public class BuildCity implements Action {
 			System.out.println(player.getName() + " attempted to build a new city but failed.");
 		} else {
 			player.build(city);
+			player.addVictoryPoints(1);
 			node.placeCity(city);
 			System.out.println(player.getName() + " placed a city at " + nodePosition);
 		}

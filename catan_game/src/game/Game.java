@@ -71,10 +71,11 @@ public class Game {
 
     setup();
     System.out.println("\n############### GAME START ###############");
+    System.out.println("\n########## TURN " + currentTurn + " ###############");
     System.out.println("\n##### " + players.get(currentPlayerIndex).getName() + "'s turn #####");
     generateResources();
 
-    while (currentTurn <= turns && !checkWinCondition()) {
+    while (currentTurn < turns && !checkWinCondition()) {
       processPlayerTurn();
     }
 
@@ -95,6 +96,11 @@ public class Game {
       processPlayerTurn();
     }
 
+    System.out.println("\n##### Handing out initial items #####\n");
+    for (int i = 2; i <= 12; i++) {
+      board.notifyTilesOfRoll(i);
+    }
+
     System.out.println("\n############### SETUP OVER ###############");
     gameState = GameState.PLAYING;
   }
@@ -106,6 +112,7 @@ public class Game {
   public void onEndTurn() {
     if (currentPlayerIndex == players.size() - 1 && gameState == GameState.PLAYING) {
       currentTurn++;
+      System.out.println("\n########## TURN " + currentTurn + " ###############");
     }
 
     if (gameState == GameState.PLAYING) {

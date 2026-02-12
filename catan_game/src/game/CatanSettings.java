@@ -21,7 +21,7 @@ public class CatanSettings {
 
   public static final int TURNS = Integer.valueOf(config.getProperty("turns"));
   public static final int WINNING_VP_COUNT = Integer.valueOf(config.getProperty("winning_vp"));
-  public static final int RNG_SEED = Integer.valueOf(config.getProperty("rng_seed"));
+  public static final long RNG_SEED = Long.valueOf(config.getProperty("rng_seed"));
 
   public static final int DEFAULT_PLAYER_COUNT = Integer.valueOf(config.getProperty("default_player_count"));
 

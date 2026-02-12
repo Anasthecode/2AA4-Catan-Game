@@ -10,7 +10,7 @@ public class GameFactory {
   private Random rng;
   private int numberOfPlayers;
 
-  public GameFactory(int seed, int numberOfPlayers) {
+  public GameFactory(long seed, int numberOfPlayers) {
     rng = new Random(seed);
     this.numberOfPlayers = numberOfPlayers;
   }
