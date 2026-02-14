@@ -34,11 +34,11 @@ keeping track of when agents recieve resources and build structures.
 
 ### Management
 - [x] SonarQube analysis linked in the README file
-- [ ] Kanban board maintained and publicly available
-- [ ] Commits linked to work items
+- [x] Kanban board maintained and publicly available (as far as this assignment is concenred)
+- [x] Commits linked to work items 
 - [x] Deliverable tagged
 
 ### Report
-- [ ] Reflection points elaborated
-- [ ] Report written
-- [ ] Report submitted
+- [x] Reflection points elaborated
+- [x] Report written
+- [x] Report submitted
