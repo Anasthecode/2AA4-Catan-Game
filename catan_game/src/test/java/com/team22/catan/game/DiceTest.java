@@ -1,10 +1,11 @@
 package com.team22.catan.game;
 
+
 import org.junit.jupiter.api.Test;
-
 import java.util.Random;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class DiceTest {
     @Test
