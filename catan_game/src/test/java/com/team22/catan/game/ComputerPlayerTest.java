@@ -19,18 +19,30 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ComputerPlayerTest {
+    private static final int TEST_SEED = 5000;
+
     @Mock
-    Random random;
+    private Board board;
+
     @Mock
-    String string;
-    @Mock
-    ComputerPlayer player;
-    @Mock
-    ArrayList<Player> players;
-    int turns = 5000;
+    private Dice dice;
+
+    @Mock private Random random;
+
+    private ComputerPlayer computerPlayer;
+    private Game game;
+    private List<Player> playerList;
 
     @BeforeEach
     public void setUp() {
+        computerPlayer = new ComputerPlayer("Test", random);
+
+        playerList = new ArrayList<>();
+        playerList.add(computerPlayer);
+
+        game = new Game(TEST_SEED, board, playerList, dice);
+
+        when(random.nextInt(anyInt())).thenReturn(0);
     }
 
 
