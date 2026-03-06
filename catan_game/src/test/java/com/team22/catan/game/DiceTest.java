@@ -8,7 +8,7 @@ import java.util.Random;
 import org.junit.Test;
 
 
-class DiceTest {
+public class DiceTest {
     @Test
     public void testDiceRollWithSeed() {
         /* This class is mainly for computer players, its role is to test if the results can be calculated consistently provided we have a seed*/
