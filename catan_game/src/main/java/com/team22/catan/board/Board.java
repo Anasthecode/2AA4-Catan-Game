@@ -4,12 +4,12 @@
 
 package com.team22.catan.board;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.team22.catan.board.AxialPosition.Direction;
-import com.team22.catan.game.CatanSettings;
 
 /************************************************************/
 /**
@@ -22,17 +22,21 @@ public class Board {
 
 	private AxialPosition centre;
 	private int size;
+	private TileType[] boardLayout;
+	private int[] tokenLayout;
 
 	/**
 	 * 
 	 */
-	public Board() {
+	public Board(TileType[] boardLayout, int[] tokenLayout) {
 		tiles = new HashMap<>();
 		nodes = new HashMap<>();
 		edges = new HashMap<>();
 
 		centre = new AxialPosition(0, 0);
-		size = CatanSettings.BOARD_RADIUS;
+		this.size = Math.min(boardLayout.length, tokenLayout.length);
+		this.boardLayout = Arrays.copyOf(boardLayout, size);
+		this.tokenLayout = Arrays.copyOf(tokenLayout, size);
 
 		addTiles();
 	}
@@ -40,19 +44,19 @@ public class Board {
 	private void addTiles() {
 		int tokenIndex = 0, tileIndex = 0;
 		addTile(centre,
-				CatanSettings.TOKEN_LAYOUT[tokenIndex], CatanSettings.STANDARD_BOARD_LAYOUT[tileIndex]);
+				tokenLayout[tokenIndex], boardLayout[tileIndex]);
 		for (int ring = 1; ring <= size; ring++) {
 			AxialPosition currentTilePosition = centre.add(Direction.DOWNLEFT.getVector().scale(ring));
 			for (int i = 0; i < 6; i++) {
 				for (int j = 0; j < ring; j++) {
-					if (CatanSettings.STANDARD_BOARD_LAYOUT[tileIndex] != TileType.DESERT) {
+					if (boardLayout[tileIndex] != TileType.DESERT) {
 						tokenIndex++;
 					}
 
 					tileIndex++;
 
 					addTile(currentTilePosition,
-							CatanSettings.TOKEN_LAYOUT[tokenIndex], CatanSettings.STANDARD_BOARD_LAYOUT[tileIndex]);
+							tokenLayout[tokenIndex], boardLayout[tileIndex]);
 					// Enum is laid out such that indexing Direction.values()[i] will be correct
 					currentTilePosition = currentTilePosition.neighbour(Direction.values()[i]);
 				}
