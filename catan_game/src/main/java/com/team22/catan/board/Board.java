@@ -4,7 +4,9 @@
 
 package com.team22.catan.board;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,33 +36,31 @@ public class Board {
 		edges = new HashMap<>();
 
 		centre = new AxialPosition(0, 0);
-		this.size = Math.min(boardLayout.length, tokenLayout.length);
-		this.boardLayout = Arrays.copyOf(boardLayout, size);
-		this.tokenLayout = Arrays.copyOf(tokenLayout, size);
+		int numberOfTiles = Math.min(boardLayout.length, tokenLayout.length +
+				Collections.frequency(Arrays.asList(boardLayout), TileType.DESERT));
+		this.size = calculateRadius(numberOfTiles);
+		this.boardLayout = Arrays.copyOf(boardLayout, numberOfTiles);
+		this.tokenLayout = Arrays.copyOf(tokenLayout, numberOfTiles);
 
 		addTiles();
 	}
 
+	private int calculateRadius(int numberOfTiles) {
+		return (int) Math.ceil(Math.round(
+				((1f/6f) *Math.sqrt(12f * numberOfTiles - 3f) - 0.5f) * 1000f) / 1000f);
+	}
+
 	private void addTiles() {
 		int tokenIndex = 0, tileIndex = 0;
-		addTile(centre,
-				tokenLayout[tokenIndex], boardLayout[tileIndex]);
-		for (int ring = 1; ring <= size; ring++) {
-			AxialPosition currentTilePosition = centre.add(Direction.DOWNLEFT.getVector().scale(ring));
-			for (int i = 0; i < 6; i++) {
-				for (int j = 0; j < ring; j++) {
-					if (boardLayout[tileIndex] != TileType.DESERT) {
-						tokenIndex++;
-					}
+		addTile(centre, tokenLayout[tokenIndex], boardLayout[tileIndex]);
 
-					tileIndex++;
-
-					addTile(currentTilePosition,
-							tokenLayout[tokenIndex], boardLayout[tileIndex]);
-					// Enum is laid out such that indexing Direction.values()[i] will be correct
-					currentTilePosition = currentTilePosition.neighbour(Direction.values()[i]);
-				}
+		for (AxialPosition position : getOrderedTilePositions()) {
+			if (boardLayout[tileIndex] != TileType.DESERT) {
+				tokenIndex++;
 			}
+
+			tileIndex++;
+			addTile(position, tokenLayout[tokenIndex], boardLayout[tileIndex]);
 		}
 	}
 
@@ -137,23 +137,42 @@ public class Board {
 		}
 	}
 
+	public List<Tile> getOrderedTiles() {
+		List<Tile> orderedTiles = new ArrayList<>();
+		for (AxialPosition position : getOrderedTilePositions()) {
+			orderedTiles.add(tiles.get(position));
+		}
+
+		return orderedTiles;
+	}
+
+	private List<AxialPosition> getOrderedTilePositions() {
+		List<AxialPosition> orderedPositions = new ArrayList<>();
+		for (int ring = 1; ring <= size; ring++) {
+			AxialPosition currentTilePosition = centre.add(Direction.DOWNLEFT.getVector().scale(ring));
+			for (int i = 0; i < 6; i++) {
+				for (int j = 0; j < ring; j++) {
+					orderedPositions.add(currentTilePosition);
+					// Enum is laid out such that indexing Direction.values()[i] will be correct
+					currentTilePosition = currentTilePosition.neighbour(Direction.values()[i]);
+				}
+			}
+		}
+
+		return orderedPositions;
+	}
+
 	/**
 	 * 
 	 * @return
 	 */
 	public String toString() {
-		StringBuilder sb = new StringBuilder("Board: ");
+		StringBuilder sb = new StringBuilder();
 		sb.append("(" + tiles.get(centre).getTileType() + ", " +
 				tiles.get(centre).getPosition() + ", " + tiles.get(centre).getToken() + ")\n");
-		for (int ring = 1; ring <= size; ring++) {
-			AxialPosition currentTilePosition = centre.add(Direction.DOWNLEFT.getVector().scale(ring));
-			for (int i = 0; i < 6; i++) {
-				for (int j = 0; j < ring; j++) {
-					Tile tile = tiles.get(currentTilePosition);
-					sb.append("(" + tile + ", " + tile.getPosition() + ", " + tile.getToken() + ")\n");
-					currentTilePosition = currentTilePosition.neighbour(Direction.values()[i]);
-				}
-			}
+
+		for (Tile tile : getOrderedTiles()) {
+			sb.append("(" + tile + ", " + tile.getPosition() + ", " + tile.getToken() + ")\n");
 		}
 
 		return sb.toString();
