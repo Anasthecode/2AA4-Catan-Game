@@ -47,20 +47,19 @@ public class Board {
 
 	private int calculateRadius(int numberOfTiles) {
 		return (int) Math.ceil(Math.round(
-				((1f/6f) *Math.sqrt(12f * numberOfTiles - 3f) - 0.5f) * 1000f) / 1000f);
+				((1f/6f) * Math.sqrt(12f * numberOfTiles - 3f) - 0.5f) * 1000f) / 1000f);
 	}
 
 	private void addTiles() {
 		int tokenIndex = 0, tileIndex = 0;
-		addTile(centre, tokenLayout[tokenIndex], boardLayout[tileIndex]);
 
 		for (AxialPosition position : getOrderedTilePositions()) {
+			addTile(position, tokenLayout[tokenIndex], boardLayout[tileIndex]);
 			if (boardLayout[tileIndex] != TileType.DESERT) {
 				tokenIndex++;
 			}
 
 			tileIndex++;
-			addTile(position, tokenLayout[tokenIndex], boardLayout[tileIndex]);
 		}
 	}
 
@@ -148,6 +147,7 @@ public class Board {
 
 	private List<AxialPosition> getOrderedTilePositions() {
 		List<AxialPosition> orderedPositions = new ArrayList<>();
+		orderedPositions.add(centre);
 		for (int ring = 1; ring <= size; ring++) {
 			AxialPosition currentTilePosition = centre.add(Direction.DOWNLEFT.getVector().scale(ring));
 			for (int i = 0; i < 6; i++) {
@@ -168,9 +168,6 @@ public class Board {
 	 */
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("(" + tiles.get(centre).getTileType() + ", " +
-				tiles.get(centre).getPosition() + ", " + tiles.get(centre).getToken() + ")\n");
-
 		for (Tile tile : getOrderedTiles()) {
 			sb.append("(" + tile + ", " + tile.getPosition() + ", " + tile.getToken() + ")\n");
 		}
