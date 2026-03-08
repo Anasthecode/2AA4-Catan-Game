@@ -1,13 +1,14 @@
 package com.team22.catan.game;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.jupiter.api.Test;
 import java.util.Random;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.Test;
 
 
-class DiceTest {
+public class DiceTest {
     @Test
     public void testDiceRollWithSeed() {
         /* This class is mainly for computer players, its role is to test if the results can be calculated consistently provided we have a seed*/

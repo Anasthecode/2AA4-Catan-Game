@@ -1,13 +1,16 @@
 package com.team22.catan.game;
 
 import com.team22.catan.board.Board;
-import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Test;
 
 /**
  *
