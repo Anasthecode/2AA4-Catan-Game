@@ -30,4 +30,17 @@ public class TileTest {
     assertEquals(new EdgePosition(-1, 1, RelativeEdgeLocation.NORTHEAST), borders.get(4));
     assertEquals(new EdgePosition(0, 1,  RelativeEdgeLocation.NORTHWEST), borders.get(5));
   }
+
+  @Test(expected = IllegalStateException.class)
+  public void testAddNodeBoundary() {
+      Tile tile = new Tile(new AxialPosition(0, 0), 0, null);
+
+      for (int i = 0; i < 6; i++) {
+          NodePosition pos = new NodePosition(i, i, RelativeNodeLocation.NORTH);
+          tile.addNode(new Node(pos));
+      }
+
+      NodePosition extraPos = new NodePosition(7, 7, RelativeNodeLocation.NORTH);
+      tile.addNode(new Node(extraPos));
+  }
 }
