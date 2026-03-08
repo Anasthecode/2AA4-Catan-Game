@@ -152,7 +152,7 @@ public class Game {
         if (roll == 7) {
             System.out.println("A 7 was rolled! The Robber is striking.");
 
-
+            // NOSONAR: Fixed seed is required for game reproducibility
             Random gameRng = new Random(CatanSettings.RNG_SEED);
 
             // 1. Check for card discarding
