@@ -13,11 +13,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import javax.swing.text.Position;
-
 import java.util.Map;
 
-import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -45,7 +42,7 @@ public class BuildSettlementTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this); // Initialize mocks so that they aren't null
+        MockitoAnnotations.openMocks(this); // Initialize mocks so that they aren't null
 
         when(game.getBoard()).thenReturn(board);
         when(board.getNodes()).thenReturn(nodes); // Get the nodes map
