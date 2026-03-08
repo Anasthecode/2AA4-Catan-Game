@@ -36,7 +36,7 @@ public class BuildCityTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this); // Initialize mocks so that they aren't null
+        MockitoAnnotations.openMocks(this); // Initialize mocks so that they aren't null
 
         when(board.getNodes()).thenReturn(nodes); // Get the nodes map
         when(nodes.get(nodePosition)).thenReturn(node); // Get a specific node out of the map

@@ -36,7 +36,7 @@ public class BuildRoadTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this); // Initialize mocks so that they aren't null
+        MockitoAnnotations.openMocks(this); // Initialize mocks so that they aren't null
 
         when(game.getBoard()).thenReturn(board); // Go from board to edges to edge
         when(board.getEdges()).thenReturn(edges);
