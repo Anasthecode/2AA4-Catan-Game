@@ -37,7 +37,7 @@ public abstract class Player {
 		return new EnumMap<>(this.inventory);
 	}
 
-	public Integer getResource(Resource resource) {
+	public int getResource(Resource resource) {
 		return inventory.get(resource);
 	}
 
