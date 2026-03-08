@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.team22.catan.game.ComputerPlayer;
 import com.team22.catan.game.GameState;
+import com.team22.catan.game.Parser;
 import com.team22.catan.game.Player;
 import com.team22.catan.structures.Road;
 import com.team22.catan.structures.Settlement;
@@ -44,7 +45,7 @@ public class NodeTest {
     for (Edge edge : nodeEdges) {
       Node endNode = new Node(new NodePosition(1, 1, RelativeNodeLocation.SOUTH));
       endNode.placeSettlement(new Settlement(
-          new ComputerPlayer("p", new Random())), GameState.SETUP);
+          new ComputerPlayer("p", new Random(), new Parser())), GameState.SETUP);
       edge.setNodes(node, endNode);
     }
 
@@ -60,7 +61,7 @@ public class NodeTest {
     );
     
     Node node = new Node(0, 0, RelativeNodeLocation.NORTH, nodeEdges);
-    Player player = new ComputerPlayer("p", new Random());
+    Player player = new ComputerPlayer("p", new Random(), new Parser());
     for (Edge edge : nodeEdges) {
       edge.setNodes(node, new Node(new NodePosition(1, 1, RelativeNodeLocation.SOUTH)));
     }
@@ -76,7 +77,7 @@ public class NodeTest {
       new Edge(new EdgePosition(0, 0, RelativeEdgeLocation.NORTHWEST))
     );
 
-    Player player = new ComputerPlayer("p", new Random());
+    Player player = new ComputerPlayer("p", new Random(), new Parser());
 
     Node startingNode = new Node(1, -2, RelativeNodeLocation.SOUTH,
         Arrays.asList(nodeEdges.get(0)));
@@ -104,7 +105,7 @@ public class NodeTest {
     );
     
     Node node = new Node(0, 0, RelativeNodeLocation.NORTH, nodeEdges);
-    Player player = new ComputerPlayer("p", new Random());
+    Player player = new ComputerPlayer("p", new Random(), new Parser());
     
     node.placeSettlement(new Settlement(player), GameState.PLAYING);
   }

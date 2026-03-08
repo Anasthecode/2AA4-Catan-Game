@@ -62,7 +62,7 @@ public class Parser {
             int nodeId = Integer.parseInt(cityMatcher.group(1));
             NodePosition pos = game.getBoard().getNodePositionFromId(nodeId);
             if (pos != null) {
-                return new BuildCity(player, game.getBoard(), pos);
+                return new BuildCity(player, game, pos);
             } else {
                 System.out.println("Invalid Node ID.");
                 return null;
@@ -78,7 +78,14 @@ public class Parser {
             NodePosition pos2 = game.getBoard().getNodePositionFromId(node2Id);
 
             if (pos1 != null && pos2 != null) {
-                EdgePosition edgePos = game.getBoard().getEdgePositionFromNodes(pos1, pos2);
+
+                EdgePosition edgePos = null;
+                for (EdgePosition edgePosition : game.getBoard().getEdgePositions()) {
+                    if ((edgePosition.endpoints().contains(pos1) && edgePosition.endpoints().contains(pos2)) ||
+                        (edgePosition.endpoints().contains(pos2) && edgePosition.endpoints().contains(pos1))) {
+                        edgePos = edgePosition;
+                    }
+                }
 
                 if (edgePos != null) {
                     return new BuildRoad(player, game, edgePos);

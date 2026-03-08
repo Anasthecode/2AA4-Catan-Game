@@ -15,9 +15,9 @@ public class BoardTest {
   public void boardTilePositionTest() {
     TileType[] layout = CatanSettings.STANDARD_BOARD_LAYOUT;
     int[] tokens = CatanSettings.TOKEN_LAYOUT;
-    Board board = new Board(layout, tokens);
+    Board board = new CatanBoard(layout, tokens);
 
-    List<Tile> orderedBoardTiles = board.getOrderedTiles();
+    List<AxialPosition> orderedBoardTiles = board.getTilePositions();
     List<AxialPosition> expectedPositions = Arrays.asList(
       new AxialPosition(0, 0),
       new AxialPosition(-1, 1),
@@ -42,41 +42,40 @@ public class BoardTest {
 
     assertEquals(expectedPositions.size(), orderedBoardTiles.size());
     for (int i = 0; i < expectedPositions.size(); i++) {
-      assertEquals(expectedPositions.get(i), orderedBoardTiles.get(i).getPosition());
+      assertEquals(expectedPositions.get(i), orderedBoardTiles.get(i));
     }
   }
 
   @Test
-  public void boardTileTypeTest() {
+  public void catanBoardTileTypeTest() {
     TileType[] layout = CatanSettings.STANDARD_BOARD_LAYOUT;
     int[] tokens = CatanSettings.TOKEN_LAYOUT;
 
-    Board board = new Board(layout, tokens);
-    List<Tile> orderedBoardTiles = board.getOrderedTiles();
-    
-    assertEquals(layout.length, orderedBoardTiles.size());
+    CatanBoard board = new CatanBoard(layout, tokens);
+    TileType[] boardTileTypes = board.getTileTypes();
+
     for (int i = 0; i < layout.length; i++) {
-      assertEquals(layout[i], orderedBoardTiles.get(i).getTileType());
+      assertEquals(layout[i], boardTileTypes[i]);
     }
   }
 
   @Test
-  public void boardTileTokenTest() {
+  public void catanBoardTileTokenTest() {
     TileType[] layout = CatanSettings.STANDARD_BOARD_LAYOUT;
     int[] tokens = CatanSettings.TOKEN_LAYOUT;
 
-    Board board = new Board(layout, tokens);
-    List<Tile> orderedBoardTiles = board.getOrderedTiles();
+    CatanBoard board = new CatanBoard(layout, tokens);
+    int[] boardTokens = board.getTokens();
 
-    assertEquals(tokens.length, orderedBoardTiles.size() -
+    assertEquals(tokens.length, boardTokens.length -
         Collections.frequency(Arrays.asList(layout), TileType.DESERT));
     
     int tokenIndex = 0;
-    for (Tile tile : orderedBoardTiles) {
-      if (tile.getTileType() == TileType.DESERT) {
-        assertEquals(0, tile.getToken());
+    for (int i = 0; i < boardTokens.length; i++) {
+      if (board.getTileTypes()[i] == TileType.DESERT) {
+        assertEquals(0, boardTokens[i]);
       } else {
-        assertEquals(tokens[tokenIndex], tile.getToken());
+        assertEquals(tokens[tokenIndex], boardTokens[i]);
         tokenIndex++;
       }
     }

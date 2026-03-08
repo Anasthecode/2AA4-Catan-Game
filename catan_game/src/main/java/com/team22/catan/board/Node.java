@@ -39,6 +39,31 @@ public class Node {
 		this.edges = edges;
 	}
 
+	public List<EdgePosition> protrudes() {
+		List<EdgePosition> protrudingEdgePositions = new ArrayList<>();
+		switch (position.getRelativeLocation()) {
+			case NORTH:
+				protrudingEdgePositions.add(new EdgePosition(
+						position.getQ() + 1, position.getR() -1, RelativeEdgeLocation.WEST));
+				protrudingEdgePositions.add(new EdgePosition(
+						position.getQ(), position.getR(), RelativeEdgeLocation.NORTHWEST));
+				protrudingEdgePositions.add(
+						new EdgePosition(position.getQ(), position.getR(), RelativeEdgeLocation.NORTHEAST));
+				break;
+
+			case SOUTH:
+				protrudingEdgePositions.add(new EdgePosition(
+						position.getQ(), position.getR(), RelativeEdgeLocation.NORTHWEST));
+				protrudingEdgePositions.add(new EdgePosition(
+						position.getQ() - 1, position.getR() + 1, RelativeEdgeLocation.NORTHEAST));
+				protrudingEdgePositions.add(new EdgePosition(
+						position.getQ(), position.getR() + 1, RelativeEdgeLocation.WEST));
+				break;
+		}
+
+		return protrudingEdgePositions;
+	}
+
 	public void notifyStructureOfResource(Resource resource) {
 		System.out.println(structure.getOwner().getName() + " recieved " + structure.getVP() + " " +
 				resource.toString().toLowerCase());
@@ -91,8 +116,8 @@ public class Node {
 		return distanceRule;
 	}
 
-	public boolean canPlaceCity(Player player) {
-		if (structure == null) {
+	public boolean canPlaceCity(Player player, GameState gameState) {
+		if (structure == null || gameState != GameState.PLAYING) {
 			return false;
 		}
 
@@ -111,8 +136,8 @@ public class Node {
 		}
 	}
 
-	public void placeCity(City city) {
-		if (canPlaceCity(city.getOwner())) {
+	public void placeCity(City city, GameState gameState) {
+		if (canPlaceCity(city.getOwner(), gameState)) {
 			this.structure = city;
 		} else {
 			throw new IllegalStateException("Cannot place city at " + position);

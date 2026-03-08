@@ -13,8 +13,8 @@ import com.team22.catan.actions.BuildCity;
 import com.team22.catan.actions.BuildRoad;
 import com.team22.catan.actions.BuildSettlement;
 import com.team22.catan.actions.EndTurn;
-import com.team22.catan.board.Edge;
-import com.team22.catan.board.Node;
+import com.team22.catan.board.EdgePosition;
+import com.team22.catan.board.NodePosition;
 import com.team22.catan.structures.City;
 import com.team22.catan.structures.Road;
 import com.team22.catan.structures.Settlement;
@@ -40,58 +40,62 @@ public class ComputerPlayer extends Player {
       List<Action> availableActions = getAvailableActions(game);
 
     if (game.getState() == GameState.SETUP) {
-      for (Action action : availableActions) {
-        action.execute();
-      }
+      setupTurn(game);
     } else {
       availableActions.get(rng.nextInt(availableActions.size())).execute();
     }
   }
 
+  private void setupTurn(Game game) {
+    List<Action> possibleSettlementPlacements = new ArrayList<>();
+    for (NodePosition nodePosition : game.getBoard().getNodePositions()) {
+      if (game.getBoard().canPlaceSettlementAt(nodePosition, this, game.getState())) {
+        possibleSettlementPlacements.add(new BuildSettlement(this, game, nodePosition));
+      }
+    }
+
+    possibleSettlementPlacements.get(rng.nextInt(possibleSettlementPlacements.size())).execute();
+    
+    List<Action> possibleRoadPlacements = new ArrayList<>();
+    for (EdgePosition edgePosition : game.getBoard().getEdgePositions()) {
+      if (game.getBoard().canPlaceRoadAt(edgePosition, this)) {
+        possibleRoadPlacements.add(new BuildRoad(this, game, edgePosition));
+      }
+    }
+
+    possibleRoadPlacements.get(rng.nextInt(possibleRoadPlacements.size())).execute();
+
+    new EndTurn(this, game).execute();
+  }
+
   private List<Action> getAvailableActions(Game game) {
     List<Action> actionsToReturn = new ArrayList<>();
-
-    if (game.getState() == GameState.SETUP) {
-      List<Node> possibleSettlementNodes = new ArrayList<>();
-      for (Node node : game.getBoard().getNodes().values()) {
-        if (node.canPlaceSettlement(this, game.getState())) {
-          possibleSettlementNodes.add(node);
-        }
+    for (NodePosition nodePosition : game.getBoard().getNodePositions()) {
+      if (game.getBoard().canPlaceSettlementAt(nodePosition, this, game.getState()) &&
+          canAfford(new Settlement(this).getCost())) {
+        
+        actionsToReturn.add(new BuildSettlement(this, game, nodePosition));
       }
 
-      Node settlementNode = possibleSettlementNodes.get(rng.nextInt(possibleSettlementNodes.size()));
-      List<Action> possibleRoadPlacements = new ArrayList<>();
-
-      for (Edge edge : settlementNode.getEdges()) {
-        if (edge.getRoad() == null) {
-          possibleRoadPlacements.add(new BuildRoad(this, game, edge.getPosition()));
-        }
+      if (game.getBoard().canPlaceCityAt(nodePosition, this, game.getState()) &&
+          canAfford(new City(this).getCost())) {
+        
+        actionsToReturn.add(new BuildCity(this, game, nodePosition));
       }
-      
-      actionsToReturn.add(new BuildSettlement(this, game, settlementNode.getPosition()));
-      actionsToReturn.add(possibleRoadPlacements.get(rng.nextInt(possibleRoadPlacements.size())));
+    }
+
+    for (EdgePosition edgePosition : game.getBoard().getEdgePositions()) {
+      if (game.getBoard().canPlaceRoadAt(edgePosition, this) &&
+          canAfford(new Road(this).getCost())) {
+        
+        actionsToReturn.add(new BuildRoad(this, game, edgePosition));
+      }
+    }
+
+    // Only allow the player to end their turn if they either have less
+    // than 7 cards or they can't build anything
+    if (getResourceCountTotal() < 7 || actionsToReturn.isEmpty()) {
       actionsToReturn.add(new EndTurn(this, game));
-
-    } else {
-      for (Node node : game.getBoard().getNodes().values()) {
-        if (node.canPlaceSettlement(this, game.getState()) && canAfford(new Settlement(this).getCost())) {
-          actionsToReturn.add(new BuildSettlement(this, game, node.getPosition()));
-        }
-
-        if (node.canPlaceCity(this) && canAfford(new City(this).getCost())) {
-          actionsToReturn.add(new BuildCity(this, game.getBoard(), node.getPosition()));
-        }
-      }
-
-      for (Edge edge : game.getBoard().getEdges().values()) {
-        if (edge.canPlaceRoad(this) && canAfford(new Road(this).getCost())) {
-          actionsToReturn.add(new BuildRoad(this, game, edge.getPosition()));
-        }
-      }
-
-      if (getResourceCountTotal() < 7 || actionsToReturn.isEmpty()) {
-        actionsToReturn.add(new EndTurn(this, game));
-      }
     }
 
     return actionsToReturn;

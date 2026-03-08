@@ -30,7 +30,7 @@ public class ComputerPlayerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        computerPlayer = new ComputerPlayer("Test", random);
+        computerPlayer = new ComputerPlayer("Test", random, new Parser());
 
         playerList = new ArrayList<>();
         playerList.add(computerPlayer);

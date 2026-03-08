@@ -5,7 +5,6 @@
 package com.team22.catan.actions;
 
 import com.team22.catan.board.Board;
-import com.team22.catan.board.Edge;
 import com.team22.catan.board.EdgePosition;
 import com.team22.catan.game.Game;
 import com.team22.catan.game.GameState;
@@ -38,23 +37,22 @@ public class BuildRoad implements Action {
 	@Override
 	public void execute() {
 		Road road = new Road(player);
-		Edge edge = board.getEdges().get(edgePosition);
 		if (game.getState() == GameState.SETUP) {
-			if (edge.getRoad() != null) {
-				System.out.println(player.getName() + " cannot place setup road there.");
+			if (!board.canPlaceRoadAt(edgePosition, player)) {
+				System.out.println(player.getName() + " cannot place setup road at " + edgePosition);
 			} else {
-				edge.placeRoad(road);
+				board.placeRoadAt(edgePosition, road);
 				System.out.println(player.getName() + " setup a road at " + edgePosition);
 			}
 		} else {
 			if (!player.canAfford(road.getCost())) {
 				System.out.println(player.getName() +
 						" attempted to build a new road but could not afford it.");
-			} else if (!edge.canPlaceRoad(player)) {
+			} else if (!board.canPlaceRoadAt(edgePosition, player)) {
 				System.out.println(player.getName() + " attempted to build a new road but failed.");
 			} else {
 				player.build(road);
-				edge.placeRoad(road);
+				board.placeRoadAt(edgePosition, road);
 				System.out.println(player.getName() + " placed a road at " + edgePosition);
 			}
 		}

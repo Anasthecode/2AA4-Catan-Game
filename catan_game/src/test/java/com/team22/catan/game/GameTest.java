@@ -1,6 +1,7 @@
 package com.team22.catan.game;
 
 import com.team22.catan.board.Board;
+import com.team22.catan.board.CatanBoard;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -74,7 +75,7 @@ public class GameTest {
      * Helper method to create a standard board using the correct constructor.
      */
     private Board createBoard() {
-        return new Board(
+        return new CatanBoard(
                 CatanSettings.STANDARD_BOARD_LAYOUT,
                 CatanSettings.TOKEN_LAYOUT
         );

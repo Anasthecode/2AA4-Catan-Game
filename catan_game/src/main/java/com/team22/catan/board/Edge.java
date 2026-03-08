@@ -4,7 +4,6 @@
 
 package com.team22.catan.board;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.team22.catan.game.Player;
@@ -34,31 +33,7 @@ public class Edge {
 	}
 
 	public List<NodePosition> endpoints() {
-		List<NodePosition> endNodes = new ArrayList<>();
-		switch (position.getRelativeLocation()) {
-			case NORTHEAST:
-				endNodes.add(new NodePosition(
-					position.getQ() + 1, position.getR() - 1, RelativeNodeLocation.SOUTH));
-				endNodes.add(new NodePosition(
-					position.getQ(), position.getR(), RelativeNodeLocation.NORTH));
-				break;
-			
-			case NORTHWEST:
-				endNodes.add(
-					new NodePosition(position.getQ(), position.getR(), RelativeNodeLocation.NORTH));
-				endNodes.add(
-					new NodePosition(position.getQ(), position.getR() - 1, RelativeNodeLocation.SOUTH));
-				break;
-
-			case WEST:
-				endNodes.add(
-					new NodePosition(position.getQ(), position.getR() - 1, RelativeNodeLocation.SOUTH));
-				endNodes.add(
-					new NodePosition(position.getQ() - 1, position.getR() + 1, RelativeNodeLocation.NORTH));
-				break;
-		}
-		
-		return endNodes;
+		return position.endpoints();
 	}
 
 	public Node getStartNode() {
@@ -83,6 +58,10 @@ public class Edge {
 	}
 
 	public boolean canPlaceRoad(Player player) {
+		if (road != null) {
+			return false;
+		}
+
 		if ((startNode.hasStructure() && startNode.getStructure().getOwner().equals(player)) ||
 				(endNode.hasStructure() && endNode.getStructure().getOwner().equals(player))) {
 			return true;
@@ -93,7 +72,7 @@ public class Edge {
 				return true;
 			}
 		}
-		
+
 		for (Edge edge : endNode.getEdges()) {
 			if (edge.hasRoad() && edge.getRoad().getOwner().equals(player)) {
 				return true;
@@ -105,7 +84,7 @@ public class Edge {
 
 	/**
 	 * 
-	 * @param road 
+	 * @param road
 	 */
 	public void placeRoad(Road road) {
 		if (canPlaceRoad(road.getOwner())) {
@@ -117,7 +96,7 @@ public class Edge {
 
 	/**
 	 * 
-	 * @return 
+	 * @return
 	 */
 	public Road getRoad() {
 		return road;

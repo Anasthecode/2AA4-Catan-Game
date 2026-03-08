@@ -4,6 +4,8 @@
 
 package com.team22.catan.board;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /************************************************************/
@@ -49,6 +51,34 @@ public class EdgePosition {
 	 */
 	public RelativeEdgeLocation getRelativeLocation() {
 		return location;
+	}
+
+	public List<NodePosition> endpoints() {
+		List<NodePosition> endNodes = new ArrayList<>();
+		switch (location) {
+			case NORTHEAST:
+				endNodes.add(new NodePosition(
+					q + 1, r - 1, RelativeNodeLocation.SOUTH));
+				endNodes.add(new NodePosition(
+					q, r, RelativeNodeLocation.NORTH));
+				break;
+			
+			case NORTHWEST:
+				endNodes.add(
+					new NodePosition(q, r, RelativeNodeLocation.NORTH));
+				endNodes.add(
+					new NodePosition(q, r - 1, RelativeNodeLocation.SOUTH));
+				break;
+
+			case WEST:
+				endNodes.add(
+					new NodePosition(q, r - 1, RelativeNodeLocation.SOUTH));
+				endNodes.add(
+					new NodePosition(q - 1, r + 1, RelativeNodeLocation.NORTH));
+				break;
+		}
+		
+		return endNodes;
 	}
 
 	@Override

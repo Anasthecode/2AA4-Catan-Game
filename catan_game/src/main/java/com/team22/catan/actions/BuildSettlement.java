@@ -5,7 +5,6 @@
 package com.team22.catan.actions;
 
 import com.team22.catan.board.Board;
-import com.team22.catan.board.Node;
 import com.team22.catan.board.NodePosition;
 import com.team22.catan.game.Game;
 import com.team22.catan.game.GameState;
@@ -38,25 +37,24 @@ public class BuildSettlement implements Action {
 	@Override
 	public void execute() {
     Settlement settlement = new Settlement(player);
-		Node node = board.getNodes().get(nodePosition);
 		if (game.getState() == GameState.SETUP) {
-			if (!node.canPlaceSettlement(player, game.getState())) {
+			if (!board.canPlaceSettlementAt(nodePosition, player, game.getState())) {
 				System.out.println(player.getName() + " attempted to build a settlement but failed.");
 			} else {
 				player.addVictoryPoints(1);
-				node.placeSettlement(settlement, game.getState());
+				board.placeSettlementAt(nodePosition, settlement, game.getState());
 				System.out.println(player.getName() + " setup a settlement at " + nodePosition);
 			}
 		} else {
 			if (!player.canAfford(settlement.getCost())) {
 				System.out.println(player.getName() +
 						" attempted to build a new settlement but could not afford it.");
-			} else if (!node.canPlaceSettlement(player, game.getState())) {
+			} else if (!board.canPlaceSettlementAt(nodePosition, player, game.getState())) {
 				System.out.println(player.getName() + " attempted to build a new settlement but failed.");
 			} else {
 				player.build(settlement);
 				player.addVictoryPoints(1);
-				node.placeSettlement(settlement, game.getState());
+				board.placeSettlementAt(nodePosition, settlement, game.getState());
 				System.out.println(player.getName() + " placed a settlement at " + nodePosition);
 			}
 		}
