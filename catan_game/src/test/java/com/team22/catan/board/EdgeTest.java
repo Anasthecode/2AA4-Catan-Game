@@ -20,7 +20,7 @@ public class EdgeTest {
 
   @Test
   public void endpointsNorthWestTest() {
-    Edge edge = new Edge(new EdgePosition(0, 0, RelativeEdgeLocation.NORTHEAST));
+    Edge edge = new Edge(new EdgePosition(0, 0, RelativeEdgeLocation.NORTHWEST));
     List<NodePosition> endpoints = edge.endpoints();
     assertEquals(new NodePosition(0, 0,  RelativeNodeLocation.NORTH), endpoints.get(0));
     assertEquals(new NodePosition(0, -1, RelativeNodeLocation.SOUTH), endpoints.get(1));
@@ -28,7 +28,7 @@ public class EdgeTest {
 
   @Test
   public void endpointsWestTest() {
-    Edge edge = new Edge(new EdgePosition(0, 0, RelativeEdgeLocation.NORTHEAST));
+    Edge edge = new Edge(new EdgePosition(0, 0, RelativeEdgeLocation.WEST));
     List<NodePosition> endpoints = edge.endpoints();
     assertEquals(new NodePosition(0, -1,  RelativeNodeLocation.SOUTH), endpoints.get(0));
     assertEquals(new NodePosition(-1, 1,  RelativeNodeLocation.NORTH), endpoints.get(1));
