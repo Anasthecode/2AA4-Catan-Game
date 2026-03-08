@@ -8,6 +8,7 @@ package com.team22.catan.game;
 // All the java directories we import
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 // All the directories we import
 import com.team22.catan.board.Board;
@@ -150,7 +151,9 @@ public class Game {
 
         if (roll == 7) {
             System.out.println("A 7 was rolled! The Robber is striking.");
-            java.util.Random gameRng = new java.util.Random(CatanSettings.RNG_SEED);
+
+
+            Random gameRng = new Random(CatanSettings.RNG_SEED);
 
             // 1. Check for card discarding
             for (Player p : players) {
