@@ -110,5 +110,42 @@ public abstract class Player {
 		return res.toString();
 	}
 
+    public void dropHalfResources(java.util.Random rng) {
+        int totalResources = getResourceCountTotal();
+        if (totalResources <= 7) return;
+
+        int targetDropCount = totalResources / 2;
+        int currentDrops = 0;
+
+        while (currentDrops < targetDropCount) {
+            java.util.List<Resource> availableResources = new java.util.ArrayList<>();
+            for (Map.Entry<Resource, Integer> entry : inventory.entrySet()) {
+                if (entry.getValue() > 0) {
+                    availableResources.add(entry.getKey());
+                }
+            }
+            if (availableResources.isEmpty()) break;
+
+            Resource resourceToDrop = availableResources.get(rng.nextInt(availableResources.size()));
+            inventory.put(resourceToDrop, inventory.get(resourceToDrop) - 1);
+            currentDrops++;
+        }
+    }
+
+    public Resource stealRandomResource(java.util.Random rng) {
+        if (getResourceCountTotal() == 0) return null; // Nothing to steal
+
+        java.util.List<Resource> availableCards = new java.util.ArrayList<>();
+        for (Map.Entry<Resource, Integer> entry : inventory.entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) {
+                availableCards.add(entry.getKey());
+            }
+        }
+
+        Resource stolen = availableCards.get(rng.nextInt(availableCards.size()));
+        inventory.put(stolen, inventory.get(stolen) - 1);
+        return stolen;
+    }
+
 	public abstract void onTurn(Game game);
 }

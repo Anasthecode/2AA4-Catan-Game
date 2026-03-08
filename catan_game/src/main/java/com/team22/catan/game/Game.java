@@ -110,31 +110,87 @@ public class Game {
     players.get(currentPlayerIndex).onTurn(this);
   }
 
-  public void onEndTurn() {
-    if (currentPlayerIndex == players.size() - 1 && gameState == GameState.PLAYING) {
-      System.out.println("\nVictory Point Standings:");
-      displayVPStandings();
-      if (currentTurn < turns) {
-        currentTurn++;
-        System.out.println("\n########## TURN " + currentTurn + " ###############");
-      } else {
-        gameState = GameState.END;
-      }
+    public void onEndTurn() {
+        checkWinCondition();
+
+        if (currentPlayerIndex == players.size() - 1 && gameState == GameState.PLAYING) {
+            System.out.println("\nVictory Point Standings:");
+            displayVPStandings();
+
+            if (currentTurn < turns) {
+                currentTurn++;
+                System.out.println("\n########## TURN " + currentTurn + " ###############");
+            } else {
+                System.out.println("Maximum turns reached. Game ending.");
+                gameState = GameState.END;
+            }
+        }
+
+        if (gameState == GameState.PLAYING) {
+
+            StateExporter.exportGameState(this);
+
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+            Player nextPlayer = players.get(currentPlayerIndex);
+
+            System.out.println("\n##### " + nextPlayer.getName() + "'s turn #####");
+
+            generateResources();
+
+        } else if (gameState == GameState.END) {
+            StateExporter.exportGameState(this);
+            displayResults();
+        }
     }
 
-    if (gameState == GameState.PLAYING) {
+    private void generateResources() {
+        int roll = dice.rollDice(2);
+        Player roller = players.get(currentPlayerIndex);
+        System.out.println(roller.getName() + " rolled a " + roll);
 
-      currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-      System.out.println("\n##### " + players.get(currentPlayerIndex).getName() + "'s turn #####");
-      generateResources();
+        if (roll == 7) {
+            System.out.println("A 7 was rolled! The Robber is striking.");
+            java.util.Random gameRng = new java.util.Random(CatanSettings.RNG_SEED);
+
+            // 1. Check for card discarding
+            for (Player p : players) {
+                if (p.getResourceCountTotal() > 7) {
+                    System.out.println(p.getName() + " has too many cards and loses half!");
+                    p.dropHalfResources(gameRng);
+                }
+            }
+
+            // 2. Move the Robber
+            com.team22.catan.board.Tile newTile = board.moveRobberToRandomTile(gameRng);
+            System.out.println("Robber moved to tile at " + newTile.getPosition());
+
+            List<Player> stealablePlayers = new ArrayList<>();
+            for (com.team22.catan.board.NodePosition np : newTile.corners()) {
+                com.team22.catan.board.Node node = board.getNodes().get(np);
+                if (node != null && node.hasStructure()) {
+                    Player owner = node.getStructureObject().getOwner();
+                    if (!owner.equals(roller) && !stealablePlayers.contains(owner) && owner.getResourceCountTotal() > 0) {
+                        stealablePlayers.add(owner);
+                    }
+                }
+            }
+
+            if (!stealablePlayers.isEmpty()) {
+                Player target = stealablePlayers.get(gameRng.nextInt(stealablePlayers.size()));
+                Resource stolenCard = target.stealRandomResource(gameRng);
+
+                if (stolenCard != null) {
+                    roller.addResource(stolenCard, 1);
+                    System.out.println(roller.getName() + " stole 1 " + stolenCard + " from " + target.getName());
+                }
+            } else {
+                System.out.println("No one to steal from!");
+            }
+
+        } else {
+            board.notifyTilesOfRoll(roll);
+        }
     }
-  }
-
-  private void generateResources() {
-    int roll = rollDice();
-    System.out.println(players.get(currentPlayerIndex).getName() + " rolled a " + roll);
-    board.notifyTilesOfRoll(roll);
-  }
 
   /**
    * Displays the final game results.

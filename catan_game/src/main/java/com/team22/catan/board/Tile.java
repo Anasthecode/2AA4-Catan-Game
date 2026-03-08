@@ -18,6 +18,7 @@ public class Tile {
 	 * 
 	 */
 	private TileType tileType;
+    public boolean hasRobber = false;
 	/**
 	 * 
 	 */
@@ -93,15 +94,24 @@ public class Tile {
 		return borderEdgePositions;
 	}
 
-	public void generateResource(int roll) {
-		if (roll == numberTokenValue) {
-			for (Node node : intersections.values()) {
-				if (node.hasStructure()) {
-					node.notifyStructureOfResource(tileType.getProducedResource());
-				}
-			}
-		}
-	}
+    public void generateResource(int roll) {
+        // ADDED: !hasRobber check
+        if (roll == numberTokenValue && !hasRobber) {
+            for (Node node : intersections.values()) {
+                if (node.hasStructure()) {
+                    node.notifyStructureOfResource(tileType.getProducedResource());
+                }
+            }
+        }
+    }
+
+    public void setRobber(boolean hasRobber) {
+        this.hasRobber = hasRobber;
+    }
+
+    public boolean hasRobber() {
+        return hasRobber;
+    }
 
 	public AxialPosition getPosition() {
 		return position;

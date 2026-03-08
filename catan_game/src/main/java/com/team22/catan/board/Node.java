@@ -135,6 +135,10 @@ public class Node {
 		return position;
 	}
 
+    public SettlementStructure getStructureObject() {
+        return structure;
+    }
+
 	/**
 	 * 
 	 * @return 
