@@ -54,7 +54,7 @@ public class BuildRoadTest {
 
         buildRoad.execute();
 
-        verify(edge, never()).placeRoad(any(Road.class), any(Game.class));
+        verify(edge, never()).placeRoad(any(Road.class));
     }
 
     @Test
@@ -66,7 +66,7 @@ public class BuildRoadTest {
 
         buildRoad.execute();
 
-        verify(edge, times(1)).placeRoad(any(Road.class), any(Game.class));
+        verify(edge, times(1)).placeRoad(any(Road.class));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class BuildRoadTest {
         buildRoad.execute();
 
         verify(player).canAfford(any());
-        verify(edge, never()).placeRoad(any(Road.class), any(Game.class));
+        verify(edge, never()).placeRoad(any(Road.class));
         verify(player, never()).build(any(Road.class));
     }
 
@@ -94,7 +94,7 @@ public class BuildRoadTest {
         buildRoad.execute();
 
         verify(player).canAfford(any());
-        verify(edge, never()).placeRoad(any(Road.class), any(Game.class));
+        verify(edge, never()).placeRoad(any(Road.class));
         verify(player, never()).build(any(Road.class));
     }
 
@@ -109,7 +109,7 @@ public class BuildRoadTest {
         buildRoad.execute();
 
         verify(player).canAfford(any());
-        verify(edge).placeRoad(any(Road.class), any(Game.class));
+        verify(edge).placeRoad(any(Road.class));
         verify(player).build(any(Road.class));
     }
 }

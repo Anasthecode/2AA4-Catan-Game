@@ -43,7 +43,7 @@ public class BuildRoad implements Action {
 			if (edge.getRoad() != null) {
 				System.out.println(player.getName() + " cannot place setup road there.");
 			} else {
-				edge.placeRoad(road, game);
+				edge.placeRoad(road);
 				System.out.println(player.getName() + " setup a road at " + edgePosition);
 			}
 		} else {
@@ -54,7 +54,7 @@ public class BuildRoad implements Action {
 				System.out.println(player.getName() + " attempted to build a new road but failed.");
 			} else {
 				player.build(road);
-				edge.placeRoad(road, game);
+				edge.placeRoad(road);
 				System.out.println(player.getName() + " placed a road at " + edgePosition);
 			}
 		}

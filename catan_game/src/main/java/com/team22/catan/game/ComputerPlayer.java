@@ -47,7 +47,7 @@ public class ComputerPlayer extends Player {
     if (game.getState() == GameState.SETUP) {
       List<Node> possibleSettlementNodes = new ArrayList<>();
       for (Node node : game.getBoard().getNodes().values()) {
-        if (node.getStructure() == null && node.distanceRule()) {
+        if (node.canPlaceSettlement(this, game.getState())) {
           possibleSettlementNodes.add(node);
         }
       }
@@ -67,7 +67,7 @@ public class ComputerPlayer extends Player {
 
     } else {
       for (Node node : game.getBoard().getNodes().values()) {
-        if (node.canPlaceSettlement(this) && canAfford(new Settlement(this).getCost())) {
+        if (node.canPlaceSettlement(this, game.getState()) && canAfford(new Settlement(this).getCost())) {
           actionsToReturn.add(new BuildSettlement(this, game, node.getPosition()));
         }
 

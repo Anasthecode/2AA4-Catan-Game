@@ -7,7 +7,6 @@ package com.team22.catan.board;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.team22.catan.game.Game;
 import com.team22.catan.game.GameState;
 import com.team22.catan.game.Player;
 import com.team22.catan.game.Resource;
@@ -50,7 +49,15 @@ public class Node {
 		return structure != null;
 	}
 
-	public boolean canPlaceSettlement(Player player) {
+	public boolean canPlaceSettlement(Player player, GameState gameState) {
+		if (structure != null) {
+			return false;
+		}
+
+		if (gameState == GameState.SETUP) {
+			return distanceRule();
+		}
+
 		boolean connectedRoad = false;
 		for (Edge edge : edges) {
 			if (edge.hasRoad() && edge.getRoad().getOwner().equals(player)) {
@@ -58,7 +65,7 @@ public class Node {
 			}
 		}
 
-		if (!connectedRoad || structure != null) {
+		if (!connectedRoad) {
 			return false;
 		}
 
@@ -96,8 +103,8 @@ public class Node {
 		return false;
 	}
 
-	public void placeSettlement(Settlement settlement, Game game) {
-		if (canPlaceSettlement(settlement.getOwner()) || game.getState() == GameState.SETUP) {
+	public void placeSettlement(Settlement settlement, GameState gameState) {
+		if (canPlaceSettlement(settlement.getOwner(), gameState)) {
 			this.structure = settlement;
 		} else {
 			throw new IllegalStateException("Cannot place settlement at " + position);
