@@ -22,15 +22,22 @@ import com.team22.catan.structures.Settlement;
 public class ComputerPlayer extends Player {
 
   private Random rng;
+  private Parser parser;
 
-  public ComputerPlayer(String name, Random rng) {
+  public ComputerPlayer(String name, Random rng, Parser parser) {
     super(name);
     this.rng = rng;
+    this.parser = parser;
   }
 
   @Override
   public void onTurn(Game game) {
-    List<Action> availableActions = getAvailableActions(game);
+
+      if (game.getState() != GameState.SETUP) {
+          parser.waitForGoCommand();
+      }
+
+      List<Action> availableActions = getAvailableActions(game);
 
     if (game.getState() == GameState.SETUP) {
       for (Action action : availableActions) {
@@ -82,8 +89,6 @@ public class ComputerPlayer extends Player {
         }
       }
 
-      // Only allow the player to end their turn if they either have less
-      // than 7 cards or they can't build anything
       if (getResourceCountTotal() < 7 || actionsToReturn.isEmpty()) {
         actionsToReturn.add(new EndTurn(this, game));
       }

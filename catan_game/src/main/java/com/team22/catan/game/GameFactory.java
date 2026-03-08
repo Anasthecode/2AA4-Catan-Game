@@ -16,14 +16,16 @@ public class GameFactory {
   }
 
   public Game createGame() {
-    List<Player> players = new ArrayList<>();
-    for (int i = 0; i < numberOfPlayers; i++) {
-      players.add(new ComputerPlayer("Player " + (i + 1), rng));
-    }
+      List<Player> players = new ArrayList<>();
+      Parser parser = new Parser();
 
-    Dice dice = new Dice(rng);
+      players.add(new HumanPlayer("Human", parser));
 
-    return new Game(CatanSettings.TURNS,
-        new Board(CatanSettings.STANDARD_BOARD_LAYOUT, CatanSettings.TOKEN_LAYOUT), players, dice);
+      for (int i = 1; i < numberOfPlayers; i++) {
+          players.add(new ComputerPlayer("Computer " + i, rng, parser));
+      }
+
+      Dice dice = new Dice(rng);
+      return new Game(CatanSettings.TURNS, new Board(CatanSettings.STANDARD_BOARD_LAYOUT, CatanSettings.TOKEN_LAYOUT), players, dice);
   }
 }
