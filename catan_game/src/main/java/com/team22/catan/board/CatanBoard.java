@@ -4,13 +4,7 @@
 
 package com.team22.catan.board;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.team22.catan.board.AxialPosition.Direction;
 import com.team22.catan.game.GameState;
@@ -21,7 +15,7 @@ import com.team22.catan.structures.Settlement;
 
 /************************************************************/
 /**
- * 
+ *
  */
 public class CatanBoard implements Board {
 	private Map<AxialPosition, Tile> tiles; // 19 Tiles
@@ -34,7 +28,7 @@ public class CatanBoard implements Board {
 	private int[] tokenLayout;
 
 	/**
-	 * 
+	 *
 	 */
 	public CatanBoard(TileType[] boardLayout, int[] tokenLayout) {
 		tiles = new HashMap<>();
@@ -131,14 +125,6 @@ public class CatanBoard implements Board {
 		}
 	}
 
-	private List<Tile> getOrderedTiles() {
-		List<Tile> orderedTiles = new ArrayList<>();
-		for (AxialPosition position : getTilePositions()) {
-			orderedTiles.add(tiles.get(position));
-		}
-
-		return orderedTiles;
-	}
 
 	@Override
 	public List<AxialPosition> getTilePositions() {
@@ -271,7 +257,7 @@ public class CatanBoard implements Board {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public String toString() {
@@ -294,6 +280,73 @@ public class CatanBoard implements Board {
 
 		return types;
 	}
+
+    @Override
+    public Map<NodePosition, Node> getNodes() {
+        return nodes;
+    }
+
+    @Override
+    public Map<EdgePosition, Edge> getEdges() {
+        return edges;
+    }
+
+    @Override
+    public List<Tile> getOrderedTiles() {
+        List<Tile> orderedTiles = new ArrayList<>();
+        for (AxialPosition position : getTilePositions()) {
+            orderedTiles.add(tiles.get(position));
+        }
+        return orderedTiles;
+    }
+
+    @Override
+    public List<NodePosition> getNeighborNodes(NodePosition pos) {
+        List<NodePosition> neighbors = new ArrayList<>();
+        for (Edge edge : edges.values()) {
+            if (edge.endpoints().contains(pos)) {
+                for (NodePosition endpoint : edge.endpoints()) {
+                    if (!endpoint.equals(pos)) neighbors.add(endpoint);
+                }
+            }
+        }
+        return neighbors;
+    }
+
+    @Override
+    public boolean isNodeConnectedToPlayerRoad(NodePosition nodePos, com.team22.catan.game.Player player) {
+        for (Edge edge : edges.values()) {
+            if (edge.endpoints().contains(nodePos)) {
+                if (edge.hasRoad() && edge.getRoad().getOwner().equals(player)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public Tile moveRobberToRandomTile(Random rng) {
+        List<Tile> allTiles = getOrderedTiles();
+        Tile currentRobberTile = null;
+
+        // Find the current robber and remove it
+        for (Tile t : allTiles) {
+            if (t.hasRobber()) {
+                currentRobberTile = t;
+                t.setRobber(false);
+                break;
+            }
+        }
+
+        // Pick a new random tile that isn't the current one
+        Tile newRobberTile;
+        do {
+            newRobberTile = allTiles.get(rng.nextInt(allTiles.size()));
+        } while (newRobberTile.equals(currentRobberTile));
+
+        newRobberTile.setRobber(true);
+        return newRobberTile;
+    }
 
 	/**
 	 * Testing method
