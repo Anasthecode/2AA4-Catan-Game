@@ -7,7 +7,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
   BuildCityTest.class,
-  BuildRoadTest.class
+  BuildRoadTest.class,
+  BuildSettlementTest.class
 })
 public class ActionTests {
   
