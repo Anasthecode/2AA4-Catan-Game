@@ -5,8 +5,8 @@
 package com.team22.catan.actions;
 
 import com.team22.catan.board.Board;
-import com.team22.catan.board.Node;
 import com.team22.catan.board.NodePosition;
+import com.team22.catan.game.Game;
 import com.team22.catan.game.Player;
 import com.team22.catan.structures.City;
 
@@ -16,14 +16,16 @@ import com.team22.catan.structures.City;
  */
 public class BuildCity implements Action {
 	private Player player;
+	private Game game;
 	private Board board;
 	private NodePosition nodePosition;
 	/**
 	 * 
 	 */
-	public BuildCity(Player player, Board board, NodePosition nodePosition) {
+	public BuildCity(Player player, Game game, NodePosition nodePosition) {
 		this.player = player;
-		this.board = board;
+		this.game = game;
+		this.board = game.getBoard();
 		this.nodePosition = nodePosition;
 	}
 
@@ -33,16 +35,15 @@ public class BuildCity implements Action {
 	@Override
 	public void execute() {
 		City city = new City(player);
-		Node node = board.getNodes().get(nodePosition);
     if (!player.canAfford(city.getCost())) {
 			System.out.println(player.getName() +
 					" attempted to build a new city but could not afford it.");
-		} else if (!node.canPlaceCity(player)) {
+		} else if (!board.canPlaceCityAt(nodePosition, player, game.getState())) {
 			System.out.println(player.getName() + " attempted to build a new city but failed.");
 		} else {
 			player.build(city);
 			player.addVictoryPoints(1);
-			node.placeCity(city);
+			board.placeCityAt(nodePosition, city, game.getState());
 			System.out.println(player.getName() + " placed a city at " + nodePosition);
 		}
 	}

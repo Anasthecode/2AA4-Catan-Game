@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.team22.catan.board.Board;
+import com.team22.catan.board.CatanBoard;
 
 public class GameFactory {
   private Random rng;
@@ -25,7 +25,9 @@ public class GameFactory {
           players.add(new ComputerPlayer("Computer " + i, rng, parser));
       }
 
-      Dice dice = new Dice(rng);
-      return new Game(CatanSettings.TURNS, new Board(CatanSettings.STANDARD_BOARD_LAYOUT, CatanSettings.TOKEN_LAYOUT), players, dice);
+    Dice dice = new Dice(rng);
+
+    return new Game(CatanSettings.TURNS,
+        new CatanBoard(CatanSettings.STANDARD_BOARD_LAYOUT, CatanSettings.TOKEN_LAYOUT), players, dice);
   }
 }
