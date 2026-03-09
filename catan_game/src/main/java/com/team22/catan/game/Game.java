@@ -8,6 +8,7 @@ package com.team22.catan.game;
 // All the java directories we import
 import java.util.ArrayList;
 import java.util.List;
+import java.security.SecureRandom;
 import java.util.Random;
 
 // All the directories we import
@@ -152,8 +153,7 @@ public class Game {
         if (roll == 7) {
             System.out.println("A 7 was rolled! The Robber is striking.");
 
-            // NOSONAR: Fixed seed is required for game reproducibility
-            Random gameRng = new Random(CatanSettings.RNG_SEED);
+            Random gameRng = new SecureRandom();
 
             // 1. Check for card discarding
             for (Player p : players) {
