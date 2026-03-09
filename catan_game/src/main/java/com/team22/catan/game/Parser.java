@@ -22,7 +22,7 @@ public class Parser {
     }
 
     public void waitForGoCommand() {
-        System.out.println("Type 'Go' to start your turn.");
+        System.out.println("Type 'Go' step to the next turn.");
         while (true) {
             String input = scanner.nextLine().trim();
             if (GO_PATTERN.matcher(input).matches()) {

@@ -7,14 +7,16 @@ package com.team22.catan.game;
 
 // All the java directories we import
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.security.SecureRandom;
 import java.util.Random;
+import java.util.Set;
 
 // All the directories we import
 import com.team22.catan.board.Board;
 
 public class Game {
+  private Random rng;
   private int turns;
   private int currentTurn;
   private List<Player> players;
@@ -30,7 +32,8 @@ public class Game {
    *                another obj]
    * @param players [Unchanging number of players]
    */
-  public Game(int turns, Board board, List<Player> players, Dice dice) {
+  public Game(int turns, Board board, List<Player> players, Dice dice, Random rng) {
+    this.rng = rng;
     this.turns = turns;
     currentTurn = 1; // Starting at turn 1
     this.players = players;
@@ -77,7 +80,7 @@ public class Game {
     System.out.println("\n##### " + players.get(currentPlayerIndex).getName() + "'s turn #####");
     generateResources();
 
-    while (gameState != GameState.END ) {
+    while (gameState != GameState.END) {
       processPlayerTurn();
       checkWinCondition();
     }
@@ -112,88 +115,81 @@ public class Game {
     players.get(currentPlayerIndex).onTurn(this);
   }
 
-    public void onEndTurn() {
-        checkWinCondition();
+  public void onEndTurn() {
+    checkWinCondition();
 
-        if (currentPlayerIndex == players.size() - 1 && gameState == GameState.PLAYING) {
-            System.out.println("\nVictory Point Standings:");
-            displayVPStandings();
+    if (currentPlayerIndex == players.size() - 1 && gameState == GameState.PLAYING) {
+      System.out.println("\nVictory Point Standings:");
+      displayVPStandings();
 
-            if (currentTurn < turns) {
-                currentTurn++;
-                System.out.println("\n########## TURN " + currentTurn + " ###############");
-            } else {
-                System.out.println("Maximum turns reached. Game ending.");
-                gameState = GameState.END;
-            }
-        }
-
-        if (gameState == GameState.PLAYING) {
-
-            StateExporter.exportGameState(this);
-
-            currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-            Player nextPlayer = players.get(currentPlayerIndex);
-
-            System.out.println("\n##### " + nextPlayer.getName() + "'s turn #####");
-
-            generateResources();
-
-        } else if (gameState == GameState.END) {
-            StateExporter.exportGameState(this);
-            displayResults();
-        }
+      if (currentTurn < turns) {
+        currentTurn++;
+        System.out.println("\n########## TURN " + currentTurn + " ###############");
+      } else {
+        System.out.println("Maximum turns reached. Game ending.");
+        gameState = GameState.END;
+      }
     }
 
-    private void generateResources() {
-        int roll = dice.rollDice(2);
-        Player roller = players.get(currentPlayerIndex);
-        System.out.println(roller.getName() + " rolled a " + roll);
+    if (gameState == GameState.PLAYING) {
+      currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+      Player nextPlayer = players.get(currentPlayerIndex);
 
-        if (roll == 7) {
-            System.out.println("A 7 was rolled! The Robber is striking.");
+      System.out.println("\n##### " + nextPlayer.getName() + "'s turn #####");
 
-            Random gameRng = new SecureRandom();
+      generateResources();
 
-            // 1. Check for card discarding
-            for (Player p : players) {
-                if (p.getResourceCountTotal() > 7) {
-                    System.out.println(p.getName() + " has too many cards and loses half!");
-                    p.dropHalfResources(gameRng);
-                }
-            }
-
-            // 2. Move the Robber
-            com.team22.catan.board.Tile newTile = board.moveRobberToRandomTile(gameRng);
-            System.out.println("Robber moved to tile at " + newTile.getPosition());
-
-            List<Player> stealablePlayers = new ArrayList<>();
-            for (com.team22.catan.board.NodePosition np : newTile.corners()) {
-                com.team22.catan.board.Node node = board.getNodes().get(np);
-                if (node != null && node.hasStructure()) {
-                    Player owner = node.getStructureObject().getOwner();
-                    if (!owner.equals(roller) && !stealablePlayers.contains(owner) && owner.getResourceCountTotal() > 0) {
-                        stealablePlayers.add(owner);
-                    }
-                }
-            }
-
-            if (!stealablePlayers.isEmpty()) {
-                Player target = stealablePlayers.get(gameRng.nextInt(stealablePlayers.size()));
-                Resource stolenCard = target.stealRandomResource(gameRng);
-
-                if (stolenCard != null) {
-                    roller.addResource(stolenCard, 1);
-                    System.out.println(roller.getName() + " stole 1 " + stolenCard + " from " + target.getName());
-                }
-            } else {
-                System.out.println("No one to steal from!");
-            }
-
-        } else {
-            board.notifyTilesOfRoll(roll);
-        }
+    } else if (gameState == GameState.END) {
+      displayResults();
     }
+  }
+
+  private void generateResources() {
+    int roll = dice.rollDice(2);
+    Player roller = players.get(currentPlayerIndex);
+    System.out.println(roller.getName() + " rolled a " + roll);
+
+    if (roll == 7) {
+      System.out.println("A 7 was rolled! The Robber is striking.");
+      Set<Player> stealablePlayers = board.moveRobberToRandomTile(rng);
+      robPlayers(stealablePlayers);
+
+    } else {
+      board.notifyTilesOfRoll(roll);
+    }
+  }
+
+  private void robPlayers(Set<Player> stealablePlayers) {
+    Player roller = players.get(currentPlayerIndex);
+    for (Player player : players) {
+      if (player.getResourceCountTotal() > 7) {
+        System.out.println(player.getName() + " has too many cards and loses half!");
+        player.dropHalfResources(rng);
+      }
+    }
+
+    Set<Player> temp = new HashSet<>();
+    for (Player player : stealablePlayers) {
+      if (player != roller && player.getResourceCountTotal() > 0) {
+        temp.add(player);
+      }
+    }
+
+    List<Player> stealablePlayersList = new ArrayList<>(temp);
+
+    if (!stealablePlayersList.isEmpty()) {
+      Player target = stealablePlayersList.get(rng.nextInt(stealablePlayersList.size()));
+      Resource stolenResource = target.stealRandomResource(rng);
+
+      if (stolenResource != null) {
+        roller.addResource(stolenResource, 1);
+        System.out.println(roller.getName() + " stole 1 " + stolenResource + " from " + target.getName());
+      }
+      
+    } else {
+      System.out.println("No one to steal from!");
+    }
+  }
 
   /**
    * Displays the final game results.

@@ -6,8 +6,12 @@ package com.team22.catan.board;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import com.team22.catan.game.Player;
 
 /************************************************************/
 /**
@@ -18,7 +22,7 @@ public class Tile {
 	 * 
 	 */
 	private TileType tileType;
-    public boolean hasRobber = false;
+	public boolean hasRobber = false;
 	/**
 	 * 
 	 */
@@ -29,9 +33,9 @@ public class Tile {
 
 	/**
 	 * 
-	 * @param token 
-	 * @param type 
-	 * @param nodes 
+	 * @param token
+	 * @param type
+	 * @param nodes
 	 */
 	public Tile(AxialPosition position, int token, TileType type) {
 		this.position = position;
@@ -61,17 +65,17 @@ public class Tile {
 	public List<NodePosition> corners() {
 		List<NodePosition> cornerNodePositions = new ArrayList<>();
 		cornerNodePositions.add(
-			new NodePosition(position.getQ() + 1, position.getR() - 1, RelativeNodeLocation.SOUTH));
+				new NodePosition(position.getQ() + 1, position.getR() - 1, RelativeNodeLocation.SOUTH));
 		cornerNodePositions.add(
-			new NodePosition(position.getQ(), 		position.getR(), 		 RelativeNodeLocation.NORTH));
+				new NodePosition(position.getQ(), position.getR(), RelativeNodeLocation.NORTH));
 		cornerNodePositions.add(
-			new NodePosition(position.getQ(), 		position.getR() - 1, RelativeNodeLocation.SOUTH));
+				new NodePosition(position.getQ(), position.getR() - 1, RelativeNodeLocation.SOUTH));
 		cornerNodePositions.add(
-			new NodePosition(position.getQ() - 1, position.getR() + 1, RelativeNodeLocation.NORTH));
+				new NodePosition(position.getQ() - 1, position.getR() + 1, RelativeNodeLocation.NORTH));
 		cornerNodePositions.add(
-			new NodePosition(position.getQ(), 		position.getR(), 		 RelativeNodeLocation.SOUTH));
+				new NodePosition(position.getQ(), position.getR(), RelativeNodeLocation.SOUTH));
 		cornerNodePositions.add(
-			new NodePosition(position.getQ(), 		position.getR() + 1, RelativeNodeLocation.NORTH));
+				new NodePosition(position.getQ(), position.getR() + 1, RelativeNodeLocation.NORTH));
 
 		return cornerNodePositions;
 	}
@@ -79,39 +83,50 @@ public class Tile {
 	public List<EdgePosition> borders() {
 		List<EdgePosition> borderEdgePositions = new ArrayList<>();
 		borderEdgePositions.add(
-			new EdgePosition(position.getQ() + 1, position.getR(), 		 RelativeEdgeLocation.WEST));
+				new EdgePosition(position.getQ() + 1, position.getR(), RelativeEdgeLocation.WEST));
 		borderEdgePositions.add(
-			new EdgePosition(position.getQ(), 		position.getR(), 		 RelativeEdgeLocation.NORTHEAST));
+				new EdgePosition(position.getQ(), position.getR(), RelativeEdgeLocation.NORTHEAST));
 		borderEdgePositions.add(
-			new EdgePosition(position.getQ(), 		position.getR(), 		 RelativeEdgeLocation.NORTHWEST));
+				new EdgePosition(position.getQ(), position.getR(), RelativeEdgeLocation.NORTHWEST));
 		borderEdgePositions.add(
-			new EdgePosition(position.getQ(), 		position.getR(), 		 RelativeEdgeLocation.WEST));
+				new EdgePosition(position.getQ(), position.getR(), RelativeEdgeLocation.WEST));
 		borderEdgePositions.add(
-			new EdgePosition(position.getQ() - 1, position.getR() + 1, RelativeEdgeLocation.NORTHEAST));
+				new EdgePosition(position.getQ() - 1, position.getR() + 1, RelativeEdgeLocation.NORTHEAST));
 		borderEdgePositions.add(
-			new EdgePosition(position.getQ(), 		position.getR() + 1, RelativeEdgeLocation.NORTHWEST));
+				new EdgePosition(position.getQ(), position.getR() + 1, RelativeEdgeLocation.NORTHWEST));
 
 		return borderEdgePositions;
 	}
 
-    public void generateResource(int roll) {
-        // ADDED: !hasRobber check
-        if (roll == numberTokenValue && !hasRobber) {
-            for (Node node : intersections.values()) {
-                if (node.hasStructure()) {
-                    node.notifyStructureOfResource(tileType.getProducedResource());
-                }
-            }
-        }
-    }
+	public void generateResource(int roll) {
+		// ADDED: !hasRobber check
+		if (roll == numberTokenValue && !hasRobber) {
+			for (Node node : intersections.values()) {
+				if (node.hasStructure()) {
+					node.notifyStructureOfResource(tileType.getProducedResource());
+				}
+			}
+		}
+	}
 
-    public void setRobber(boolean hasRobber) {
-        this.hasRobber = hasRobber;
-    }
+	public void setRobber(boolean hasRobber) {
+		this.hasRobber = hasRobber;
+	}
 
-    public boolean hasRobber() {
-        return hasRobber;
-    }
+	public boolean hasRobber() {
+		return hasRobber;
+	}
+
+	public Set<Player> playersOnSurroundingNodes() {
+		Set<Player> players = new HashSet<>();
+		for (Node node : intersections.values()) {
+			if (node.hasStructure()) {
+				players.add(node.getStructure().getOwner());
+			}
+		}
+
+		return players;
+	}
 
 	public AxialPosition getPosition() {
 		return position;
@@ -119,7 +134,7 @@ public class Tile {
 
 	/**
 	 * 
-	 * @return 
+	 * @return
 	 */
 	public TileType getTileType() {
 		return tileType;
@@ -127,7 +142,7 @@ public class Tile {
 
 	/**
 	 * 
-	 * @return 
+	 * @return
 	 */
 	public int getToken() {
 		return numberTokenValue;
@@ -135,7 +150,7 @@ public class Tile {
 
 	/**
 	 * 
-	 * @return 
+	 * @return
 	 */
 	public Node getNode(NodePosition nodePosition) {
 		return intersections.get(nodePosition);
@@ -147,7 +162,7 @@ public class Tile {
 
 	/**
 	 * 
-	 * @return 
+	 * @return
 	 */
 	public String toString() {
 		return tileType.toString();

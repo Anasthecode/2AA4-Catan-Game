@@ -11,7 +11,7 @@ import com.team22.catan.game.Resource;
 /**
  * 
  */
-public class Settlement extends SettlementStructure{
+public class Settlement extends SettlementStructure {
 	/**
 	 * 
 	 * @param location 

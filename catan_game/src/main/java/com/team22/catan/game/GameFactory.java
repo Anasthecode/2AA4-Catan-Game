@@ -28,6 +28,7 @@ public class GameFactory {
     Dice dice = new Dice(rng);
 
     return new Game(CatanSettings.TURNS,
-        new CatanBoard(CatanSettings.STANDARD_BOARD_LAYOUT, CatanSettings.TOKEN_LAYOUT), players, dice);
+        new CatanBoard(CatanSettings.STANDARD_BOARD_LAYOUT, CatanSettings.TOKEN_LAYOUT),
+        players, dice, rng);
   }
 }

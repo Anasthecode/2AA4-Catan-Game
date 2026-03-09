@@ -125,7 +125,6 @@ public class CatanBoard implements Board {
 		}
 	}
 
-
 	@Override
 	public List<AxialPosition> getTilePositions() {
 		List<AxialPosition> orderedPositions = new ArrayList<>();
@@ -281,72 +280,38 @@ public class CatanBoard implements Board {
 		return types;
 	}
 
-    @Override
-    public Map<NodePosition, Node> getNodes() {
-        return nodes;
-    }
+	private List<Tile> getOrderedTiles() {
+		List<Tile> orderedTiles = new ArrayList<>();
+		for (AxialPosition position : getTilePositions()) {
+			orderedTiles.add(tiles.get(position));
+		}
 
-    @Override
-    public Map<EdgePosition, Edge> getEdges() {
-        return edges;
-    }
+		return orderedTiles;
+	}
 
-    @Override
-    public List<Tile> getOrderedTiles() {
-        List<Tile> orderedTiles = new ArrayList<>();
-        for (AxialPosition position : getTilePositions()) {
-            orderedTiles.add(tiles.get(position));
-        }
-        return orderedTiles;
-    }
+	public Set<Player> moveRobberToRandomTile(Random rng) {
+		List<Tile> allTiles = getOrderedTiles();
+		Tile currentRobberTile = null;
 
-    @Override
-    public List<NodePosition> getNeighborNodes(NodePosition pos) {
-        List<NodePosition> neighbors = new ArrayList<>();
-        for (Edge edge : edges.values()) {
-            if (edge.endpoints().contains(pos)) {
-                for (NodePosition endpoint : edge.endpoints()) {
-                    if (!endpoint.equals(pos)) neighbors.add(endpoint);
-                }
-            }
-        }
-        return neighbors;
-    }
+		// Find the current robber and remove it
+		for (Tile t : allTiles) {
+			if (t.hasRobber()) {
+				currentRobberTile = t;
+				t.setRobber(false);
+				break;
+			}
+		}
 
-    @Override
-    public boolean isNodeConnectedToPlayerRoad(NodePosition nodePos, com.team22.catan.game.Player player) {
-        for (Edge edge : edges.values()) {
-            if (edge.endpoints().contains(nodePos)) {
-                if (edge.hasRoad() && edge.getRoad().getOwner().equals(player)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+		// Pick a new random tile that isn't the current one
+		Tile newRobberTile;
+		do {
+			newRobberTile = allTiles.get(rng.nextInt(allTiles.size()));
+		} while (newRobberTile.equals(currentRobberTile));
 
-    public Tile moveRobberToRandomTile(Random rng) {
-        List<Tile> allTiles = getOrderedTiles();
-        Tile currentRobberTile = null;
-
-        // Find the current robber and remove it
-        for (Tile t : allTiles) {
-            if (t.hasRobber()) {
-                currentRobberTile = t;
-                t.setRobber(false);
-                break;
-            }
-        }
-
-        // Pick a new random tile that isn't the current one
-        Tile newRobberTile;
-        do {
-            newRobberTile = allTiles.get(rng.nextInt(allTiles.size()));
-        } while (newRobberTile.equals(currentRobberTile));
-
-        newRobberTile.setRobber(true);
-        return newRobberTile;
-    }
+		newRobberTile.setRobber(true);
+		System.out.println("The robber was moved to " + newRobberTile.getPosition());
+		return newRobberTile.playersOnSurroundingNodes();
+	}
 
 	/**
 	 * Testing method

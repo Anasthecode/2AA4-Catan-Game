@@ -2,8 +2,8 @@ package com.team22.catan.board;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import com.team22.catan.game.GameState;
 import com.team22.catan.game.Player;
@@ -29,12 +29,5 @@ public interface Board {
   public boolean canPlaceRoadAt(EdgePosition position, Player player);
   public void placeRoadAt(EdgePosition position, Road Road);
 
-  Map<NodePosition, Node> getNodes();
-  Map<EdgePosition, Edge> getEdges();
-  List<Tile> getOrderedTiles();
-
-  List<NodePosition> getNeighborNodes(NodePosition pos);
-  boolean isNodeConnectedToPlayerRoad(NodePosition nodePos, com.team22.catan.game.Player player);
-
-  public Tile moveRobberToRandomTile(Random rng);
+  public Set<Player> moveRobberToRandomTile(Random rng);
 }
