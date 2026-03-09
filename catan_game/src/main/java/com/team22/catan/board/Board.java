@@ -17,6 +17,7 @@ public interface Board {
   public Collection<EdgePosition> getEdgePositions();
 
   public NodePosition getNodePositionFromId(int id);
+  public int getIdFromNodePosition(NodePosition position);
 
   public void notifyTilesOfRoll(int roll);
 

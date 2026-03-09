@@ -17,15 +17,24 @@ import com.team22.catan.structures.Structure;
  * 
  */
 public abstract class Player {
+	public enum PlayerColor {
+		RED,
+		BLUE,
+		WHITE,
+		ORANGE
+	}
+
 	/**
 	 * 
 	 */
 	private final String playerName;
+	private final PlayerColor color;
 	private final EnumMap<Resource, Integer> inventory;
 	private int victoryPoints;
 
-	public Player(String name) {
+	public Player(String name, PlayerColor color) {
 		playerName = name;
+		this.color = color;
 		inventory = new EnumMap<>(Resource.class);
 		for (Resource resource : Resource.values()) {
 			inventory.put(resource, 0);
@@ -34,6 +43,10 @@ public abstract class Player {
 
 	public String getName() {
 		return playerName;
+	}
+
+	public PlayerColor getColor() {
+		return color;
 	}
 
 	public Map<Resource, Integer> getInventory() {

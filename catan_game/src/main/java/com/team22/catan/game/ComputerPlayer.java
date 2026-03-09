@@ -24,8 +24,8 @@ public class ComputerPlayer extends Player {
   private Random rng;
   private Parser parser;
 
-  public ComputerPlayer(String name, Random rng, Parser parser) {
-    super(name);
+  public ComputerPlayer(String name, PlayerColor color, Random rng, Parser parser) {
+    super(name, color);
     this.rng = rng;
     this.parser = parser;
   }

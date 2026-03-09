@@ -1,7 +1,9 @@
 package com.team22.catan.board;
 
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -11,22 +13,85 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.team22.catan.game.GameState;
 import com.team22.catan.game.Player;
+import com.team22.catan.game.Player.PlayerColor;
 import com.team22.catan.structures.City;
 import com.team22.catan.structures.Road;
 import com.team22.catan.structures.Settlement;
 
 public class VisualizerDecorator implements Board {
+  private enum VisualizerBuildingType {
+    SETTLEMENT,
+    CITY
+  }
+
+  private static class VisualizerBuilding {
+    @SuppressWarnings("unused")
+    private int node;
+    @SuppressWarnings("unused")
+    private PlayerColor owner;
+    @SuppressWarnings("unused")
+    private VisualizerBuildingType type;
+
+    public VisualizerBuilding(
+        int node, PlayerColor owner, VisualizerBuildingType type) {
+
+      this.node = node;
+      this.owner = owner;
+      this.type = type;
+    }
+  }
+
+  private static class VisualizerRoad {
+    @SuppressWarnings("unused")
+    private int a;
+    @SuppressWarnings("unused")
+    private int b;
+    @SuppressWarnings("unused")
+    private PlayerColor owner;
+
+    public VisualizerRoad(int a, int b, PlayerColor owner) {
+      this.a = a;
+      this.b = b;
+      this.owner = owner;
+    }
+  }
+
+  private static class VisualizerState {
+    private List<VisualizerRoad> roads;
+    private List<VisualizerBuilding> buildings;
+
+    public VisualizerState() {
+      buildings = new ArrayList<>();
+      roads = new ArrayList<>();
+    }
+
+    public void addBuilding(VisualizerBuilding building) {
+      buildings.add(building);
+    }
+
+    public void addRoad(VisualizerRoad road) {
+      roads.add(road);
+    }
+  }
+
   private final Board aBoard;
   private final Gson gson;
+  private VisualizerState visualizerState;
 
   public VisualizerDecorator(Board aBoard) {
     this.aBoard = aBoard;
     gson = new GsonBuilder().setPrettyPrinting().create();
+    visualizerState = new VisualizerState();
     initializeVisualizer();
   }
 
   private void initializeVisualizer() {
-    
+    try (FileWriter writer = new FileWriter("state.json")) {
+      writer.write(gson.toJson(visualizerState));
+      writer.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -50,6 +115,11 @@ public class VisualizerDecorator implements Board {
   }
 
   @Override
+  public int getIdFromNodePosition(NodePosition position) {
+    return aBoard.getIdFromNodePosition(position);
+  }
+
+  @Override
   public void notifyTilesOfRoll(int roll) {
     aBoard.notifyTilesOfRoll(roll);
   }
@@ -63,6 +133,24 @@ public class VisualizerDecorator implements Board {
   public void placeSettlementAt(NodePosition position, Settlement settlement, GameState gameState) {
     aBoard.placeSettlementAt(position, settlement, gameState);
 
+    try (FileReader reader = new FileReader("state.json")) {
+      visualizerState = gson.fromJson(reader, VisualizerState.class);
+      visualizerState.addBuilding(new VisualizerBuilding(
+          getIdFromNodePosition(position),
+          settlement.getOwner().getColor(),
+          VisualizerBuildingType.SETTLEMENT));
+
+      reader.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    try (FileWriter writer = new FileWriter("state.json", false)) {
+      writer.write(gson.toJson(visualizerState));
+      writer.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -73,6 +161,25 @@ public class VisualizerDecorator implements Board {
   @Override
   public void placeCityAt(NodePosition position, City city, GameState gameState) {
     aBoard.placeCityAt(position, city, gameState);
+
+    try (FileReader reader = new FileReader("state.json")) {
+      visualizerState = gson.fromJson(reader, VisualizerState.class);
+      visualizerState.addBuilding(new VisualizerBuilding(
+          getIdFromNodePosition(position),
+          city.getOwner().getColor(),
+          VisualizerBuildingType.CITY));
+
+      reader.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    try (FileWriter writer = new FileWriter("state.json", false)) {
+      writer.write(gson.toJson(visualizerState));
+      writer.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -81,20 +188,31 @@ public class VisualizerDecorator implements Board {
   }
 
   @Override
-  public void placeRoadAt(EdgePosition position, Road Road) {
-    aBoard.placeRoadAt(position, Road);
+  public void placeRoadAt(EdgePosition position, Road road) {
+    aBoard.placeRoadAt(position, road);
+
+    try (FileReader reader = new FileReader("state.json")) {
+      visualizerState = gson.fromJson(reader, VisualizerState.class);
+      visualizerState.addRoad(new VisualizerRoad(
+          getIdFromNodePosition(position.endpoints().get(0)),
+          getIdFromNodePosition(position.endpoints().get(1)),
+          road.getOwner().getColor()));
+
+      reader.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    try (FileWriter writer = new FileWriter("state.json", false)) {
+      writer.write(gson.toJson(visualizerState));
+      writer.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
   public Set<Player> moveRobberToRandomTile(Random rng) {
     return aBoard.moveRobberToRandomTile(rng);
-  }
-  
-  private void updateVisualizer() {
-    try (FileWriter jsonWriter = new FileWriter("state.json")) {
-      
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 }

@@ -247,12 +247,18 @@ public class CatanBoard implements Board {
 			new NodePosition(0, 3, RelativeNodeLocation.NORTH) // 53
 	};
 
+	@Override
 	public NodePosition getNodePositionFromId(int id) {
 		if (id >= 0 && id < NODE_ID_TO_POSITION.length) {
 			return NODE_ID_TO_POSITION[id];
 		}
 
 		return null;
+	}
+
+	@Override
+	public int getIdFromNodePosition(NodePosition position) {
+		return Arrays.asList(NODE_ID_TO_POSITION).indexOf(position);
 	}
 
 	/**

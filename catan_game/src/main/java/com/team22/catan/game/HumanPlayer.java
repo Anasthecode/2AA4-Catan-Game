@@ -7,8 +7,8 @@ public class HumanPlayer extends Player {
 
     private Parser parser;
 
-    public HumanPlayer(String name, Parser parser) {
-        super(name);
+    public HumanPlayer(String name, PlayerColor color, Parser parser) {
+        super(name, color);
         this.parser = parser;
     }
 

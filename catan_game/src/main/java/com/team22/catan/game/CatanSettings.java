@@ -32,23 +32,23 @@ public class CatanSettings {
       5, 6, 11, 5, 8, 10, 9, 2, 10, 12, 9, 8};
   public static final TileType[] STANDARD_BOARD_LAYOUT = {
     TileType.DESERT,
-    TileType.MOUNTAIN,
     TileType.FIELD,
-    TileType.FOREST,
-    TileType.PASTURE,
-    TileType.HILLS,
+    TileType.MOUNTAIN,
     TileType.FOREST,
     TileType.HILLS,
-    TileType.FIELD,
     TileType.PASTURE,
-    TileType.PASTURE,
-    TileType.MOUNTAIN,
-    TileType.HILLS,
     TileType.FOREST,
     TileType.PASTURE,
+    TileType.FIELD,
+    TileType.HILLS,
+    TileType.FOREST,
+    TileType.FIELD,
+    TileType.FIELD,
     TileType.MOUNTAIN,
-    TileType.FIELD,
-    TileType.FIELD,
-    TileType.FOREST
+    TileType.PASTURE,
+    TileType.FOREST,
+    TileType.HILLS,
+    TileType.MOUNTAIN,
+    TileType.PASTURE
   };
 }
