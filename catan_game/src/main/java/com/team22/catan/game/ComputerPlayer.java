@@ -33,11 +33,9 @@ public class ComputerPlayer extends Player {
   @Override
   public void onTurn(Game game) {
 
-      if (game.getState() != GameState.SETUP) {
-          parser.waitForGoCommand();
-      }
+    parser.waitForGoCommand();
 
-      List<Action> availableActions = getAvailableActions(game);
+    List<Action> availableActions = getAvailableActions(game);
 
     if (game.getState() == GameState.SETUP) {
       setupTurn(game);
@@ -55,7 +53,7 @@ public class ComputerPlayer extends Player {
     }
 
     possibleSettlementPlacements.get(rng.nextInt(possibleSettlementPlacements.size())).execute();
-    
+
     List<Action> possibleRoadPlacements = new ArrayList<>();
     for (EdgePosition edgePosition : game.getBoard().getEdgePositions()) {
       if (game.getBoard().canPlaceRoadAt(edgePosition, this)) {
@@ -73,13 +71,13 @@ public class ComputerPlayer extends Player {
     for (NodePosition nodePosition : game.getBoard().getNodePositions()) {
       if (game.getBoard().canPlaceSettlementAt(nodePosition, this, game.getState()) &&
           canAfford(new Settlement(this).getCost())) {
-        
+
         actionsToReturn.add(new BuildSettlement(this, game, nodePosition));
       }
 
       if (game.getBoard().canPlaceCityAt(nodePosition, this, game.getState()) &&
           canAfford(new City(this).getCost())) {
-        
+
         actionsToReturn.add(new BuildCity(this, game, nodePosition));
       }
     }
@@ -87,7 +85,7 @@ public class ComputerPlayer extends Player {
     for (EdgePosition edgePosition : game.getBoard().getEdgePositions()) {
       if (game.getBoard().canPlaceRoadAt(edgePosition, this) &&
           canAfford(new Road(this).getCost())) {
-        
+
         actionsToReturn.add(new BuildRoad(this, game, edgePosition));
       }
     }
