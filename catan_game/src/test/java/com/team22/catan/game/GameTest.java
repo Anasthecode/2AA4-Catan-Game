@@ -35,7 +35,7 @@ public class GameTest {
      */
     private static class TestPlayer extends Player {
         public TestPlayer(String name) {
-            super(name);
+            super(name, PlayerColor.BLUE);
         }
 
         @Override
@@ -90,7 +90,7 @@ public class GameTest {
         List<Player> players = createPlayers();
         Dice dice = new Dice(new Random());
 
-        Game game = new Game(10, board, players, dice);
+        Game game = new Game(10, board, players, dice, new Random());
 
         assertEquals(GameState.SETUP, game.getState());
     }
@@ -105,7 +105,7 @@ public class GameTest {
         List<Player> players = createPlayers();
         Dice dice = new Dice(new Random());
 
-        Game game = new Game(10, board, players, dice);
+        Game game = new Game(10, board, players, dice, new Random());
 
         assertSame(board, game.getBoard());
     }
@@ -119,7 +119,7 @@ public class GameTest {
         List<Player> players = createPlayers();
         Dice dice = new Dice(new Random());
 
-        Game game = new Game(10, board, players, dice);
+        Game game = new Game(10, board, players, dice, new Random());
 
         assertEquals(2, game.getPlayers().size());
     }
@@ -133,7 +133,7 @@ public class GameTest {
         List<Player> players = createPlayers();
         Dice dice = new Dice(new Random());
 
-        Game game = new Game(10, board, players, dice);
+        Game game = new Game(10, board, players, dice, new Random());
         List<Player> returnedPlayers = game.getPlayers();
 
         assertEquals("Sam", returnedPlayers.get(0).getName());
@@ -151,7 +151,7 @@ public class GameTest {
         List<Player> players = createPlayers();
         Dice dice = new Dice(new Random());
 
-        Game game = new Game(10, board, players, dice);
+        Game game = new Game(10, board, players, dice, new Random());
 
         List<Player> returnedPlayers = game.getPlayers();
         returnedPlayers.clear(); // only clears the copy
@@ -175,7 +175,7 @@ public class GameTest {
         List<Player> players = createPlayers();
         Dice dice = new Dice(new FixedRandom());
 
-        Game game = new Game(10, board, players, dice);
+        Game game = new Game(10, board, players, dice, new Random());
 
         assertEquals(2, game.rollDice());
     }
@@ -189,7 +189,7 @@ public class GameTest {
         List<Player> players = createPlayers();
         Dice dice = new Dice(new Random());
 
-        Game game = new Game(10, board, players, dice);
+        Game game = new Game(10, board, players, dice, new Random());
 
         for (int i = 0; i < 100; i++) {
             int roll = game.rollDice();
@@ -208,7 +208,7 @@ public class GameTest {
         List<Player> players = createPlayers();
         Dice dice = new Dice(new Random());
 
-        Game game = new Game(10, board, players, dice);
+        Game game = new Game(10, board, players, dice, new Random());
 
         assertEquals(board.toString(), game.toString());
     }
