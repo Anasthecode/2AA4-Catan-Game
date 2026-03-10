@@ -165,23 +165,13 @@ public class VisualizerDecorator implements Board {
   }
 
   @Override
-  public Collection<NodePosition> getNodePositions() {
+  public List<NodePosition> getNodePositions() {
     return aBoard.getNodePositions();
   }
 
   @Override
   public Collection<EdgePosition> getEdgePositions() {
     return aBoard.getEdgePositions();
-  }
-
-  @Override
-  public NodePosition getNodePositionFromId(int id) {
-    return aBoard.getNodePositionFromId(id);
-  }
-
-  @Override
-  public int getIdFromNodePosition(NodePosition position) {
-    return aBoard.getIdFromNodePosition(position);
   }
 
   @Override
@@ -201,7 +191,7 @@ public class VisualizerDecorator implements Board {
     try (FileReader reader = new FileReader(statePath)) {
       visualizerState = gson.fromJson(reader, VisualizerState.class);
       visualizerState.addBuilding(new VisualizerBuilding(
-          getIdFromNodePosition(position),
+          getNodePositions().indexOf((position)),
           settlement.getOwner().getColor(),
           VisualizerBuildingType.SETTLEMENT));
 
@@ -230,7 +220,7 @@ public class VisualizerDecorator implements Board {
     try (FileReader reader = new FileReader(statePath)) {
       visualizerState = gson.fromJson(reader, VisualizerState.class);
       visualizerState.addBuilding(new VisualizerBuilding(
-          getIdFromNodePosition(position),
+          getNodePositions().indexOf(position),
           city.getOwner().getColor(),
           VisualizerBuildingType.CITY));
 
@@ -259,8 +249,8 @@ public class VisualizerDecorator implements Board {
     try (FileReader reader = new FileReader(statePath)) {
       visualizerState = gson.fromJson(reader, VisualizerState.class);
       visualizerState.addRoad(new VisualizerRoad(
-          getIdFromNodePosition(position.endpoints().get(0)),
-          getIdFromNodePosition(position.endpoints().get(1)),
+          getNodePositions().indexOf(position.endpoints().get(0)),
+          getNodePositions().indexOf(position.endpoints().get(1)),
           road.getOwner().getColor()));
 
       reader.close();

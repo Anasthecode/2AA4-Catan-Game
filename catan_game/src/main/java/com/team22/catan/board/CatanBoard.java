@@ -144,8 +144,15 @@ public class CatanBoard implements Board {
 	}
 
 	@Override
-	public Collection<NodePosition> getNodePositions() {
-		return nodes.keySet();
+	public List<NodePosition> getNodePositions() {
+		Set<NodePosition> nodePositions = new LinkedHashSet<>();
+		for (Tile tile : getOrderedTiles()) {
+			for (NodePosition nodePosition : tile.corners()) {
+				nodePositions.add(nodePosition);
+			}
+		}
+
+		return new ArrayList<>(nodePositions);
 	}
 
 	@Override
@@ -183,82 +190,6 @@ public class CatanBoard implements Board {
 	@Override
 	public void placeRoadAt(EdgePosition position, Road Road) {
 		edges.get(position).placeRoad(Road);
-	}
-
-	private static final NodePosition[] NODE_ID_TO_POSITION = {
-			new NodePosition(0, -3, RelativeNodeLocation.SOUTH), // 0
-			new NodePosition(0, -2, RelativeNodeLocation.NORTH), // 1
-			new NodePosition(1, -3, RelativeNodeLocation.SOUTH), // 2
-			new NodePosition(1, -2, RelativeNodeLocation.NORTH), // 3
-			new NodePosition(2, -3, RelativeNodeLocation.SOUTH), // 4
-			new NodePosition(2, -2, RelativeNodeLocation.NORTH), // 5
-			new NodePosition(3, -3, RelativeNodeLocation.SOUTH), // 6
-
-			new NodePosition(-1, -2, RelativeNodeLocation.SOUTH), // 7
-			new NodePosition(-1, -1, RelativeNodeLocation.NORTH), // 8
-			new NodePosition(0, -2, RelativeNodeLocation.SOUTH), // 9
-			new NodePosition(0, -1, RelativeNodeLocation.NORTH), // 10
-			new NodePosition(1, -2, RelativeNodeLocation.SOUTH), // 11
-			new NodePosition(1, -1, RelativeNodeLocation.NORTH), // 12
-			new NodePosition(2, -2, RelativeNodeLocation.SOUTH), // 13
-			new NodePosition(2, -1, RelativeNodeLocation.NORTH), // 14
-			new NodePosition(3, -2, RelativeNodeLocation.SOUTH), // 15
-
-			new NodePosition(-2, -1, RelativeNodeLocation.SOUTH), // 16
-			new NodePosition(-2, 0, RelativeNodeLocation.NORTH), // 17
-			new NodePosition(-1, -1, RelativeNodeLocation.SOUTH), // 18
-			new NodePosition(-1, 0, RelativeNodeLocation.NORTH), // 19
-			new NodePosition(0, -1, RelativeNodeLocation.SOUTH), // 20
-			new NodePosition(0, 0, RelativeNodeLocation.NORTH), // 21
-			new NodePosition(1, -1, RelativeNodeLocation.SOUTH), // 22
-			new NodePosition(1, 0, RelativeNodeLocation.NORTH), // 23
-			new NodePosition(2, -1, RelativeNodeLocation.SOUTH), // 24
-			new NodePosition(2, 0, RelativeNodeLocation.NORTH), // 25
-			new NodePosition(3, -1, RelativeNodeLocation.SOUTH), // 26
-
-			new NodePosition(-3, 1, RelativeNodeLocation.NORTH), // 27
-			new NodePosition(-2, 0, RelativeNodeLocation.SOUTH), // 28
-			new NodePosition(-2, 1, RelativeNodeLocation.NORTH), // 29
-			new NodePosition(-1, 0, RelativeNodeLocation.SOUTH), // 30
-			new NodePosition(-1, 1, RelativeNodeLocation.NORTH), // 31
-			new NodePosition(0, 0, RelativeNodeLocation.SOUTH), // 32
-			new NodePosition(0, 1, RelativeNodeLocation.NORTH), // 33
-			new NodePosition(1, 0, RelativeNodeLocation.SOUTH), // 34
-			new NodePosition(1, 1, RelativeNodeLocation.NORTH), // 35
-			new NodePosition(2, 0, RelativeNodeLocation.SOUTH), // 36
-			new NodePosition(2, 1, RelativeNodeLocation.NORTH), // 37
-
-			new NodePosition(-3, 2, RelativeNodeLocation.NORTH), // 38
-			new NodePosition(-2, 1, RelativeNodeLocation.SOUTH), // 39
-			new NodePosition(-2, 2, RelativeNodeLocation.NORTH), // 40
-			new NodePosition(-1, 1, RelativeNodeLocation.SOUTH), // 41
-			new NodePosition(-1, 2, RelativeNodeLocation.NORTH), // 42
-			new NodePosition(0, 1, RelativeNodeLocation.SOUTH), // 43
-			new NodePosition(0, 2, RelativeNodeLocation.NORTH), // 44
-			new NodePosition(1, 1, RelativeNodeLocation.SOUTH), // 45
-			new NodePosition(1, 2, RelativeNodeLocation.NORTH), // 46
-
-			new NodePosition(-3, 3, RelativeNodeLocation.NORTH), // 47
-			new NodePosition(-2, 2, RelativeNodeLocation.SOUTH), // 48
-			new NodePosition(-2, 3, RelativeNodeLocation.NORTH), // 49
-			new NodePosition(-1, 2, RelativeNodeLocation.SOUTH), // 50
-			new NodePosition(-1, 3, RelativeNodeLocation.NORTH), // 51
-			new NodePosition(0, 2, RelativeNodeLocation.SOUTH), // 52
-			new NodePosition(0, 3, RelativeNodeLocation.NORTH) // 53
-	};
-
-	@Override
-	public NodePosition getNodePositionFromId(int id) {
-		if (id >= 0 && id < NODE_ID_TO_POSITION.length) {
-			return NODE_ID_TO_POSITION[id];
-		}
-
-		return null;
-	}
-
-	@Override
-	public int getIdFromNodePosition(NodePosition position) {
-		return Arrays.asList(NODE_ID_TO_POSITION).indexOf(position);
 	}
 
 	/**
