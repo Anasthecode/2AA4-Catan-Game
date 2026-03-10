@@ -15,6 +15,8 @@ public interface Board {
   public List<AxialPosition> getTilePositions();
   public Collection<NodePosition> getNodePositions();
   public Collection<EdgePosition> getEdgePositions();
+  public TileType[] getTileTypes();
+  public int[] getTokens();
 
   public NodePosition getNodePositionFromId(int id);
   public int getIdFromNodePosition(NodePosition position);

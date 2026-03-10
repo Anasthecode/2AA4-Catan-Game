@@ -274,9 +274,7 @@ public class CatanBoard implements Board {
 		return sb.toString();
 	}
 
-	/**
-	 * Testing method
-	 */
+	@Override
 	public TileType[] getTileTypes() {
 		TileType[] types = new TileType[tiles.size()];
 		for (int i = 0; i < types.length; i++) {
@@ -319,9 +317,7 @@ public class CatanBoard implements Board {
 		return newRobberTile.playersOnSurroundingNodes();
 	}
 
-	/**
-	 * Testing method
-	 */
+	@Override
 	public int[] getTokens() {
 		int[] tokens = new int[tiles.size()];
 		for (int i = 0; i < tokens.length; i++) {

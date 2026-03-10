@@ -14,6 +14,7 @@ import com.google.gson.GsonBuilder;
 import com.team22.catan.game.GameState;
 import com.team22.catan.game.Player;
 import com.team22.catan.game.Player.PlayerColor;
+import com.team22.catan.game.Resource;
 import com.team22.catan.structures.City;
 import com.team22.catan.structures.Road;
 import com.team22.catan.structures.Settlement;
@@ -74,21 +75,82 @@ public class VisualizerDecorator implements Board {
     }
   }
 
+  private static class VisualizerTile {
+    @SuppressWarnings("unused")
+    private int q;
+    @SuppressWarnings("unused")
+    private int s;
+    @SuppressWarnings("unused")
+    private int r;
+
+    @SuppressWarnings("unused")
+    private Resource resource;
+    
+    @SuppressWarnings("unused")
+    private Integer number;
+
+    public VisualizerTile(int q, int r, Resource resource, Integer number) {
+      this.q = q;
+      this.r = r;
+      this.s = -q - r;
+
+      this.resource = resource;
+
+      if (number == 0) {
+        this.number = null;
+      } else {
+        this.number = number;
+      }
+    }
+  }
+
+  private static class VisualizerBoard {
+    private List<VisualizerTile> tiles;
+
+    public VisualizerBoard() {
+      tiles = new ArrayList<>();
+    }
+
+    public void addTile(VisualizerTile tile) {
+      tiles.add(tile);
+    }
+  }
+
   private final Board aBoard;
   private final Gson gson;
   private VisualizerState visualizerState;
 
   public VisualizerDecorator(Board aBoard) {
     this.aBoard = aBoard;
-    gson = new GsonBuilder().setPrettyPrinting().create();
+    gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
     visualizerState = new VisualizerState();
     initializeVisualizer();
   }
 
   private void initializeVisualizer() {
-    try (FileWriter writer = new FileWriter("state.json")) {
+    try (FileWriter writer = new FileWriter("state.json", false)) {
       writer.write(gson.toJson(visualizerState));
       writer.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    try (FileWriter writer = new FileWriter("base_map.json", false)) {
+      List<AxialPosition> positions = getTilePositions();
+      TileType[] tileTypes = getTileTypes();
+      int[] tokens = getTokens();
+
+      VisualizerBoard visualizerBoard = new VisualizerBoard();
+
+      for (int i = 0; i < positions.size(); i++) {
+        VisualizerTile newTile = new VisualizerTile(
+            positions.get(i).getQ(), positions.get(i).getR(),
+            tileTypes[i].getProducedResource(), tokens[i]);
+      
+        visualizerBoard.addTile(newTile);
+      }
+
+      writer.write(gson.toJson(visualizerBoard));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -214,5 +276,15 @@ public class VisualizerDecorator implements Board {
   @Override
   public Set<Player> moveRobberToRandomTile(Random rng) {
     return aBoard.moveRobberToRandomTile(rng);
+  }
+
+  @Override
+  public TileType[] getTileTypes() {
+    return aBoard.getTileTypes();
+  }
+
+  @Override
+  public int[] getTokens() {
+    return aBoard.getTokens();
   }
 }
