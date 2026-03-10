@@ -120,6 +120,9 @@ public class VisualizerDecorator implements Board {
   private final Gson gson;
   private VisualizerState visualizerState;
 
+  private String statePath = "2aa4-2026-base/assignments/visualize/state.json";
+  private String base_mapPath = "2aa4-2026-base/assignments/visualize/base_map.json";
+
   public VisualizerDecorator(Board aBoard) {
     this.aBoard = aBoard;
     gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
@@ -128,14 +131,14 @@ public class VisualizerDecorator implements Board {
   }
 
   private void initializeVisualizer() {
-    try (FileWriter writer = new FileWriter("state.json", false)) {
+    try (FileWriter writer = new FileWriter(statePath, false)) {
       writer.write(gson.toJson(visualizerState));
       writer.close();
     } catch (IOException e) {
       e.printStackTrace();
     }
 
-    try (FileWriter writer = new FileWriter("base_map.json", false)) {
+    try (FileWriter writer = new FileWriter(base_mapPath, false)) {
       List<AxialPosition> positions = getTilePositions();
       TileType[] tileTypes = getTileTypes();
       int[] tokens = getTokens();
@@ -195,7 +198,7 @@ public class VisualizerDecorator implements Board {
   public void placeSettlementAt(NodePosition position, Settlement settlement, GameState gameState) {
     aBoard.placeSettlementAt(position, settlement, gameState);
 
-    try (FileReader reader = new FileReader("state.json")) {
+    try (FileReader reader = new FileReader(statePath)) {
       visualizerState = gson.fromJson(reader, VisualizerState.class);
       visualizerState.addBuilding(new VisualizerBuilding(
           getIdFromNodePosition(position),
@@ -207,7 +210,7 @@ public class VisualizerDecorator implements Board {
       e.printStackTrace();
     }
 
-    try (FileWriter writer = new FileWriter("state.json", false)) {
+    try (FileWriter writer = new FileWriter(statePath, false)) {
       writer.write(gson.toJson(visualizerState));
       writer.close();
     } catch (IOException e) {
@@ -224,7 +227,7 @@ public class VisualizerDecorator implements Board {
   public void placeCityAt(NodePosition position, City city, GameState gameState) {
     aBoard.placeCityAt(position, city, gameState);
 
-    try (FileReader reader = new FileReader("state.json")) {
+    try (FileReader reader = new FileReader(statePath)) {
       visualizerState = gson.fromJson(reader, VisualizerState.class);
       visualizerState.addBuilding(new VisualizerBuilding(
           getIdFromNodePosition(position),
@@ -236,7 +239,7 @@ public class VisualizerDecorator implements Board {
       e.printStackTrace();
     }
 
-    try (FileWriter writer = new FileWriter("state.json", false)) {
+    try (FileWriter writer = new FileWriter(statePath, false)) {
       writer.write(gson.toJson(visualizerState));
       writer.close();
     } catch (IOException e) {
@@ -253,7 +256,7 @@ public class VisualizerDecorator implements Board {
   public void placeRoadAt(EdgePosition position, Road road) {
     aBoard.placeRoadAt(position, road);
 
-    try (FileReader reader = new FileReader("state.json")) {
+    try (FileReader reader = new FileReader(statePath)) {
       visualizerState = gson.fromJson(reader, VisualizerState.class);
       visualizerState.addRoad(new VisualizerRoad(
           getIdFromNodePosition(position.endpoints().get(0)),
@@ -265,7 +268,7 @@ public class VisualizerDecorator implements Board {
       e.printStackTrace();
     }
 
-    try (FileWriter writer = new FileWriter("state.json", false)) {
+    try (FileWriter writer = new FileWriter(statePath, false)) {
       writer.write(gson.toJson(visualizerState));
       writer.close();
     } catch (IOException e) {

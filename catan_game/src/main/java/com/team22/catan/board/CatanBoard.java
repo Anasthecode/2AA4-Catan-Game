@@ -130,7 +130,7 @@ public class CatanBoard implements Board {
 		List<AxialPosition> orderedPositions = new ArrayList<>();
 		orderedPositions.add(centre);
 		for (int ring = 1; ring <= size; ring++) {
-			AxialPosition currentTilePosition = centre.add(Direction.DOWNLEFT.getVector().scale(ring));
+			AxialPosition currentTilePosition = centre.add(Direction.DOWNRIGHT.getVector().scale(ring));
 			for (int i = 0; i < 6; i++) {
 				for (int j = 0; j < ring; j++) {
 					orderedPositions.add(currentTilePosition);

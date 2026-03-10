@@ -12,12 +12,12 @@ import java.util.Objects;
  */
 public class AxialPosition {
 	public enum Direction {
-		RIGHT(new AxialPosition(1, 0)),
-		UPRIGHT(new AxialPosition(1, -1)),
-		UPLEFT(new AxialPosition(0, -1)),
 		LEFT(new AxialPosition(-1, 0)),
-		DOWNLEFT(new AxialPosition(-1, 1)),
-		DOWNRIGHT(new AxialPosition(0, 1));
+		UPLEFT(new AxialPosition(0, -1)),
+		UPRIGHT(new AxialPosition(1, -1)),
+		RIGHT(new AxialPosition(1, 0)),
+		DOWNRIGHT(new AxialPosition(0, 1)),
+		DOWNLEFT(new AxialPosition(-1, 1));
 
 		private final AxialPosition vector;
 
