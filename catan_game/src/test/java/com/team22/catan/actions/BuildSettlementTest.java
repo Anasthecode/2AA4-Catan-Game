@@ -1,7 +1,6 @@
 package com.team22.catan.actions;
 
 import com.team22.catan.board.Board;
-import com.team22.catan.board.Node;
 import com.team22.catan.board.NodePosition;
 import com.team22.catan.game.Game;
 import com.team22.catan.game.GameState;
@@ -12,9 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.Map;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -27,13 +23,10 @@ public class BuildSettlementTest {
     private Board board;
 
     @Mock
-    private Node node;
+    private Settlement settlement;
 
     @Mock
     private NodePosition nodePosition;
-
-    @Mock
-    private Map<NodePosition, Node> nodes;
 
     @Mock
     private Game game;
@@ -44,34 +37,36 @@ public class BuildSettlementTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this); // Initialize mocks so that they aren't null
 
-        when(game.getBoard()).thenReturn(board);// Get the nodes map
-        when(nodes.get(nodePosition)).thenReturn(node); // Get a specific node out of the map
+        when(game.getBoard()).thenReturn(board); // Get the board
 
         buildSettlement = new BuildSettlement(player, game, nodePosition);
     }
     @Test
     public void executeStateSetupAndCannotPlace() {
         when(game.getState()).thenReturn(GameState.SETUP);
-        when(node.canPlaceSettlement(any(Player.class), any(GameState.class))).thenReturn(false);
+        when(board.canPlaceSettlementAt(nodePosition, player, game.getState())).thenReturn(false);
         when(player.getName()).thenReturn("CannotPlaceAtSetup");
 
         buildSettlement.execute();
 
         verify(player, never()).addVictoryPoints(1);
-        verify(node, never()).placeSettlement(any(Settlement.class), any(GameState.class));
+        verify(board, never()).placeSettlementAt(nodePosition, settlement, game.getState());
     }
 
 
     @Test
     public void executeStateSetupAndCanPlace() {
         when(game.getState()).thenReturn(GameState.SETUP);
-        when(node.canPlaceSettlement(any(Player.class), any(GameState.class))).thenReturn(true);
-        when(player.getName()).thenReturn("CanPlaceAtSetup");
+
+        // Needed all matchers to go through
+        when(board.canPlaceSettlementAt(any(NodePosition.class), any(Player.class), any(GameState.class))).thenReturn(true);
+
+        when(player.getName()).thenReturn("PlacedAtSetup");
 
         buildSettlement.execute();
 
         verify(player, times(1)).addVictoryPoints(1);
-        verify(node, times(1)).placeSettlement(any(Settlement.class), any(GameState.class));
+        verify(board, times(1)).placeSettlementAt(any(NodePosition.class), any(Settlement.class), any(GameState.class));
     }
 
     @Test
@@ -84,21 +79,18 @@ public class BuildSettlementTest {
 
         verify(player, never()).addVictoryPoints(1);
         verify(player, never()).build(any(Structure.class));
-        verify(node, never()).placeSettlement(any(Settlement.class), any(GameState.class));
     }
 
     @Test
     public void executeCanAffordButInvalid() {
         when(game.getState()).thenReturn(GameState.PLAYING);
         when(player.canAfford(any())).thenReturn(true);
-        when(node.canPlaceSettlement(any(Player.class), any(GameState.class))).thenReturn(false);
         when(player.getName()).thenReturn("CanAffordButNotPlace");
 
         buildSettlement.execute();
 
         verify(player, never()).addVictoryPoints(1);
         verify(player, never()).build(any(Structure.class));
-        verify(node, never()).placeSettlement(any(Settlement.class), any(GameState.class));
     }
 
 
@@ -106,13 +98,12 @@ public class BuildSettlementTest {
     public void executePlacesSettlementPlaying() {
         when(game.getState()).thenReturn(GameState.PLAYING);
         when(player.canAfford(any())).thenReturn(true);
-        when(node.canPlaceSettlement(any(Player.class), any(GameState.class))).thenReturn(true);
+        when(board.canPlaceSettlementAt(nodePosition, player, game.getState())).thenReturn(true);
         when(player.getName()).thenReturn("WillPlaceAtNonSetup");
 
         buildSettlement.execute();
 
         verify(player, times(1)).addVictoryPoints(1);
         verify(player, times(1)).build(any(Structure.class));
-        verify(node, times(1)).placeSettlement(any(Settlement.class), any(GameState.class));
     }
 }
