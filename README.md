@@ -53,7 +53,7 @@ Below is the mapping of our axial coordinate system, showing the specific Node I
 
 Below is the architectural design of the game engine, highlighting the core patterns used to satisfy the Assignment 2 requirements (including the `VisualizerDecorator`, the Action/Command classes, and the `GameState` machine).
 
-![UML Diagram](README/UMLDigram.jpg)
+![UML Diagram](README/UMLDiagram.jpg)
 - **Rule Enforcement:** Validates all moves, preventing floating settlements, overlapping roads, or building without sufficient resources.
 - **The Robber Mechanism:** Automatically triggers on a dice roll of 7, forcing players with more than 7 cards to discard half their hand, and allowing the roller to steal a random resource from an adjacent player.
 - **Automated Opponents:** Computer agents dynamically assess the board state and randomly execute valid actions until a player reaches the victory point threshold.
