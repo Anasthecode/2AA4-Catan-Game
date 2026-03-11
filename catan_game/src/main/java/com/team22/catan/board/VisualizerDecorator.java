@@ -128,8 +128,8 @@ public class VisualizerDecorator implements Board {
     private final Gson gson;
     private VisualizerState visualizerState;
 
-    private String statePath = "../assignments/visualize/TestingState.json";
-    private String base_mapPath = "../assignments/visualize/base_map.json";
+    private String statePath = "2aa4-2026-base/assignments/visualize/state.json";
+    private String base_mapPath = "2aa4-2026-base/assignments/visualize/base_map.json";
 
     private boolean visualizerEnabled = true;
 
