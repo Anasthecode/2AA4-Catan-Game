@@ -39,8 +39,6 @@ public class BuildRoadTest {
         MockitoAnnotations.openMocks(this); // Initialize mocks so that they aren't null
 
         when(game.getBoard()).thenReturn(board); // Go from board to edges to edge
-        when(board.getEdges()).thenReturn(edges);
-        when(edges.get(edgePosition)).thenReturn(edge);
 
         buildRoad = new BuildRoad(player, game, edgePosition);
     }

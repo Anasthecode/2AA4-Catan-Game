@@ -44,8 +44,7 @@ public class BuildSettlementTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this); // Initialize mocks so that they aren't null
 
-        when(game.getBoard()).thenReturn(board);
-        when(board.getNodes()).thenReturn(nodes); // Get the nodes map
+        when(game.getBoard()).thenReturn(board);// Get the nodes map
         when(nodes.get(nodePosition)).thenReturn(node); // Get a specific node out of the map
 
         buildSettlement = new BuildSettlement(player, game, nodePosition);
