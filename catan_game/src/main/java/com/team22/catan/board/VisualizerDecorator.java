@@ -40,6 +40,10 @@ public class VisualizerDecorator implements Board {
       this.owner = owner;
       this.type = type;
     }
+
+    public int getNode() {
+      return node;
+    }
   }
 
   private static class VisualizerRoad {
@@ -72,6 +76,10 @@ public class VisualizerDecorator implements Board {
 
     public void addRoad(VisualizerRoad road) {
       roads.add(road);
+    }
+
+    public List<VisualizerBuilding> getBuildings() {
+      return buildings;
     }
   }
 
@@ -219,6 +227,13 @@ public class VisualizerDecorator implements Board {
 
     try (FileReader reader = new FileReader(statePath)) {
       visualizerState = gson.fromJson(reader, VisualizerState.class);
+      for (VisualizerBuilding building : visualizerState.getBuildings()) {
+        if (building.getNode() == getNodePositions().indexOf(position)) {
+          visualizerState.getBuildings().remove(building);
+          break;
+        }
+      }
+
       visualizerState.addBuilding(new VisualizerBuilding(
           getNodePositions().indexOf(position),
           city.getOwner().getColor(),
@@ -238,13 +253,13 @@ public class VisualizerDecorator implements Board {
   }
 
   @Override
-  public boolean canPlaceRoadAt(EdgePosition position, Player player) {
-    return aBoard.canPlaceRoadAt(position, player);
+  public boolean canPlaceRoadAt(EdgePosition position, Player player, GameState gameState) {
+    return aBoard.canPlaceRoadAt(position, player, gameState);
   }
 
   @Override
-  public void placeRoadAt(EdgePosition position, Road road) {
-    aBoard.placeRoadAt(position, road);
+  public void placeRoadAt(EdgePosition position, Road road, GameState gameState) {
+    aBoard.placeRoadAt(position, road, gameState);
 
     try (FileReader reader = new FileReader(statePath)) {
       visualizerState = gson.fromJson(reader, VisualizerState.class);

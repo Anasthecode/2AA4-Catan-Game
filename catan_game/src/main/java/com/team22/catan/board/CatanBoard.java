@@ -183,13 +183,13 @@ public class CatanBoard implements Board {
 	}
 
 	@Override
-	public boolean canPlaceRoadAt(EdgePosition position, Player player) {
-		return edges.get(position).canPlaceRoad(player);
+	public boolean canPlaceRoadAt(EdgePosition position, Player player, GameState gameState) {
+		return edges.get(position).canPlaceRoad(player, gameState);
 	}
 
 	@Override
-	public void placeRoadAt(EdgePosition position, Road Road) {
-		edges.get(position).placeRoad(Road);
+	public void placeRoadAt(EdgePosition position, Road Road, GameState gameState) {
+		edges.get(position).placeRoad(Road, gameState);
 	}
 
 	/**

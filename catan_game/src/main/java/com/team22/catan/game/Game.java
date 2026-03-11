@@ -7,10 +7,8 @@ package com.team22.catan.game;
 
 // All the java directories we import
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 // All the directories we import
 import com.team22.catan.board.Board;
@@ -62,7 +60,11 @@ public class Game {
   }
 
   public int rollDice() {
-    return dice.rollDice(2);
+    return dice.rollDice(CatanSettings.NUMBER_OF_DICE);
+  }
+
+  public Random getRng() {
+    return rng;
   }
 
   private void endGame() {
@@ -78,7 +80,6 @@ public class Game {
     System.out.println("\n############### GAME START ###############");
     System.out.println("\n########## TURN " + currentTurn + " ###############");
     System.out.println("\n##### " + players.get(currentPlayerIndex).getName() + "'s turn #####");
-    generateResources();
 
     while (gameState != GameState.END) {
       processPlayerTurn();
@@ -137,57 +138,8 @@ public class Game {
 
       System.out.println("\n##### " + nextPlayer.getName() + "'s turn #####");
 
-      generateResources();
-
     } else if (gameState == GameState.END) {
       displayResults();
-    }
-  }
-
-  private void generateResources() {
-    int roll = dice.rollDice(2);
-    Player roller = players.get(currentPlayerIndex);
-    System.out.println(roller.getName() + " rolled a " + roll);
-
-    if (roll == 7) {
-      System.out.println("A 7 was rolled! The Robber is striking.");
-      Set<Player> stealablePlayers = board.moveRobberToRandomTile(rng);
-      robPlayers(stealablePlayers);
-
-    } else {
-      board.notifyTilesOfRoll(roll);
-    }
-  }
-
-  private void robPlayers(Set<Player> stealablePlayers) {
-    Player roller = players.get(currentPlayerIndex);
-    for (Player player : players) {
-      if (player.getResourceCountTotal() > 7) {
-        System.out.println(player.getName() + " has too many cards and loses half!");
-        player.dropHalfResources(rng);
-      }
-    }
-
-    Set<Player> temp = new HashSet<>();
-    for (Player player : stealablePlayers) {
-      if (player != roller && player.getResourceCountTotal() > 0) {
-        temp.add(player);
-      }
-    }
-
-    List<Player> stealablePlayersList = new ArrayList<>(temp);
-
-    if (!stealablePlayersList.isEmpty()) {
-      Player target = stealablePlayersList.get(rng.nextInt(stealablePlayersList.size()));
-      Resource stolenResource = target.stealRandomResource(rng);
-
-      if (stolenResource != null) {
-        roller.addResource(stolenResource, 1);
-        System.out.println(roller.getName() + " stole 1 " + stolenResource + " from " + target.getName());
-      }
-      
-    } else {
-      System.out.println("No one to steal from!");
     }
   }
 

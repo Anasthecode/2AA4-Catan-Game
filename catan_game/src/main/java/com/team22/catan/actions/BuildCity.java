@@ -33,18 +33,21 @@ public class BuildCity implements Action {
 	 * 
 	 */
 	@Override
-	public void execute() {
+	public boolean execute() {
 		City city = new City(player);
     if (!player.canAfford(city.getCost())) {
 			System.out.println(player.getName() +
 					" attempted to build a new city but could not afford it.");
+			return false;
 		} else if (!board.canPlaceCityAt(nodePosition, player, game.getState())) {
 			System.out.println(player.getName() + " attempted to build a new city but failed.");
+			return false;
 		} else {
 			player.build(city);
 			player.addVictoryPoints(1);
 			board.placeCityAt(nodePosition, city, game.getState());
 			System.out.println(player.getName() + " placed a city at " + nodePosition);
+			return true;
 		}
 	}
 }

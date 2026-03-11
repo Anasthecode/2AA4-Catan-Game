@@ -26,8 +26,8 @@ public interface Board {
   public boolean canPlaceCityAt(NodePosition position, Player player, GameState gameState);
   public void placeCityAt(NodePosition position, City city, GameState gameState);
 
-  public boolean canPlaceRoadAt(EdgePosition position, Player player);
-  public void placeRoadAt(EdgePosition position, Road Road);
+  public boolean canPlaceRoadAt(EdgePosition position, Player player, GameState gameState);
+  public void placeRoadAt(EdgePosition position, Road Road, GameState gameState);
 
   public Set<Player> moveRobberToRandomTile(Random rng);
 }

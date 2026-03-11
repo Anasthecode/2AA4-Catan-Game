@@ -5,6 +5,7 @@
 package com.team22.catan.actions;
 
 import com.team22.catan.game.Game;
+import com.team22.catan.game.GameState;
 import com.team22.catan.game.Player;
 
 /************************************************************/
@@ -26,8 +27,15 @@ public class EndTurn implements Action {
 	 * 
 	 */
 	@Override
-	public void execute() {
-		System.out.println(player.getName() + " has ended their turn. ");
-		game.onEndTurn();
+	public boolean execute() {
+		if (game.getState() == GameState.SETUP || player.getDiceRolled()) {
+			System.out.println(player.getName() + " has ended their turn. ");
+			player.setDiceRolled(false);
+			game.onEndTurn();
+			return true;
+		} else {
+			System.out.println(player.getName() + " still needs to roll before ending their turn!");
+			return false;
+		}
 	}
 }

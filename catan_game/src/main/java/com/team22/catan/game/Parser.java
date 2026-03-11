@@ -36,13 +36,11 @@ public class Parser {
         String input = scanner.nextLine().trim();
 
         if (LIST_PATTERN.matcher(input).matches()) {
-            System.out.println("Inventory: \n" + player.getInventory().toString());
-            return null;
+            return new DisplayInventory(player);
         }
 
         if (ROLL_PATTERN.matcher(input).matches()) {
-            System.out.println("Roll command acknowledged.");
-            return null;
+            return new GenerateResources(player, game);
         }
 
         Matcher settlementMatcher = BUILD_SETTLEMENT_PATTERN.matcher(input);

@@ -13,6 +13,7 @@ import com.team22.catan.actions.BuildCity;
 import com.team22.catan.actions.BuildRoad;
 import com.team22.catan.actions.BuildSettlement;
 import com.team22.catan.actions.EndTurn;
+import com.team22.catan.actions.GenerateResources;
 import com.team22.catan.board.EdgePosition;
 import com.team22.catan.board.NodePosition;
 import com.team22.catan.structures.City;
@@ -56,7 +57,7 @@ public class ComputerPlayer extends Player {
 
     List<Action> possibleRoadPlacements = new ArrayList<>();
     for (EdgePosition edgePosition : game.getBoard().getEdgePositions()) {
-      if (game.getBoard().canPlaceRoadAt(edgePosition, this)) {
+      if (game.getBoard().canPlaceRoadAt(edgePosition, this, game.getState())) {
         possibleRoadPlacements.add(new BuildRoad(this, game, edgePosition));
       }
     }
@@ -68,6 +69,10 @@ public class ComputerPlayer extends Player {
 
   private List<Action> getAvailableActions(Game game) {
     List<Action> actionsToReturn = new ArrayList<>();
+    if (!diceRolled) {
+      actionsToReturn.add(new GenerateResources(this, game));
+    }
+    
     for (NodePosition nodePosition : game.getBoard().getNodePositions()) {
       if (game.getBoard().canPlaceSettlementAt(nodePosition, this, game.getState()) &&
           canAfford(new Settlement(this).getCost())) {
@@ -83,7 +88,7 @@ public class ComputerPlayer extends Player {
     }
 
     for (EdgePosition edgePosition : game.getBoard().getEdgePositions()) {
-      if (game.getBoard().canPlaceRoadAt(edgePosition, this) &&
+      if (game.getBoard().canPlaceRoadAt(edgePosition, this, game.getState()) &&
           canAfford(new Road(this).getCost())) {
 
         actionsToReturn.add(new BuildRoad(this, game, edgePosition));
@@ -92,7 +97,7 @@ public class ComputerPlayer extends Player {
 
     // Only allow the player to end their turn if they either have less
     // than 7 cards or they can't build anything
-    if (getResourceCountTotal() < 7 || actionsToReturn.isEmpty()) {
+    if ((getResourceCountTotal() < 7 || actionsToReturn.isEmpty()) && diceRolled) {
       actionsToReturn.add(new EndTurn(this, game));
     }
 

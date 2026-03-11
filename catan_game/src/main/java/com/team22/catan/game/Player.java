@@ -32,6 +32,8 @@ public abstract class Player {
 	private final EnumMap<Resource, Integer> inventory;
 	private int victoryPoints;
 
+	protected boolean diceRolled;
+
 	public Player(String name, PlayerColor color) {
 		playerName = name;
 		this.color = color;
@@ -39,6 +41,8 @@ public abstract class Player {
 		for (Resource resource : Resource.values()) {
 			inventory.put(resource, 0);
 		}
+
+		diceRolled = false;
 	}
 
 	public String getName() {
@@ -165,6 +169,14 @@ public abstract class Player {
 		Resource stolen = availableCards.get(rng.nextInt(availableCards.size()));
 		inventory.put(stolen, inventory.get(stolen) - 1);
 		return stolen;
+	}
+
+	public void setDiceRolled(boolean diceRolled) {
+		this.diceRolled = diceRolled;
+	}
+
+	public boolean getDiceRolled() {
+		return diceRolled;
 	}
 
 	public abstract void onTurn(Game game);

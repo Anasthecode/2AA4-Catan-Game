@@ -42,7 +42,7 @@ public class BuildRoadTest {
 
         buildRoad.execute();
 
-        verify(board, never()).placeRoadAt(any(EdgePosition.class), any(Road.class));
+        verify(board, never()).placeRoadAt(any(EdgePosition.class), any(Road.class), any(GameState.class));
     }
 
     @Test
@@ -50,11 +50,11 @@ public class BuildRoadTest {
         /* Game is still at setup but the player can place their setup*/
         when(game.getState()).thenReturn(GameState.SETUP);
         when(player.getName()).thenReturn("PlacedSetupRoad");
-        when(board.canPlaceRoadAt(any(EdgePosition.class), any(Player.class))).thenReturn(true);
+        when(board.canPlaceRoadAt(any(EdgePosition.class), any(Player.class), any(GameState.class))).thenReturn(true);
 
         buildRoad.execute();
 
-        verify(board).placeRoadAt(any(EdgePosition.class), any(Road.class));
+        verify(board).placeRoadAt(any(EdgePosition.class), any(Road.class), any(GameState.class));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class BuildRoadTest {
 
         verify(player).canAfford(any());
         verify(player, never()).build(any(Road.class));
-        verify(board, never()).placeRoadAt(any(EdgePosition.class), any(Road.class));
+        verify(board, never()).placeRoadAt(any(EdgePosition.class), any(Road.class), any(GameState.class));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class BuildRoadTest {
 
         verify(player).canAfford(any());
         verify(player, never()).build(any(Road.class));
-        verify(board, never()).placeRoadAt(any(EdgePosition.class), any(Road.class));
+        verify(board, never()).placeRoadAt(any(EdgePosition.class), any(Road.class), any(GameState.class));
     }
 
     @Test
@@ -91,11 +91,11 @@ public class BuildRoadTest {
         when(game.getState()).thenReturn(GameState.PLAYING);
         when(player.canAfford(any())).thenReturn(true);
         when(player.getName()).thenReturn("CanPlace");
-        when(board.canPlaceRoadAt(edgePosition, player)).thenReturn(true);
+        when(board.canPlaceRoadAt(edgePosition, player, game.getState())).thenReturn(true);
 
         buildRoad.execute();
 
         verify(player).canAfford(any());
-        verify(board).placeRoadAt(any(EdgePosition.class), any(Road.class));
+        verify(board).placeRoadAt(any(EdgePosition.class), any(Road.class), any(GameState.class));
     }
 }

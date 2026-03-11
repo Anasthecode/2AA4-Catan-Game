@@ -90,8 +90,8 @@ public class NodeTest {
     nodeEdges.get(1).setNodes(middleNode, endingNode);
         
     startingNode.placeSettlement(new Settlement(player), GameState.SETUP);
-    nodeEdges.get(0).placeRoad(new Road(player));
-    nodeEdges.get(1).placeRoad(new Road(player));
+    nodeEdges.get(0).placeRoad(new Road(player), GameState.PLAYING);
+    nodeEdges.get(1).placeRoad(new Road(player), GameState.PLAYING);
 
     endingNode.placeSettlement(new Settlement(player), GameState.PLAYING);
     assertTrue(endingNode.hasStructure());

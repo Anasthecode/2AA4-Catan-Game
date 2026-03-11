@@ -6,6 +6,7 @@ package com.team22.catan.board;
 
 import java.util.List;
 
+import com.team22.catan.game.GameState;
 import com.team22.catan.game.Player;
 import com.team22.catan.structures.Road;
 
@@ -57,9 +58,23 @@ public class Edge {
 		return road != null;
 	}
 
-	public boolean canPlaceRoad(Player player) {
+	public boolean canPlaceRoad(Player player, GameState gameState) {
 		if (road != null) {
 			return false;
+		}
+
+		if (gameState == GameState.SETUP) {
+			for (Edge edge : startNode.getEdges()) {
+				if (edge.hasRoad()) {
+					return false;
+				}
+			}
+
+			for (Edge edge : endNode.getEdges()) {
+				if (edge.hasRoad()) {
+					return false;
+				}
+			}
 		}
 
 		if ((startNode.hasStructure() && startNode.getStructure().getOwner().equals(player)) ||
@@ -86,8 +101,8 @@ public class Edge {
 	 * 
 	 * @param road
 	 */
-	public void placeRoad(Road road) {
-		if (canPlaceRoad(road.getOwner())) {
+	public void placeRoad(Road road, GameState gameState) {
+		if (canPlaceRoad(road.getOwner(), gameState)) {
 			this.road = road;
 		} else {
 			throw new IllegalStateException("Cannot place road at " + position);
