@@ -37,7 +37,7 @@ To fully evaluate the interactive CLI and the live visualizer, you will need to 
 3. Activate your Python virtual environment if required.
 4. Run the visualizer in watch mode: 
    ```bash
-   python light_visualizer.py base_map.json TestingState.json --watch
+   python light_visualizer.py base_map.json dest/to/state.json --watch
 
 ## Functionality of the program:
 - **Interactive CLI:** Allows a human player to interact with the game using natural text commands (e.g., `Build settlement 12`, `Roll`, `Go`, `List`).
