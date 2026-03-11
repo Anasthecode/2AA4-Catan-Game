@@ -16,6 +16,7 @@ public class Parser {
     private static final Pattern BUILD_SETTLEMENT_PATTERN = Pattern.compile("^(?i)build\\s+settlement\\s+(\\d+)$");
     private static final Pattern BUILD_CITY_PATTERN = Pattern.compile("^(?i)build\\s+city\\s+(\\d+)$");
     private static final Pattern BUILD_ROAD_PATTERN = Pattern.compile("^(?i)build\\s+road\\s+(\\d+)\\s*,\\s*(\\d+)$");
+    private static final Pattern TRADE_PATTERN = Pattern.compile("^(?i)trade\\s+(\\d+)\\s+(\\w+)\\s+for\\s+(\\d+)\\s+(\\w+)$");
 
     public Parser() {
         this.scanner = new Scanner(System.in);
@@ -97,7 +98,7 @@ public class Parser {
             }
         }
 
-        if (input.equalsIgnoreCase("end")) {
+        if (GO_PATTERN.matcher(input).matches()) {
             return new EndTurn(player, game);
         }
 
