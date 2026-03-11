@@ -7,6 +7,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
   DiceTest.class,
-  GameTest.class
+  GameTest.class,
+  ParserTest.class
 })
 public class GameTests {}

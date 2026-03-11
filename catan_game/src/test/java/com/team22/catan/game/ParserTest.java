@@ -56,4 +56,44 @@ public class ParserTest {
     Action action = parser.parseCommandFromString(game.getPlayers().get(0), game, "Build city 0");
     assertTrue(action instanceof BuildCity);
   }
+
+  @Test
+  public void parseInvalidCommand() {
+    Parser parser = new Parser();
+    Game game = new GameFactory(0, 4).createGame();
+    Action action = parser.parseCommandFromString(game.getPlayers().get(0), game, "Rol");
+    assertTrue(action == null);
+  }
+
+  @Test
+  public void parseBuildSettlementInvalidNode() {
+    Parser parser = new Parser();
+    Game game = new GameFactory(0, 4).createGame();
+    Action action = parser.parseCommandFromString(game.getPlayers().get(0), game, "Build settlement 100");
+    assertTrue(action == null);
+  }
+
+  @Test
+  public void parseBuildCityInvalidNode() {
+    Parser parser = new Parser();
+    Game game = new GameFactory(0, 4).createGame();
+    Action action = parser.parseCommandFromString(game.getPlayers().get(0), game, "Build city 100");
+    assertTrue(action == null);
+  }
+
+  @Test
+  public void parseBuildRoadInvalidNode() {
+    Parser parser = new Parser();
+    Game game = new GameFactory(0, 4).createGame();
+    Action action = parser.parseCommandFromString(game.getPlayers().get(0), game, "Build road 100,101");
+    assertTrue(action == null);
+  }
+
+  @Test
+  public void parseBuildRoadNonAdjacentNodes() {
+    Parser parser = new Parser();
+    Game game = new GameFactory(0, 4).createGame();
+    Action action = parser.parseCommandFromString(game.getPlayers().get(0), game, "Build road 0,53");
+    assertTrue(action == null);
+  }
 }

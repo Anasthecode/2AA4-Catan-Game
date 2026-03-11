@@ -45,7 +45,11 @@ public class Parser {
         Matcher settlementMatcher = BUILD_SETTLEMENT_PATTERN.matcher(input);
         if (settlementMatcher.matches()) {
             int nodeId = Integer.parseInt(settlementMatcher.group(1));
-            NodePosition pos = game.getBoard().getNodePositions().get(nodeId);
+            NodePosition pos = null;
+            if (nodeId < game.getBoard().getNodePositions().size()) {
+                pos = game.getBoard().getNodePositions().get(nodeId);
+            }
+
             if (pos != null) {
                 return new BuildSettlement(player, game, pos);
             } else {
@@ -57,7 +61,11 @@ public class Parser {
         Matcher cityMatcher = BUILD_CITY_PATTERN.matcher(input);
         if (cityMatcher.matches()) {
             int nodeId = Integer.parseInt(cityMatcher.group(1));
-            NodePosition pos = game.getBoard().getNodePositions().get(nodeId);
+            NodePosition pos = null;
+            if (nodeId < game.getBoard().getNodePositions().size()) {
+                pos = game.getBoard().getNodePositions().get(nodeId);
+            }
+            
             if (pos != null) {
                 return new BuildCity(player, game, pos);
             } else {
@@ -71,8 +79,14 @@ public class Parser {
             int node1Id = Integer.parseInt(roadMatcher.group(1));
             int node2Id = Integer.parseInt(roadMatcher.group(2));
 
-            NodePosition pos1 = game.getBoard().getNodePositions().get(node1Id);
-            NodePosition pos2 = game.getBoard().getNodePositions().get(node2Id);
+            NodePosition pos1 = null;
+            NodePosition pos2 = null;
+
+            int nodesSize = game.getBoard().getNodePositions().size();
+            if (node1Id < nodesSize && node2Id < nodesSize) {
+                pos1 = game.getBoard().getNodePositions().get(node1Id);
+                pos2 = game.getBoard().getNodePositions().get(node2Id);
+            }
 
             if (pos1 != null && pos2 != null) {
 
