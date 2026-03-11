@@ -2,7 +2,7 @@
 
 # Catan Game Simulation
  
-**Project Tracking:** [Kanban Board](LINK)
+**Project Tracking:** [Kanban Board](https://github.com/users/Anasthecode/projects/1)
 
 **Names:** 
 - Michael Mondaini [@SharkieBite](https://www.github.com/SharkieBite)
