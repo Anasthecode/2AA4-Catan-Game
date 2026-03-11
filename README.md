@@ -32,12 +32,34 @@ To fully evaluate the interactive CLI and the live visualizer, you will need to 
 4. Follow the CLI prompts in the console to take your turn as the Human player.
 
 **Step 2: Start the Live Python Visualizer**
-1. Open a new terminal window.
-2. Navigate to the visualizer directory: `cd assignments/visualize/`
-3. Activate your Python virtual environment if required.
-4. Run the visualizer in watch mode: 
+1. Load the visualizer submodule using `git submodule update --init` after cloning this repository. Then open the visualizer directory
    ```bash
-   python light_visualizer.py base_map.json dest/to/state.json --watch
+   git submodule update --init
+   cd 2aa4-2026-base/assignments/visualize/
+   ```
+2. Create and activate a python virtual environment
+   ```bash
+   python3.12 -m venv .venv
+   source .venv/bin/activate
+   ```
+3. Install required dependencies
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Clone the catanatron repository
+   ```bash
+   git clone -b gym-rendering https://github.com/bcollazo/catanatron.git
+   cd catanatron
+   ```
+5. Install dependencies for Catanatron
+   ```bash
+   pip install -e ".[web,gym,dev]"
+   ```
+6. Return to the visualizer directory and start the visualizer program
+   ```bash
+   cd ..
+   python light_visualizer.py base_map.json --watch
+   ```
 
 ## Functionality of the program:
 - **Interactive CLI:** Allows a human player to interact with the game using natural text commands (e.g., `Build settlement 12`, `Roll`, `Go`, `List`).
