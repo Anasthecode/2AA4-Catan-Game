@@ -64,7 +64,7 @@ public class Tile {
 
 	public List<NodePosition> corners() {
 		List<NodePosition> cornerNodePositions = new ArrayList<>();
-			cornerNodePositions.add(
+		cornerNodePositions.add(
 				new NodePosition(position.getQ(), position.getR(), RelativeNodeLocation.NORTH));
 		cornerNodePositions.add(
 				new NodePosition(position.getQ() + 1, position.getR() - 1, RelativeNodeLocation.SOUTH));

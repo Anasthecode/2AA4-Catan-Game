@@ -11,12 +11,12 @@ public class TileTest {
   public void cornersTest() {
     Tile tile = new Tile(new AxialPosition(0, 0), 0, null);
     List<NodePosition> corners = tile.corners();
-    assertEquals(new NodePosition(1, -1, RelativeNodeLocation.SOUTH), corners.get(0));
-    assertEquals(new NodePosition(0, 0,  RelativeNodeLocation.NORTH), corners.get(1));
-    assertEquals(new NodePosition(0, -1, RelativeNodeLocation.SOUTH), corners.get(2));
-    assertEquals(new NodePosition(-1, 1, RelativeNodeLocation.NORTH), corners.get(3));
-    assertEquals(new NodePosition(0, 0,  RelativeNodeLocation.SOUTH), corners.get(4));
-    assertEquals(new NodePosition(0, 1,  RelativeNodeLocation.NORTH), corners.get(5));
+    assertEquals(new NodePosition(0, 0,  RelativeNodeLocation.NORTH), corners.get(0));
+    assertEquals(new NodePosition(1, -1, RelativeNodeLocation.SOUTH), corners.get(1));
+    assertEquals(new NodePosition(0, 1,  RelativeNodeLocation.NORTH), corners.get(2));
+    assertEquals(new NodePosition(0, 0,  RelativeNodeLocation.SOUTH), corners.get(3));
+    assertEquals(new NodePosition(-1, 1, RelativeNodeLocation.NORTH), corners.get(4));
+    assertEquals(new NodePosition(0, -1, RelativeNodeLocation.SOUTH), corners.get(5));
   }
 
   @Test
