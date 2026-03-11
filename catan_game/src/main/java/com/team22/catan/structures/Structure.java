@@ -9,9 +9,9 @@ import java.util.EnumMap;
 import com.team22.catan.game.Player;
 import com.team22.catan.game.Resource;
 
-/************************************************************/
 /**
- * 
+ * Abstract base class representing entities on the board.
+ * Subclasses define specific victory point values and resource costs.
  */
 public abstract class Structure {
 	/**

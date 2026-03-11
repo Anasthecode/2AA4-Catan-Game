@@ -7,6 +7,11 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Handles all Command Line Interface (CLI) input from the human player.
+ * Uses Regular Expressions (Regex) to securely parse user strings and map them
+ * to executable Action objects (Command Pattern).
+ */
 public class Parser {
     private Scanner scanner;
 

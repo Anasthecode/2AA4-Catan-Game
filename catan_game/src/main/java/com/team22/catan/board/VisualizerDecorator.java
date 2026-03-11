@@ -19,6 +19,13 @@ import com.team22.catan.structures.City;
 import com.team22.catan.structures.Road;
 import com.team22.catan.structures.Settlement;
 
+/**
+ * Applies the Decorator design pattern to the Board interface.
+ * This class wraps the CatanBoard and intercepts all structural placement calls
+ * (Settlements, Cities, Roads). It exports the game's internal state into
+ * a JSON format expected by the external Python visualizer without modifying the
+ * underlying board logic, adhering to the Open/Closed Principle.
+ */
 public class VisualizerDecorator implements Board {
     private enum VisualizerBuildingType {
         SETTLEMENT,
