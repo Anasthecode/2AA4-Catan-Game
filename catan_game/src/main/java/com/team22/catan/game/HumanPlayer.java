@@ -23,7 +23,7 @@ public class HumanPlayer extends Player {
     if (game.getState() == GameState.SETUP) {
       setupTurn(game);
     } else if (diceRolled) {
-      System.out.println("Enter a command (List, Build [type] [id], End):");
+      System.out.println("Enter a command (List, Build [type] [id], Go):");
       Action action = parser.parseCommand(this, game);
 
       if (action instanceof GenerateResources) {
@@ -33,7 +33,7 @@ public class HumanPlayer extends Player {
       }
 
     } else {
-      System.out.println("Enter a command (Roll, List, Build [type] [id], End):");
+      System.out.println("Enter a command (Roll, List, Build [type] [id]):");
       Action action = parser.parseCommand(this, game);
       if (action != null) {
         action.execute();
@@ -44,7 +44,7 @@ public class HumanPlayer extends Player {
   private void setupTurn(Game game) {
     boolean builtSettlement = false;
     while (!builtSettlement) {
-      System.out.println("Place your first settlement (Build settlement [id])");
+      System.out.println("Place your initial settlement (Build settlement [id])");
 
       Action action = parser.parseCommand(this, game);
 
@@ -57,7 +57,7 @@ public class HumanPlayer extends Player {
 
     boolean builtRoad = false;
     while (!builtRoad) {
-      System.out.println("Place your first road (Build road [id,id])");
+      System.out.println("Place your intial road connecting to the settlement (Build road [id,id])");
 
       Action action = parser.parseCommand(this, game);
 

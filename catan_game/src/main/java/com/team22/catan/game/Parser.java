@@ -80,8 +80,7 @@ public class Parser {
 
                 EdgePosition edgePos = null;
                 for (EdgePosition edgePosition : game.getBoard().getEdgePositions()) {
-                    if ((edgePosition.endpoints().contains(pos1) && edgePosition.endpoints().contains(pos2)) ||
-                        (edgePosition.endpoints().contains(pos2) && edgePosition.endpoints().contains(pos1))) {
+                    if (edgePosition.endpoints().contains(pos1) && edgePosition.endpoints().contains(pos2)) {
                         edgePos = edgePosition;
                     }
                 }
