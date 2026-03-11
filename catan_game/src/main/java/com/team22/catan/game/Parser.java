@@ -33,9 +33,7 @@ public class Parser {
         }
     }
 
-    public Action parseCommand(Player player, Game game) {
-        String input = scanner.nextLine().trim();
-
+    public Action parseCommandFromString(Player player, Game game, String input) {
         if (LIST_PATTERN.matcher(input).matches()) {
             return new DisplayInventory(player);
         }
@@ -103,5 +101,10 @@ public class Parser {
 
         System.out.println("Invalid command. Please try again.");
         return null;
+    }
+    
+    public Action parseCommand(Player player, Game game) {
+        String input = scanner.nextLine().trim();
+        return parseCommandFromString(player, game, input);
     }
 }
