@@ -57,7 +57,7 @@ public class HumanPlayer extends Player {
 
     boolean builtRoad = false;
     while (!builtRoad) {
-      System.out.println("Place your intial road connecting to the settlement (Build road [id,id])");
+      System.out.println("Place your initial road connecting to the settlement (Build road [id, id])");
 
       Action action = parser.parseCommand(this, game);
 
