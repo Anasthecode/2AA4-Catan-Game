@@ -34,7 +34,7 @@ To fully evaluate the interactive CLI and the live visualizer, you will need to 
 3. Go to **Step 2** to setup the visualizer, or play in console by following the CLI prompts to take your turn as the Human player
 
 **Step 2: Start the Live Python Visualizer**
-1. Clone the visualizer repository with the directory containing the `catan_game-<version>.jar` file and open the `/visualize` directory
+1. Clone the visualizer repository while in the directory containing the `catan_game-<version>.jar` file and open the `/visualize` directory
    ```bash
    git clone https://github.com/ssm-lab/2aa4-2026-base.git
    cd 2aa4-2026-base/assignments/visualize/
