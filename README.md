@@ -26,15 +26,17 @@ The simulation engine runs a full game between a mix of human and computer-contr
 To fully evaluate the interactive CLI and the live visualizer, you will need to run the Java engine and the Python visualizer simultaneously in two separate terminal windows.
 
 **Step 1: Start the Java Game Engine**
-1. Open the project in your preferred IDE (IntelliJ/Eclipse) or compile via Maven.
-2. Ensure your working directory is set to the root of the project (so the relative file paths for the JSON export work correctly).
-3. Run the main method located in: `src/main/java/com/team22/catan/game/Demonstrator.java`
-4. Follow the CLI prompts in the console to take your turn as the Human player.
+1. Download the latest jar file located in [Releases](https://github.com/Anasthecode/2AA4-Catan-Game/releases).
+2. Run the jar file using the following command, replacing `<version>` with the current version of the game (e.g., `2.0.0`)
+   ```bash
+   java -jar catan_game-<version>.jar
+   ```
+3. Go to **Step 2** to setup the visualizer, or play in console by following the CLI prompts to take your turn as the Human player
 
 **Step 2: Start the Live Python Visualizer**
-1. Load the visualizer submodule using `git submodule update --init` after cloning this repository. Then open the visualizer directory
+1. Clone the visualizer repository with the directory containing the `catan_game-<version>.jar` file and open the `/visualize` directory
    ```bash
-   git submodule update --init
+   git clone https://github.com/ssm-lab/2aa4-2026-base.git
    cd 2aa4-2026-base/assignments/visualize/
    ```
 2. Create and activate a python virtual environment
