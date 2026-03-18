@@ -173,6 +173,11 @@ public class CatanBoard implements Board {
 	}
 
 	@Override
+	public Settlement removeSettlementAt(NodePosition position) {
+		return nodes.get(position).removeSettlement();
+	}
+
+	@Override
 	public boolean canPlaceCityAt(NodePosition position, Player player, GameState gameState) {
 		return nodes.get(position).canPlaceCity(player, gameState);
 	}
@@ -183,6 +188,11 @@ public class CatanBoard implements Board {
 	}
 
 	@Override
+	public City removeCityAt(NodePosition position) {
+		return nodes.get(position).removeCity();
+	}
+
+	@Override
 	public boolean canPlaceRoadAt(EdgePosition position, Player player, GameState gameState) {
 		return edges.get(position).canPlaceRoad(player, gameState);
 	}
@@ -190,6 +200,11 @@ public class CatanBoard implements Board {
 	@Override
 	public void placeRoadAt(EdgePosition position, Road Road, GameState gameState) {
 		edges.get(position).placeRoad(Road, gameState);
+	}
+
+	@Override
+	public Road removeRoadAt(EdgePosition position) {
+		return edges.get(position).removeRoad();
 	}
 
 	/**

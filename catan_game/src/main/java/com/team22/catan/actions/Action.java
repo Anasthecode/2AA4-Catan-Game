@@ -14,5 +14,5 @@ public interface Action {
 	 * 
 	 */
 	public boolean execute();
-	public void unExecute();
+	public void undo();
 }

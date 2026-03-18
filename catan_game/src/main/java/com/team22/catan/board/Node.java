@@ -6,6 +6,7 @@ package com.team22.catan.board;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import com.team22.catan.game.GameState;
 import com.team22.catan.game.Player;
@@ -74,6 +75,14 @@ public class Node {
 		return structure != null;
 	}
 
+	public boolean hasSettlement() {
+		return structure instanceof Settlement;
+	}
+
+	public boolean hasCity() {
+		return structure instanceof City;
+	}
+
 	public boolean canPlaceSettlement(Player player, GameState gameState) {
 		if (structure != null) {
 			return false;
@@ -136,11 +145,31 @@ public class Node {
 		}
 	}
 
+	public Settlement removeSettlement() {
+		if (hasSettlement()) {
+			Settlement settlement = (Settlement) structure;
+			structure = null;
+			return settlement;
+		} else {
+			throw new NoSuchElementException("No settlement currently on node " + position);
+		}
+	}
+
 	public void placeCity(City city, GameState gameState) {
 		if (canPlaceCity(city.getOwner(), gameState)) {
 			this.structure = city;
 		} else {
 			throw new IllegalStateException("Cannot place city at " + position);
+		}
+	}
+
+	public City removeCity() {
+		if (hasCity()) {
+			City city = (City) structure;
+			structure = new Settlement(city.getOwner());
+			return city;
+		} else {
+			throw new NoSuchElementException("No city currently on node " + position);
 		}
 	}
 

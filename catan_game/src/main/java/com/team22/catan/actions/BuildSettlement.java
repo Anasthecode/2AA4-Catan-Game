@@ -4,6 +4,8 @@
 
 package com.team22.catan.actions;
 
+import java.util.Map.Entry;
+
 import com.team22.catan.board.Board;
 import com.team22.catan.board.NodePosition;
 import com.team22.catan.game.Game;
@@ -27,14 +29,14 @@ public class BuildSettlement implements Action {
 	 */
 	public BuildSettlement(Player player, Game game, NodePosition nodePosition) {
 		this.player = player;
-    this.nodePosition = nodePosition;
+		this.nodePosition = nodePosition;
 		this.game = game;
-    board = game.getBoard();
+		board = game.getBoard();
 	}
 
 	@Override
 	public boolean execute() {
-    Settlement settlement = new Settlement(player);
+		Settlement settlement = new Settlement(player);
 		if (game.getState() == GameState.SETUP) {
 			if (!board.canPlaceSettlementAt(nodePosition, player, game.getState())) {
 				System.out.println(player.getName() + " attempted to build a settlement but failed.");
@@ -64,7 +66,13 @@ public class BuildSettlement implements Action {
 	}
 
 	@Override
-	public void unExecute() {
+	public void undo() {
+		System.out.println("Undoing build settlement action");
+		Settlement removedSettlement = board.removeSettlementAt(nodePosition);
+		for (Entry<Resource, Integer> resource : removedSettlement.getCost().entrySet()) {
+			player.addResource(resource.getKey(), resource.getValue());
+		}
 
+		player.addVictoryPoints(-1);
 	}
 }

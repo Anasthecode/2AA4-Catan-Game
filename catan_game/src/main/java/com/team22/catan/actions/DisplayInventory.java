@@ -16,7 +16,7 @@ public class DisplayInventory implements Action {
   }
 
   @Override
-  public void unExecute() {
+  public void undo() {
     // Since this doesn't change the state, no need to worry about it
     System.out.println("Inventory: \n" + player.getInventory().toString());
   }

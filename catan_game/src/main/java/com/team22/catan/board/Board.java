@@ -22,12 +22,15 @@ public interface Board {
 
   public boolean canPlaceSettlementAt(NodePosition position, Player player, GameState gameState);
   public void placeSettlementAt(NodePosition position, Settlement settlement, GameState gameState);
+  public Settlement removeSettlementAt(NodePosition position);
 
   public boolean canPlaceCityAt(NodePosition position, Player player, GameState gameState);
   public void placeCityAt(NodePosition position, City city, GameState gameState);
+  public City removeCityAt(NodePosition position);
 
   public boolean canPlaceRoadAt(EdgePosition position, Player player, GameState gameState);
   public void placeRoadAt(EdgePosition position, Road Road, GameState gameState);
+  public Road removeRoadAt(EdgePosition position);
 
   public Set<Player> moveRobberToRandomTile(Random rng);
 }

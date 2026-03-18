@@ -5,6 +5,7 @@
 package com.team22.catan.board;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import com.team22.catan.game.GameState;
 import com.team22.catan.game.Player;
@@ -106,6 +107,16 @@ public class Edge {
 			this.road = road;
 		} else {
 			throw new IllegalStateException("Cannot place road at " + position);
+		}
+	}
+
+	public Road removeRoad() {
+		if (hasRoad()) {
+			Road previousRoad = road;
+			road = null;
+			return previousRoad;
+		} else {
+			throw new NoSuchElementException("No road currently on edge " + position);
 		}
 	}
 

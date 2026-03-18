@@ -4,11 +4,14 @@
 
 package com.team22.catan.actions;
 
+import java.util.Map.Entry;
+
 import com.team22.catan.board.Board;
 import com.team22.catan.board.EdgePosition;
 import com.team22.catan.game.Game;
 import com.team22.catan.game.GameState;
 import com.team22.catan.game.Player;
+import com.team22.catan.game.Resource;
 import com.team22.catan.structures.Road;
 
 /************************************************************/
@@ -64,7 +67,11 @@ public class BuildRoad implements Action {
 	}
 
 	@Override
-	public void unExecute() {
-
+	public void undo() {
+		System.out.println("Undoing build road action");
+		Road removedRoad = board.removeRoadAt(edgePosition);
+		for (Entry<Resource, Integer> resource : removedRoad.getCost().entrySet()) {
+			player.addResource(resource.getKey(), resource.getValue());
+		}
 	}
 }

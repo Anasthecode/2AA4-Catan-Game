@@ -4,10 +4,13 @@
 
 package com.team22.catan.actions;
 
+import java.util.Map.Entry;
+
 import com.team22.catan.board.Board;
 import com.team22.catan.board.NodePosition;
 import com.team22.catan.game.Game;
 import com.team22.catan.game.Player;
+import com.team22.catan.game.Resource;
 import com.team22.catan.structures.City;
 
 /************************************************************/
@@ -51,6 +54,13 @@ public class BuildCity implements Action {
 	}
 
 	@Override
-	public void unExecute() {
+	public void undo() {
+		System.out.println("Undoing build city action");
+		City removedCity = board.removeCityAt(nodePosition);
+		for (Entry<Resource, Integer> resource : removedCity.getCost().entrySet()) {
+			player.addResource(resource.getKey(), resource.getValue());
+		}
+		
+		player.addVictoryPoints(-1);
 	}
 }
