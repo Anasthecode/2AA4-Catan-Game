@@ -13,55 +13,38 @@ import com.team22.catan.game.Player;
  * 
  */
 public class EndTurn implements Action {
-	private Player player;
-	private Game game;
+  private Player player;
+  private Game game;
 
-	// First attempt at unExecute, might get changed later on
-	private boolean wasSetup;
-	private boolean hasRolled;
-	private Player previousPlayer;
+  /**
+   * 
+   */
+  public EndTurn(Player player, Game game) {
+    this.player = player;
+    this.game = game;
+  }
 
-	/**
-	 * 
-	 */
-	public EndTurn(Player player, Game game) {
-		this.player = player;
-		this.game = game;
-	}
+  @Override
+  public boolean execute() {
 
+    if (game.getState() == GameState.SETUP || player.getDiceRolled()) {
+      System.out.println(player.getName() + " has ended their turn. ");
+      player.setDiceRolled(false);
+      game.onEndTurn();
+      return true;
+    } else {
+      System.out.println(player.getName() + " still needs to roll before ending their turn!");
+      return false;
+    }
+  }
 
-	@Override
-	public boolean execute() {
-		this.wasSetup = (game.getState() == GameState.SETUP);
-		this.hasRolled = player.getDiceRolled();
+  public void undo() {
+    int currentPlayerIndex = game.getCurrentPlayerIndex();
+    currentPlayerIndex--;
+    if (currentPlayerIndex < 0) {
+      currentPlayerIndex = game.getPlayers().size() - 1;
+    }
 
-		if (this.wasSetup || this.hasRolled) {
-			System.out.println(player.getName() + " has ended their turn. ");
-			player.setDiceRolled(false);
-			game.onEndTurn();
-			return true;
-		} else {
-			System.out.println(player.getName() + " still needs to roll before ending their turn!");
-			return false;
-		}
-	}
-
-	public void undo() {
-//		if (!this.wasSetup || !this.hasRolled) {
-//			System.out.println(player.getName() + " still needs to roll before ending their turn!");
-//		}
-//		if (this.wasSetup) {
-//			// game.setState(GameState.SETUP)
-//			// The code does not have that I believe
-//
-//			// game.setPlayer(this.PreviousPlayer)
-//		} else {
-//			// game.setPlayer(this.PreviousPlayer)
-//		}
-//
-//		player.setDiceRolled(this.hasRolled);
-//
-//		System.out.println("Undid end turn for " + player.getName() +
-//				". Turn returned to " + player.getName());
-	}
+    game.setCurrentPlayerIndex(currentPlayerIndex);
+  }
 }

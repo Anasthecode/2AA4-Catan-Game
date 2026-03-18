@@ -52,6 +52,18 @@ public class Game {
     return new ArrayList<>(players);
   }
 
+  public int getCurrentPlayerIndex() {
+    return currentPlayerIndex;
+  }
+
+  public void setCurrentPlayerIndex(int index) {
+    if (index < 0 || index >= players.size()) {
+      throw new IllegalArgumentException("Player index must be between 0 and the player count");
+    }
+
+    currentPlayerIndex = index;
+  }
+
   /**
    * @return Returns the board obj
    */
