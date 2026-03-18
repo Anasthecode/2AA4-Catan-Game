@@ -33,12 +33,10 @@ public class VisualizerDecorator implements Board {
     CITY
   }
 
+  @SuppressWarnings("unused")
   private static class VisualizerBuilding {
-    @SuppressWarnings("unused")
     private int node;
-    @SuppressWarnings("unused")
     private PlayerColor owner;
-    @SuppressWarnings("unused")
     private VisualizerBuildingType type;
 
     public VisualizerBuilding(
@@ -52,12 +50,14 @@ public class VisualizerDecorator implements Board {
     public int getNode() {
       return node;
     }
+
+    public PlayerColor getOwner() {
+      return owner;
+    }
   }
 
   private static class VisualizerRoad {
-    @SuppressWarnings("unused")
     private int a;
-    @SuppressWarnings("unused")
     private int b;
     @SuppressWarnings("unused")
     private PlayerColor owner;
@@ -66,6 +66,14 @@ public class VisualizerDecorator implements Board {
       this.a = a;
       this.b = b;
       this.owner = owner;
+    }
+
+    public int getA() {
+      return a;
+    }
+
+    public int getB() {
+      return b;
     }
   }
 
@@ -86,16 +94,29 @@ public class VisualizerDecorator implements Board {
       roads.add(road);
     }
 
-    public void removeBuilding(int node) {
+    public VisualizerBuilding removeBuilding(int node) {
       for (VisualizerBuilding building : buildings) {
-        buildings.remove(building);
-        break;
+        if (building.getNode() == node) {
+          buildings.remove(building);
+          return building;
+        }
       }
+
+      return null;
     }
 
-    public List<VisualizerBuilding> getBuildings() {
-      return buildings;
+    public VisualizerRoad removeRoad(int a, int b) {
+      for (VisualizerRoad road : roads) {
+        if ((road.getA() == a && road.getB() == b) ||
+            road.getA() == b && road.getB() == a) {
+          roads.remove(road);
+          return road;
+        }
+      }
+
+      return null;
     }
+
   }
 
   private static class VisualizerTile {
@@ -229,13 +250,7 @@ public class VisualizerDecorator implements Board {
         visualizerFail();
       }
 
-      if (visualizerEnabled) {
-        try (FileWriter writer = new FileWriter(statePath, false)) {
-          writer.write(gson.toJson(visualizerState));
-        } catch (IOException e) {
-          visualizerFail();
-        }
-      }
+      rewriteState();
     }
   }
 
@@ -248,14 +263,8 @@ public class VisualizerDecorator implements Board {
       } catch (IOException e) {
         visualizerFail();
       }
-    }
 
-    if (visualizerEnabled) {
-      try (FileWriter writer = new FileWriter(statePath, false)) {
-        writer.write(gson.toJson(visualizerState));
-      } catch (IOException e) {
-        visualizerFail();
-      }
+      rewriteState();
     }
 
     return aBoard.removeSettlementAt(position);
@@ -273,29 +282,39 @@ public class VisualizerDecorator implements Board {
     if (visualizerEnabled) {
       try (FileReader reader = new FileReader(statePath)) {
         visualizerState = gson.fromJson(reader, VisualizerState.class);
-        for (VisualizerBuilding building : visualizerState.getBuildings()) {
-          if (building.getNode() == getNodePositions().indexOf(position)) {
-            visualizerState.getBuildings().remove(building);
-            break;
-          }
-        }
-
-        visualizerState.addBuilding(new VisualizerBuilding(
-            getNodePositions().indexOf(position),
+        int node = getNodePositions().indexOf(position);
+        visualizerState.removeBuilding(node);
+        visualizerState.addBuilding(new VisualizerBuilding(node,
             city.getOwner().getColor(),
             VisualizerBuildingType.CITY));
       } catch (IOException e) {
         visualizerFail();
       }
 
-      if (visualizerEnabled) {
-        try (FileWriter writer = new FileWriter(statePath, false)) {
-          writer.write(gson.toJson(visualizerState));
-        } catch (IOException e) {
-          visualizerFail();
-        }
-      }
+      rewriteState();
     }
+  }
+
+  @Override
+  public City removeCityAt(NodePosition position) {
+    if (visualizerEnabled) {
+      try (FileReader reader = new FileReader(statePath)) {
+        visualizerState = gson.fromJson(reader, VisualizerState.class);
+        int node = getNodePositions().indexOf(position);
+        VisualizerBuilding oldBuilding = visualizerState.removeBuilding(
+            getNodePositions().indexOf(position));
+
+        visualizerState.addBuilding(new VisualizerBuilding(node,
+            oldBuilding.getOwner(),
+            VisualizerBuildingType.SETTLEMENT));
+      } catch (IOException e) {
+        visualizerFail();
+      }
+
+      rewriteState();
+    }
+
+    return aBoard.removeCityAt(position);
   }
 
   @Override
@@ -318,14 +337,26 @@ public class VisualizerDecorator implements Board {
         visualizerFail();
       }
 
-      if (visualizerEnabled) {
-        try (FileWriter writer = new FileWriter(statePath, false)) {
-          writer.write(gson.toJson(visualizerState));
-        } catch (IOException e) {
-          visualizerFail();
-        }
-      }
+      rewriteState();
     }
+  }
+
+  @Override
+  public Road removeRoadAt(EdgePosition position) {
+    if (visualizerEnabled) {
+      try (FileReader reader = new FileReader(statePath)) {
+        visualizerState = gson.fromJson(reader, VisualizerState.class);
+        visualizerState.removeRoad(
+            getNodePositions().indexOf(position.endpoints().get(0)),
+            getNodePositions().indexOf(position.endpoints().get(1)));
+      } catch (IOException e) {
+        visualizerFail();
+      }
+
+      rewriteState();
+    }
+
+    return aBoard.removeRoadAt(position);
   }
 
   @Override
@@ -346,5 +377,18 @@ public class VisualizerDecorator implements Board {
   private void visualizerFail() {
     System.out.println("\n[WARNING] Visualizer disabled: Failed to find state JSON.");
     visualizerEnabled = false;
+  }
+
+  private boolean rewriteState() {
+    if (visualizerEnabled) {
+      try (FileWriter writer = new FileWriter(statePath, false)) {
+        writer.write(gson.toJson(visualizerState));
+        return true;
+      } catch (IOException e) {
+        visualizerFail();
+      }
+    }
+
+    return false;
   }
 }
