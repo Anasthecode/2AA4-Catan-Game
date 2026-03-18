@@ -29,9 +29,8 @@ public class BuildCity implements Action {
 		this.nodePosition = nodePosition;
 	}
 
-	/**
-	 * 
-	 */
+
+
 	@Override
 	public boolean execute() {
 		City city = new City(player);
@@ -49,5 +48,9 @@ public class BuildCity implements Action {
 			System.out.println(player.getName() + " placed a city at " + nodePosition);
 			return true;
 		}
+	}
+
+	@Override
+	public void unExecute() {
 	}
 }

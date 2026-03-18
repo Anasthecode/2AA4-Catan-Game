@@ -9,6 +9,7 @@ import com.team22.catan.board.NodePosition;
 import com.team22.catan.game.Game;
 import com.team22.catan.game.GameState;
 import com.team22.catan.game.Player;
+import com.team22.catan.game.Resource;
 import com.team22.catan.structures.Settlement;
 
 /************************************************************/
@@ -31,9 +32,6 @@ public class BuildSettlement implements Action {
     board = game.getBoard();
 	}
 
-	/**
-	 * 
-	 */
 	@Override
 	public boolean execute() {
     Settlement settlement = new Settlement(player);
@@ -63,5 +61,10 @@ public class BuildSettlement implements Action {
 				return true;
 			}
 		}
+	}
+
+	@Override
+	public void unExecute() {
+
 	}
 }

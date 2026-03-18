@@ -13,5 +13,11 @@ public class DisplayInventory implements Action {
   public boolean execute() {
     System.out.println("Inventory: \n" + player.getInventory().toString());
     return true;
-  }  
+  }
+
+  @Override
+  public void unExecute() {
+    // Since this doesn't change the state, no need to worry about it
+    System.out.println("Inventory: \n" + player.getInventory().toString());
+  }
 }

@@ -15,6 +15,12 @@ import com.team22.catan.game.Player;
 public class EndTurn implements Action {
 	private Player player;
 	private Game game;
+
+	// First attempt at unExecute, might get changed later on
+	private boolean wasSetup;
+	private boolean hasRolled;
+	private Player previousPlayer;
+
 	/**
 	 * 
 	 */
@@ -23,12 +29,13 @@ public class EndTurn implements Action {
 		this.game = game;
 	}
 
-	/**
-	 * 
-	 */
+
 	@Override
 	public boolean execute() {
-		if (game.getState() == GameState.SETUP || player.getDiceRolled()) {
+		this.wasSetup = (game.getState() == GameState.SETUP);
+		this.hasRolled = player.getDiceRolled();
+
+		if (this.wasSetup || this.hasRolled) {
 			System.out.println(player.getName() + " has ended their turn. ");
 			player.setDiceRolled(false);
 			game.onEndTurn();
@@ -37,5 +44,24 @@ public class EndTurn implements Action {
 			System.out.println(player.getName() + " still needs to roll before ending their turn!");
 			return false;
 		}
+	}
+
+	public void unExecute() {
+//		if (!this.wasSetup || !this.hasRolled) {
+//			System.out.println(player.getName() + " still needs to roll before ending their turn!");
+//		}
+//		if (this.wasSetup) {
+//			// game.setState(GameState.SETUP)
+//			// The code does not have that I believe
+//
+//			// game.setPlayer(this.PreviousPlayer)
+//		} else {
+//			// game.setPlayer(this.PreviousPlayer)
+//		}
+//
+//		player.setDiceRolled(this.hasRolled);
+//
+//		System.out.println("Undid end turn for " + player.getName() +
+//				". Turn returned to " + player.getName());
 	}
 }
