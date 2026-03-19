@@ -20,9 +20,7 @@ public class GenerateResources implements Action {
   private Random rng;
 
   private int roll;
-  private Player target;
   private Map<Player, Map<Resource, Integer>> initialPlayerInventories;
-  private Resource stolenResource;
 
   public GenerateResources(Player roller, Game game) {
     this.roller = roller;
@@ -30,8 +28,6 @@ public class GenerateResources implements Action {
     rng = game.getRng();
 
     roll = 0;
-    target = null;
-    stolenResource = null;
 
     initialPlayerInventories = new HashMap<>();
     for (Player player : game.getPlayers()) {
@@ -42,7 +38,11 @@ public class GenerateResources implements Action {
   @Override
   public boolean execute() {
     if (game.getState() == GameState.PLAYING) {
-      roll = game.rollDice();
+      System.out.println("Roll: " + roll);
+      if (roll == 0) {
+        roll = game.rollDice();
+      }
+
       System.out.println(roller.getName() + " rolled a " + roll);
 
       if (roll == 7) {
@@ -79,8 +79,8 @@ public class GenerateResources implements Action {
     List<Player> stealablePlayersList = new ArrayList<>(temp);
 
     if (!stealablePlayersList.isEmpty()) {
-      target = stealablePlayersList.get(rng.nextInt(stealablePlayersList.size()));
-      stolenResource = target.stealRandomResource(rng);
+      Player target = stealablePlayersList.get(rng.nextInt(stealablePlayersList.size()));
+      Resource stolenResource = target.stealRandomResource(rng);
 
       if (stolenResource != null) {
         roller.addResource(stolenResource, 1);
@@ -94,7 +94,7 @@ public class GenerateResources implements Action {
 
   @Override
   public void undo() {
-    System.out.println("Undoing dice roll");
+    System.out.println("Undoing dice roll " + roll);
     // Old and new inventories are guaranteed to have all possible resources, so no need to check
     for (Player player : game.getPlayers()) {
       Map<Resource, Integer> newInventory = player.getInventory();

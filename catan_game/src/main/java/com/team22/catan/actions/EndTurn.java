@@ -40,6 +40,7 @@ public class EndTurn implements Action {
 
   public void undo() {
     System.out.println("Going back to previous player's turn");
+    player.setDiceRolled(true);
     int currentPlayerIndex = game.getCurrentPlayerIndex();
     currentPlayerIndex--;
     if (currentPlayerIndex < 0) {

@@ -131,6 +131,7 @@ public class Game {
     }
 
     Collections.reverse(players);
+    currentPlayerIndex = 0;
 
     System.out.println("\n##### Handing out initial items #####\n");
     for (int i = 2; i <= 12; i++) {
