@@ -66,9 +66,13 @@ public class Node {
 	}
 
 	public void notifyStructureOfResource(Resource resource) {
+    if (!hasStructure()) {
+      throw new NoSuchElementException("No structure on node " + position);
+    }
+
+    structure.giveResourceToPlayer(resource);
 		System.out.println(structure.getOwner().getName() + " recieved " + structure.getVP() + " " +
 				resource.toString().toLowerCase());
-		structure.giveResourceToPlayer(resource);
 	}
 
 	public boolean hasStructure() {

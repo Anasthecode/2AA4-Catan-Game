@@ -130,7 +130,7 @@ public abstract class Player {
 		return res.toString();
 	}
 
-	public void dropHalfResources(java.util.Random rng) {
+	public void dropHalfResources(Random rng) {
 		int totalResources = getResourceCountTotal();
 		if (totalResources <= 7)
 			return;

@@ -1,10 +1,13 @@
 package com.team22.catan.actions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.team22.catan.game.Game;
 import com.team22.catan.game.GameState;
@@ -14,19 +17,32 @@ import com.team22.catan.game.Resource;
 public class GenerateResources implements Action {
   private Player roller;
   private Game game;
-
   private Random rng;
+
+  private int roll;
+  private Player target;
+  private Map<Player, Map<Resource, Integer>> initialPlayerInventories;
+  private Resource stolenResource;
 
   public GenerateResources(Player roller, Game game) {
     this.roller = roller;
     this.game = game;
     rng = game.getRng();
+
+    roll = 0;
+    target = null;
+    stolenResource = null;
+
+    initialPlayerInventories = new HashMap<>();
+    for (Player player : game.getPlayers()) {
+      initialPlayerInventories.put(player, player.getInventory());
+    }
   }
 
   @Override
   public boolean execute() {
     if (game.getState() == GameState.PLAYING) {
-      int roll = game.rollDice();
+      roll = game.rollDice();
       System.out.println(roller.getName() + " rolled a " + roll);
 
       if (roll == 7) {
@@ -63,8 +79,8 @@ public class GenerateResources implements Action {
     List<Player> stealablePlayersList = new ArrayList<>(temp);
 
     if (!stealablePlayersList.isEmpty()) {
-      Player target = stealablePlayersList.get(rng.nextInt(stealablePlayersList.size()));
-      Resource stolenResource = target.stealRandomResource(rng);
+      target = stealablePlayersList.get(rng.nextInt(stealablePlayersList.size()));
+      stolenResource = target.stealRandomResource(rng);
 
       if (stolenResource != null) {
         roller.addResource(stolenResource, 1);
@@ -78,7 +94,15 @@ public class GenerateResources implements Action {
 
   @Override
   public void undo() {
-
+    // Old and new inventories are guaranteed to have all possible resources, so no need to check
+    for (Player player : game.getPlayers()) {
+      Map<Resource, Integer> newInventory = player.getInventory();
+      Map<Resource, Integer> oldInventory = initialPlayerInventories.get(player);
+      
+      for (Entry<Resource, Integer> resource : newInventory.entrySet()) {
+        int difference = resource.getValue() - oldInventory.get(resource.getKey());
+        player.addResource(resource.getKey(), -difference);
+      }
+    }
   }
-
 }
