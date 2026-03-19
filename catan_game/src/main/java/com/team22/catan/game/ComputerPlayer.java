@@ -34,42 +34,46 @@ public class ComputerPlayer extends Player {
   @Override
   public void onTurn(Game game) {
 
-    parser.waitForGoCommand();
-
     List<Action> availableActions = getAvailableActions(game);
 
     if (game.getState() == GameState.SETUP) {
       setupTurn(game);
     } else {
-      availableActions.get(rng.nextInt(availableActions.size())).execute();
+      game.executeAction(availableActions.get(rng.nextInt(availableActions.size())));
     }
+
+    parser.waitForGoCommand(game);
   }
 
   private void setupTurn(Game game) {
-    List<Action> possibleSettlementPlacements = new ArrayList<>();
-    for (NodePosition nodePosition : game.getBoard().getNodePositions()) {
-      if (game.getBoard().canPlaceSettlementAt(nodePosition, this, game.getState())) {
-        possibleSettlementPlacements.add(new BuildSettlement(this, game, nodePosition));
+    if (!getSetupSettlement()) {
+      List<Action> possibleSettlementPlacements = new ArrayList<>();
+      for (NodePosition nodePosition : game.getBoard().getNodePositions()) {
+        if (game.getBoard().canPlaceSettlementAt(nodePosition, this, game.getState())) {
+          possibleSettlementPlacements.add(new BuildSettlement(this, game, nodePosition));
+        }
       }
+
+      game.executeAction(possibleSettlementPlacements.get(rng.nextInt(possibleSettlementPlacements.size())));
     }
 
-    possibleSettlementPlacements.get(rng.nextInt(possibleSettlementPlacements.size())).execute();
-
-    List<Action> possibleRoadPlacements = new ArrayList<>();
-    for (EdgePosition edgePosition : game.getBoard().getEdgePositions()) {
-      if (game.getBoard().canPlaceRoadAt(edgePosition, this, game.getState())) {
-        possibleRoadPlacements.add(new BuildRoad(this, game, edgePosition));
+    if (!getSetupRoad()) {
+      List<Action> possibleRoadPlacements = new ArrayList<>();
+      for (EdgePosition edgePosition : game.getBoard().getEdgePositions()) {
+        if (game.getBoard().canPlaceRoadAt(edgePosition, this, game.getState())) {
+          possibleRoadPlacements.add(new BuildRoad(this, game, edgePosition));
+        }
       }
+
+      game.executeAction(possibleRoadPlacements.get(rng.nextInt(possibleRoadPlacements.size())));
     }
 
-    possibleRoadPlacements.get(rng.nextInt(possibleRoadPlacements.size())).execute();
-
-    new EndTurn(this, game).execute();
+    game.executeAction(new EndTurn(this, game));
   }
 
   private List<Action> getAvailableActions(Game game) {
     List<Action> actionsToReturn = new ArrayList<>();
-    if (!diceRolled) {
+    if (!getDiceRolled()) {
       actionsToReturn.add(new GenerateResources(this, game));
     }
     
@@ -97,7 +101,7 @@ public class ComputerPlayer extends Player {
 
     // Only allow the player to end their turn if they either have less
     // than 7 cards or they can't build anything
-    if ((getResourceCountTotal() < 7 || actionsToReturn.isEmpty()) && diceRolled) {
+    if ((getResourceCountTotal() < 7 || actionsToReturn.isEmpty()) && getDiceRolled()) {
       actionsToReturn.add(new EndTurn(this, game));
     }
 

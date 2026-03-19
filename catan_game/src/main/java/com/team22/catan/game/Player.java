@@ -32,7 +32,9 @@ public abstract class Player {
 	private final EnumMap<Resource, Integer> inventory;
 	private int victoryPoints;
 
-	protected boolean diceRolled;
+	private boolean diceRolled;
+  private boolean setupSettlement;
+  private boolean setupRoad;
 
 	public Player(String name, PlayerColor color) {
 		playerName = name;
@@ -43,6 +45,8 @@ public abstract class Player {
 		}
 
 		diceRolled = false;
+    setupSettlement = false;
+    setupRoad = false;
 	}
 
 	public String getName() {
@@ -171,13 +175,29 @@ public abstract class Player {
 		return stolen;
 	}
 
+  public boolean getDiceRolled() {
+		return diceRolled;
+	}
+
+  public boolean getSetupSettlement() {
+    return setupSettlement;
+  }
+
+  public boolean getSetupRoad() {
+    return setupRoad;
+  }
+
 	public void setDiceRolled(boolean diceRolled) {
 		this.diceRolled = diceRolled;
 	}
 
-	public boolean getDiceRolled() {
-		return diceRolled;
-	}
+  public void setSetupSettlement(boolean setupSettlement) {
+    this.setupSettlement = setupSettlement;
+  }
+
+  public void setSetupRoad(boolean setupRoad) {
+    this.setupRoad = setupRoad;
+  }
 
 	public abstract void onTurn(Game game);
 }

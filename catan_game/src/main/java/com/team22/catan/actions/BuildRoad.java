@@ -19,59 +19,66 @@ import com.team22.catan.structures.Road;
  * 
  */
 public class BuildRoad implements Action {
-	private Player player;
-	private Game game;
-	private Board board;
-	private EdgePosition edgePosition;
+  private Player player;
+  private Game game;
+  private Board board;
+  private EdgePosition edgePosition;
 
-	/**
-	 * 
-	 */
-	public BuildRoad(Player player, Game game, EdgePosition edgePosition) {
-		this.player = player;
-		this.game = game;
-		this.edgePosition = edgePosition;
-		board = game.getBoard();
-	}
+  /**
+   * 
+   */
+  public BuildRoad(Player player, Game game, EdgePosition edgePosition) {
+    this.player = player;
+    this.game = game;
+    this.edgePosition = edgePosition;
+    board = game.getBoard();
+  }
 
-	/**
-	 * 
-	 */
-	@Override
-	public boolean execute() {
-		Road road = new Road(player);
-		if (game.getState() == GameState.SETUP) {
-			if (!board.canPlaceRoadAt(edgePosition, player, game.getState())) {
-				System.out.println(player.getName() + " cannot place setup road at " + edgePosition);
-				return false;
-			} else {
-				board.placeRoadAt(edgePosition, road, game.getState());
-				System.out.println(player.getName() + " setup a road at " + edgePosition);
-				return true;
-			}
-		} else {
-			if (!player.canAfford(road.getCost())) {
-				System.out.println(player.getName() +
-						" attempted to build a new road but could not afford it.");
-				return false;
-			} else if (!board.canPlaceRoadAt(edgePosition, player, game.getState())) {
-				System.out.println(player.getName() + " attempted to build a new road but failed.");
-				return false;
-			} else {
-				player.build(road);
-				board.placeRoadAt(edgePosition, road, game.getState());
-				System.out.println(player.getName() + " placed a road at " + edgePosition);
-				return true;
-			}
-		}
-	}
+  /**
+   * 
+   */
+  @Override
+  public boolean execute() {
+    Road road = new Road(player);
+    if (game.getState() == GameState.SETUP) {
+      if (!board.canPlaceRoadAt(edgePosition, player, game.getState())) {
+        System.out.println(player.getName() + " cannot place setup road at " + edgePosition);
+        return false;
+      } else {
+        board.placeRoadAt(edgePosition, road, game.getState());
+        player.setSetupRoad(true);
+        System.out.println(player.getName() + " setup a road at " + edgePosition);
+        return true;
+      }
+    } else {
+      if (!player.canAfford(road.getCost())) {
+        System.out.println(player.getName() +
+            " attempted to build a new road but could not afford it.");
+        return false;
+      } else if (!board.canPlaceRoadAt(edgePosition, player, game.getState())) {
+        System.out.println(player.getName() + " attempted to build a new road but failed.");
+        return false;
+      } else {
+        player.build(road);
+        board.placeRoadAt(edgePosition, road, game.getState());
+        System.out.println(player.getName() + " placed a road at " + edgePosition);
+        return true;
+      }
+    }
+  }
 
-	@Override
-	public void undo() {
-		System.out.println("Undoing build road action");
-		Road removedRoad = board.removeRoadAt(edgePosition);
-		for (Entry<Resource, Integer> resource : removedRoad.getCost().entrySet()) {
-			player.addResource(resource.getKey(), resource.getValue());
-		}
-	}
+  @Override
+  public void undo() {
+    System.out.println("Undoing build road action");
+    Road removedRoad = board.removeRoadAt(edgePosition);
+    if (game.getState() == GameState.SETUP) {
+      player.setSetupRoad(false);
+      // Since roads have to be placed after settlements, make sure that this is kept true
+      player.setSetupSettlement(true);
+    } else {
+      for (Entry<Resource, Integer> resource : removedRoad.getCost().entrySet()) {
+        player.addResource(resource.getKey(), resource.getValue());
+      }
+    }
+  }
 }

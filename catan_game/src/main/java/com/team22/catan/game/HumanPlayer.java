@@ -22,28 +22,27 @@ public class HumanPlayer extends Player {
 
     if (game.getState() == GameState.SETUP) {
       setupTurn(game);
-    } else if (diceRolled) {
+    } else if (getDiceRolled()) {
       System.out.println("Enter a command (List, Build [type] [id], Go):");
       Action action = parser.parseCommand(this, game);
 
       if (action instanceof GenerateResources) {
         System.out.println("Already rolled dice this turn!");
       } else if (action != null) {
-        action.execute();
+        game.executeAction(action);
       }
 
     } else {
       System.out.println("Enter a command (Roll, List, Build [type] [id]):");
       Action action = parser.parseCommand(this, game);
       if (action != null) {
-        action.execute();
+        game.executeAction(action);
       }
     }
   }
 
   private void setupTurn(Game game) {
-    boolean builtSettlement = false;
-    while (!builtSettlement) {
+    while (!getSetupSettlement()) {
       System.out.println("Place your initial settlement (Build settlement [id])");
 
       Action action = parser.parseCommand(this, game);
@@ -51,12 +50,11 @@ public class HumanPlayer extends Player {
       if (action != null && !(action instanceof BuildSettlement)) {
         System.out.println("Cannot do that right now!");
       } else if (action != null) {
-        builtSettlement = action.execute();
+        game.executeAction(action);
       }
     }
 
-    boolean builtRoad = false;
-    while (!builtRoad) {
+    while (!getSetupRoad()) {
       System.out.println("Place your initial road connecting to the settlement (Build road [id, id])");
 
       Action action = parser.parseCommand(this, game);
@@ -64,10 +62,10 @@ public class HumanPlayer extends Player {
       if (action != null && !(action instanceof BuildRoad)) {
         System.out.println("Cannot do that right now!");
       } else if (action != null) {
-        builtRoad = action.execute();
+        game.executeAction(action);
       }
     }
 
-    new EndTurn(this, game).execute();
+    game.executeAction(new EndTurn(this, game));
   }
 }

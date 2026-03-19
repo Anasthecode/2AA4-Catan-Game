@@ -22,19 +22,29 @@ public class Parser {
     private static final Pattern BUILD_CITY_PATTERN = Pattern.compile("^(?i)build\\s+city\\s+(\\d+)$");
     private static final Pattern BUILD_ROAD_PATTERN = Pattern.compile("^(?i)build\\s+road\\s+(\\d+)\\s*,\\s*(\\d+)$");
     private static final Pattern TRADE_PATTERN = Pattern.compile("^(?i)trade\\s+(\\d+)\\s+(\\w+)\\s+for\\s+(\\d+)\\s+(\\w+)$");
+    private static final Pattern UNDO_PATTERN = Pattern.compile("^(?i)undo$");
+    private static final Pattern REDO_PATTERN = Pattern.compile("^(?i)redo$");
 
     public Parser() {
         this.scanner = new Scanner(System.in);
     }
 
-    public void waitForGoCommand() {
-        System.out.println("Type 'Go' step to the next turn.");
+    public void waitForGoCommand(Game game) {
+        System.out.println("Type 'Go' step to the next turn, or type 'undo'/'redo' to step back and forth");
         while (true) {
             String input = scanner.nextLine().trim();
             if (GO_PATTERN.matcher(input).matches()) {
                 return;
             }
-            System.out.println("Waiting for 'Go' command...");
+
+            if (UNDO_PATTERN.matcher(input).matches()) {
+                game.undo();
+            } else if (REDO_PATTERN.matcher(input).matches()) {
+                game.redo();
+            } else {
+              System.out.println("Waiting for command...");
+            }
+
         }
     }
 
@@ -45,6 +55,16 @@ public class Parser {
 
         if (ROLL_PATTERN.matcher(input).matches()) {
             return new GenerateResources(player, game);
+        }
+
+        if (UNDO_PATTERN.matcher(input).matches()) {
+            game.undo();
+            return null;
+        }
+
+        if (REDO_PATTERN.matcher(input).matches()) {
+            game.redo();
+            return null;
         }
 
         Matcher settlementMatcher = BUILD_SETTLEMENT_PATTERN.matcher(input);

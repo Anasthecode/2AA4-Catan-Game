@@ -5,12 +5,14 @@
 // Location of its directory
 package com.team22.catan.game;
 
-// All the java directories we import
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 
-// All the directories we import
+import com.team22.catan.actions.Action;
 import com.team22.catan.board.Board;
 
 public class Game {
@@ -22,6 +24,9 @@ public class Game {
   private Dice dice;
   private Board board;
   private GameState gameState;
+
+  private Stack<Action> actionHistory;
+  private Stack<Action> undoHistory;
 
   /**
    * 
@@ -39,6 +44,8 @@ public class Game {
     this.dice = dice;
     currentPlayerIndex = 0; // First player to go is at index 0
     gameState = GameState.SETUP;
+    actionHistory = new Stack<>();
+    undoHistory = new Stack<>();
   }
 
   public GameState getState() {
@@ -103,17 +110,27 @@ public class Game {
 
   private void setup() {
     System.out.println("############### SETUP PHASE ###############");
-    for (int i = 0; i < players.size(); i++) {
-      currentPlayerIndex = i;
-      System.out.println("\n##### " + players.get(currentPlayerIndex).getName() + "'s turn #####\n");
+    while (currentPlayerIndex < players.size()) {
+      Player currentPlayer = players.get(currentPlayerIndex);
+      System.out.println("\n##### " + currentPlayer.getName() + "'s turn #####\n");
       processPlayerTurn();
+      currentPlayerIndex++;
     }
 
-    for (int i = players.size() - 1; i >= 0; i--) {
-      currentPlayerIndex = i;
+    for (Player player : players) {
+      player.setSetupSettlement(false);
+      player.setSetupRoad(false);
+    }
+
+    Collections.reverse(players);
+    currentPlayerIndex = 0;
+    while (currentPlayerIndex < players.size()) {
       System.out.println("\n##### " + players.get(currentPlayerIndex).getName() + "'s turn #####");
       processPlayerTurn();
+      currentPlayerIndex++;
     }
+
+    Collections.reverse(players);
 
     System.out.println("\n##### Handing out initial items #####\n");
     for (int i = 2; i <= 12; i++) {
@@ -126,6 +143,41 @@ public class Game {
 
   private void processPlayerTurn() {
     players.get(currentPlayerIndex).onTurn(this);
+  }
+
+  public boolean executeAction(Action action) {
+    if (action.execute()) {
+      actionHistory.push(action);
+      undoHistory.clear();
+      return true;
+    }
+
+    return false;
+  }
+
+  public void undo() {
+    if (actionHistory.isEmpty()) {
+      System.out.println("Nothing to undo");
+      return;
+    }
+    
+    Action action = actionHistory.pop();
+    if (action != null) {
+      action.undo();
+      undoHistory.push(action);
+    }
+  }
+
+  public void redo() {
+    if (undoHistory.isEmpty()) {
+      System.out.println("Nothing to redo");
+      return;
+    }
+
+    Action action = undoHistory.pop();
+    if (action != null && action.execute()) {
+      actionHistory.push(action);
+    }
   }
 
   public void onEndTurn() {

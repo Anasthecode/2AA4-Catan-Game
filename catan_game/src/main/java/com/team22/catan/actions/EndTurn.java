@@ -39,6 +39,7 @@ public class EndTurn implements Action {
   }
 
   public void undo() {
+    System.out.println("Going back to previous player's turn");
     int currentPlayerIndex = game.getCurrentPlayerIndex();
     currentPlayerIndex--;
     if (currentPlayerIndex < 0) {
@@ -46,5 +47,12 @@ public class EndTurn implements Action {
     }
 
     game.setCurrentPlayerIndex(currentPlayerIndex);
+
+    // If they ended their turn during the setup phase,they must have placed a settlement and road.
+    // Assert that these remain true as a result (somewhat of a hack)
+    if (game.getState() == GameState.SETUP) {
+      player.setSetupRoad(true);
+      player.setSetupSettlement(true);
+    }
   }
 }

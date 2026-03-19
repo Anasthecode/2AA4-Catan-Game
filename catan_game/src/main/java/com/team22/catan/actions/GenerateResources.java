@@ -94,6 +94,7 @@ public class GenerateResources implements Action {
 
   @Override
   public void undo() {
+    System.out.println("Undoing dice roll");
     // Old and new inventories are guaranteed to have all possible resources, so no need to check
     for (Player player : game.getPlayers()) {
       Map<Resource, Integer> newInventory = player.getInventory();
@@ -104,5 +105,7 @@ public class GenerateResources implements Action {
         player.addResource(resource.getKey(), -difference);
       }
     }
+
+    roller.setDiceRolled(false);
   }
 }

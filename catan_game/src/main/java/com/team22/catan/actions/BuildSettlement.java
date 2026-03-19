@@ -19,60 +19,67 @@ import com.team22.catan.structures.Settlement;
  * 
  */
 public class BuildSettlement implements Action {
-	private Player player;
-	private Game game;
-	private Board board;
-	private NodePosition nodePosition;
+  private Player player;
+  private Game game;
+  private Board board;
+  private NodePosition nodePosition;
 
-	/**
-	 * 
-	 */
-	public BuildSettlement(Player player, Game game, NodePosition nodePosition) {
-		this.player = player;
-		this.nodePosition = nodePosition;
-		this.game = game;
-		board = game.getBoard();
-	}
+  /**
+   * 
+   */
+  public BuildSettlement(Player player, Game game, NodePosition nodePosition) {
+    this.player = player;
+    this.nodePosition = nodePosition;
+    this.game = game;
+    board = game.getBoard();
+  }
 
-	@Override
-	public boolean execute() {
-		Settlement settlement = new Settlement(player);
-		if (game.getState() == GameState.SETUP) {
-			if (!board.canPlaceSettlementAt(nodePosition, player, game.getState())) {
-				System.out.println(player.getName() + " attempted to build a settlement but failed.");
-				return false;
-			} else {
-				player.addVictoryPoints(1);
-				board.placeSettlementAt(nodePosition, settlement, game.getState());
-				System.out.println(player.getName() + " setup a settlement at " + nodePosition);
-				return true;
-			}
-		} else {
-			if (!player.canAfford(settlement.getCost())) {
-				System.out.println(player.getName() +
-						" attempted to build a new settlement but could not afford it.");
-				return false;
-			} else if (!board.canPlaceSettlementAt(nodePosition, player, game.getState())) {
-				System.out.println(player.getName() + " attempted to build a new settlement but failed.");
-				return false;
-			} else {
-				player.build(settlement);
-				player.addVictoryPoints(1);
-				board.placeSettlementAt(nodePosition, settlement, game.getState());
-				System.out.println(player.getName() + " placed a settlement at " + nodePosition);
-				return true;
-			}
-		}
-	}
+  @Override
+  public boolean execute() {
+    Settlement settlement = new Settlement(player);
+    if (game.getState() == GameState.SETUP) {
+      if (!board.canPlaceSettlementAt(nodePosition, player, game.getState())) {
+        System.out.println(player.getName() + " attempted to build a settlement but failed.");
+        return false;
+      } else {
+        player.addVictoryPoints(1);
+        board.placeSettlementAt(nodePosition, settlement, game.getState());
+        player.setSetupSettlement(true);
+        System.out.println(player.getName() + " setup a settlement at " + nodePosition);
+        return true;
+      }
+    } else {
+      if (!player.canAfford(settlement.getCost())) {
+        System.out.println(player.getName() +
+            " attempted to build a new settlement but could not afford it.");
+        return false;
+      } else if (!board.canPlaceSettlementAt(nodePosition, player, game.getState())) {
+        System.out.println(player.getName() + " attempted to build a new settlement but failed.");
+        return false;
+      } else {
+        player.build(settlement);
+        player.addVictoryPoints(1);
+        board.placeSettlementAt(nodePosition, settlement, game.getState());
+        System.out.println(player.getName() + " placed a settlement at " + nodePosition);
+        return true;
+      }
+    }
+  }
 
-	@Override
-	public void undo() {
-		System.out.println("Undoing build settlement action");
-		Settlement removedSettlement = board.removeSettlementAt(nodePosition);
-		for (Entry<Resource, Integer> resource : removedSettlement.getCost().entrySet()) {
-			player.addResource(resource.getKey(), resource.getValue());
-		}
+  @Override
+  public void undo() {
+    System.out.println("Undoing build settlement action");
+    Settlement removedSettlement = board.removeSettlementAt(nodePosition);
+    if (game.getState() == GameState.SETUP) {
+      player.setSetupSettlement(false);
+      // Since roads must be placed after settlements, make sure it is still false
+      player.setSetupRoad(false);
+    } else {
+      for (Entry<Resource, Integer> resource : removedSettlement.getCost().entrySet()) {
+        player.addResource(resource.getKey(), resource.getValue());
+      }
+    }
 
-		player.addVictoryPoints(-1);
-	}
+    player.addVictoryPoints(-1);
+  }
 }
