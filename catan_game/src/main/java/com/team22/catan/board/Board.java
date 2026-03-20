@@ -2,7 +2,6 @@ package com.team22.catan.board;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import com.team22.catan.game.GameState;
@@ -32,7 +31,6 @@ public interface Board {
   public void placeRoadAt(EdgePosition position, Road Road, GameState gameState);
   public Road removeRoadAt(EdgePosition position);
 
+  public Set<Player> moveRobber(AxialPosition position);
   public AxialPosition getRobberPosition();
-  public void setRobberPosition(AxialPosition position);
-  public Set<Player> moveRobberToRandomTile(Random rng);
 }

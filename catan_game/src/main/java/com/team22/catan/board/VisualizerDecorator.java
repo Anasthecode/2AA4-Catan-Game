@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import com.google.gson.Gson;
@@ -360,18 +359,13 @@ public class VisualizerDecorator implements Board {
   }
 
   @Override
-  public Set<Player> moveRobberToRandomTile(Random rng) {
-    return aBoard.moveRobberToRandomTile(rng);
+  public Set<Player> moveRobber(AxialPosition position) {
+    return aBoard.moveRobber(position);
   }
 
   @Override
   public AxialPosition getRobberPosition() {
     return aBoard.getRobberPosition();
-  }
-
-  @Override
-  public void setRobberPosition(AxialPosition position) {
-    aBoard.setRobberPosition(position);
   }
 
   @Override

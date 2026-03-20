@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import com.team22.catan.board.AxialPosition;
-import com.team22.catan.game.CatanSettings;
 import com.team22.catan.game.Game;
 import com.team22.catan.game.GameState;
 import com.team22.catan.game.Player;
@@ -51,7 +50,10 @@ public class GenerateResources implements Action {
 
       if (roll == 7) {
         System.out.println("A 7 was rolled! The Robber is striking.");
-        Set<Player> stealablePlayers = game.getBoard().moveRobberToRandomTile(rng);
+        List<AxialPosition> possibleRobberPositions = game.getBoard().getTilePositions();
+        possibleRobberPositions.remove(game.getBoard().getRobberPosition());
+        Set<Player> stealablePlayers = game.getBoard().moveRobber(
+            possibleRobberPositions.get(rng.nextInt(possibleRobberPositions.size())));
         robPlayers(stealablePlayers);
       } else {
         game.getBoard().notifyTilesOfRoll(roll);
@@ -113,6 +115,6 @@ public class GenerateResources implements Action {
 
     roller.setDiceRolled(false);
 
-    game.getBoard().setRobberPosition(initialRobberPosition);
+    game.getBoard().moveRobber(initialRobberPosition);
   }
 }

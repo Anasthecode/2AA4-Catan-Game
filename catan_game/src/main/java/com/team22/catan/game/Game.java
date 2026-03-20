@@ -179,10 +179,12 @@ public class Game {
         player.setSetupSettlement(false);
       }
 
-      if (currentTurn == 2) {
+      if (currentTurn == CatanSettings.SETUP_TURNS) {
+        System.out.println("\n############### SETUP OVER ###############");
+        System.out.println("\nHanding out initial resources...\n");
         // Dice are assumed to be 6 sided, hence multiply by 6 to get max roll
         for (int i = CatanSettings.NUMBER_OF_DICE; i <= CatanSettings.NUMBER_OF_DICE * 6; i++) {
-          board.notifyTilesOfRoll(i);
+          board.notifyTilesOfRoll(i); // Hand out initial resources
         }
 
         gameState = GameState.PLAYING;
@@ -199,7 +201,7 @@ public class Game {
         player.setSetupSettlement(true);
       }
 
-      if (currentTurn == 3) {
+      if (currentTurn == CatanSettings.SETUP_TURNS + 1) {
         gameState = GameState.SETUP;
         emptyPlayerInventories();
       }

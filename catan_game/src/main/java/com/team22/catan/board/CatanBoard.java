@@ -243,32 +243,24 @@ public class CatanBoard implements Board {
 		return orderedTiles;
 	}
 
-	public Set<Player> moveRobberToRandomTile(Random rng) {
+	public Set<Player> moveRobber(AxialPosition position) {
 		Tile currentRobberTile = tiles.get(robberPosition);
+		if (currentRobberTile.getPosition().equals(position)) {
+			throw new IllegalArgumentException("Robber must be moved to a new position");
+		}
 
 		// Find the current robber and remove it
 		currentRobberTile.setRobber(false);
 
-		// Pick a new random tile that isn't the current one
-		Tile newRobberTile;
-		do {
-			newRobberTile = tiles.get(getTilePositions().get(rng.nextInt(tiles.size())));
-		} while (newRobberTile.equals(currentRobberTile));
-
-		newRobberTile.setRobber(true);
-    robberPosition = newRobberTile.getPosition();
-		System.out.println("The robber was moved to " + newRobberTile.getPosition());
-		return newRobberTile.playersOnSurroundingNodes();
+		tiles.get(position).setRobber(true);
+    robberPosition = position;
+		System.out.println("The robber was moved to " + position);
+		return tiles.get(position).playersOnSurroundingNodes();
 	}
 
   @Override
   public AxialPosition getRobberPosition(){
     return robberPosition;
-  }
-
-  @Override
-  public void setRobberPosition(AxialPosition position) {
-    robberPosition = position;
   }
 
 	@Override

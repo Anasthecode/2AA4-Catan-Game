@@ -22,11 +22,11 @@ public class CatanSettings {
     }
   }
 
-  public static final int TURNS = Math.min(Integer.valueOf(config.getProperty("turns")), 8192);
+  public static final int TURNS = Math.min(Integer.parseInt(config.getProperty("turns")), 8192);
+  public static final int SETUP_TURNS = Math.max(Integer.parseInt(config.getProperty("setup_turns")), 1);
   public static final int WINNING_VP_COUNT = Integer.valueOf(config.getProperty("winning_vp"));
-  public static final long RNG_SEED = Long.valueOf(config.getProperty("rng_seed"));
-
-  public static final int DEFAULT_PLAYER_COUNT = Integer.valueOf(config.getProperty("default_player_count"));
+  public static final long RNG_SEED = Long.parseLong(config.getProperty("rng_seed"));
+  public static final int DEFAULT_PLAYER_COUNT = Integer.parseInt(config.getProperty("default_player_count"));
 
   public static final int NUMBER_OF_DICE = 2;
 
