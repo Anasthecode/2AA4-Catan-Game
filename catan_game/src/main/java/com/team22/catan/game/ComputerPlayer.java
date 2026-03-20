@@ -20,29 +20,58 @@ import com.team22.catan.structures.City;
 import com.team22.catan.structures.Road;
 import com.team22.catan.structures.Settlement;
 
+
 public class ComputerPlayer extends Player {
 
   private Random rng;
   private Parser parser;
+  private ActionEvaluator evaluator;
 
   public ComputerPlayer(String name, PlayerColor color, Random rng, Parser parser) {
     super(name, color);
     this.rng = rng;
     this.parser = parser;
+    this.evaluator = new StandardActionEvaluator();
+  }
+
+  public void setEvaluator(ActionEvaluator evaluator) {
+      this.evaluator = evaluator;
   }
 
   @Override
   public void onTurn(Game game) {
+      List<Action> availableActions = getAvailableActions(game);
 
-    List<Action> availableActions = getAvailableActions(game);
+      if (game.getState() == GameState.SETUP) {
+          setupTurn(game);
+      } else {
+          // Prevent crashing if no actions are somehow available
+          if (availableActions.isEmpty()) {
+              game.executeAction(new EndTurn(this, game));
+              return;
+          }
 
-    if (game.getState() == GameState.SETUP) {
-      setupTurn(game);
-    } else {
-      game.executeAction(availableActions.get(rng.nextInt(availableActions.size())));
-    }
+          double highestScore = -1.0;
+          List<Action> tiedBestActions = new ArrayList<>();
 
-    parser.waitForGoCommand(game);
+          // Evaluate every possible action using the Strategy Pattern
+          for (Action action : availableActions) {
+              double score = evaluator.evaluate(action, this);
+
+              if (score > highestScore) {
+                  highestScore = score;
+                  tiedBestActions.clear();
+                  tiedBestActions.add(action);
+              } else if (score == highestScore) {
+                  // Keep track of ties to choose randomly later
+                  tiedBestActions.add(action);
+              }
+          }
+
+          // Choose a random action from the tie-pool (Requirement R3.2)
+          Action bestAction = tiedBestActions.get(rng.nextInt(tiedBestActions.size()));
+          game.executeAction(bestAction);
+      }
   }
 
   private void setupTurn(Game game) {
