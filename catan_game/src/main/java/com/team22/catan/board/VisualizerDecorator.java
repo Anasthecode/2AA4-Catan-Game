@@ -378,6 +378,11 @@ public class VisualizerDecorator implements Board {
     return aBoard.getTokens();
   }
 
+  @Override
+  public int longestRoad(Player player) {
+    return aBoard.longestRoad(player);
+  }
+
   private void visualizerFail() {
     System.out.println("\n[WARNING] Visualizer disabled: Failed to find state JSON.");
     visualizerEnabled = false;

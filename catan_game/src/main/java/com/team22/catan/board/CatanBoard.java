@@ -272,4 +272,17 @@ public class CatanBoard implements Board {
 
 		return tokens;
 	}
+
+  @Override
+  public int longestRoad(Player player) {
+    int longestRoad = 0;
+    for (Edge edge : edges.values()) {
+      int road = edge.getLongestRoad(player);
+      if (road > longestRoad) {
+        longestRoad = road;
+      }
+    }
+
+    return longestRoad;
+  }
 }

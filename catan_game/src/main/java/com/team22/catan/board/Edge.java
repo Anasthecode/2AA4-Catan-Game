@@ -4,8 +4,13 @@
 
 package com.team22.catan.board;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.Stack;
 
 import com.team22.catan.game.GameState;
 import com.team22.catan.game.Player;
@@ -66,13 +71,13 @@ public class Edge {
 
 		if (gameState == GameState.SETUP) {
 			for (Edge edge : startNode.getEdges()) {
-				if (edge.hasRoad()) {
+				if (edge.hasRoad() && !endNode.hasStructure()) {
 					return false;
 				}
 			}
 
 			for (Edge edge : endNode.getEdges()) {
-				if (edge.hasRoad()) {
+				if (edge.hasRoad() && !startNode.hasStructure()) {
 					return false;
 				}
 			}
@@ -127,6 +132,55 @@ public class Edge {
 	public Road getRoad() {
 		return road;
 	}
+
+  /**
+   * Gets the longest road starting from this edge via a depth first search
+   * 
+   * Algorithm adapted from:
+   * https://github.com/seansegal/tincisnotcatan/blob/master/src/main/java/edu/brown/cs/board/Path.java
+   * 
+   * @return the length of the longest road
+    */
+  public int getLongestRoad(Player player) {
+    Set<Edge> visited = new HashSet<>();
+    Stack<Edge> toVist = new Stack<>();
+    Map<Edge, Integer> lengths = new HashMap<>();
+
+    toVist.push(this);
+    lengths.put(this, 0);
+    while (!toVist.isEmpty()) {
+      Edge currentEdge = toVist.pop();
+      int currentLength = lengths.get(currentEdge);
+      visited.add(currentEdge);
+      for (Edge edge : currentEdge.getStartNode().getEdges()) {
+        if (edge.hasRoad() && edge.getRoad().getOwner().equals(player) &&
+            !visited.contains(edge) && (!currentEdge.getStartNode().hasStructure() ||
+            currentEdge.getStartNode().getStructure().getOwner().equals(player))) {
+          toVist.push(edge);
+          lengths.put(edge, currentLength + 1);
+        }
+      }
+
+      for (Edge edge : currentEdge.getEndNode().getEdges()) {
+        if (edge.hasRoad() && edge.getRoad().getOwner().equals(player) &&
+            !visited.contains(edge) && (!currentEdge.getEndNode().hasStructure() ||
+            currentEdge.getEndNode().getStructure().getOwner().equals(player))) {
+          toVist.push(edge);
+          lengths.put(edge, currentLength + 1);
+        }
+      }
+    }
+
+    int maxLength = 0;
+    for (Edge edge : visited) {
+      int length = lengths.get(edge);
+      if (length > maxLength) {
+        maxLength = length;
+      }
+    }
+
+    return maxLength;
+  }
 
 	@Override
 	public String toString() {

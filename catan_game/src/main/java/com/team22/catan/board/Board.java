@@ -33,4 +33,6 @@ public interface Board {
 
   public Set<Player> moveRobber(AxialPosition position);
   public AxialPosition getRobberPosition();
+
+  public int longestRoad(Player player);
 }
