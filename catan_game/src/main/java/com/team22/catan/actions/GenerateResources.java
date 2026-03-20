@@ -115,6 +115,8 @@ public class GenerateResources implements Action {
 
     roller.setDiceRolled(false);
 
-    game.getBoard().moveRobber(initialRobberPosition);
+    if (!initialRobberPosition.equals(game.getBoard().getRobberPosition())) {
+      game.getBoard().moveRobber(initialRobberPosition);
+    }
   }
 }

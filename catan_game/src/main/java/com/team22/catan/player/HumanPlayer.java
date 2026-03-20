@@ -23,7 +23,7 @@ public class HumanPlayer extends Player {
     if (game.getState() == GameState.SETUP) {
       setupTurn(game);
     } else if (getDiceRolled()) {
-      System.out.println("Enter a command (List, Build [type] [id]) or (undo / redo) to redo parts of your turn:");
+      System.out.println("Enter a command (List, Build [type] [id], Go) or (undo / redo) to redo parts of your turn:");
       Action action = parser.parseCommand(this, game);
 
       if (action instanceof GenerateResources) {
