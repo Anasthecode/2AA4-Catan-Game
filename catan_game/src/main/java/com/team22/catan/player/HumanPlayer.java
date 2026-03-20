@@ -1,10 +1,13 @@
-package com.team22.catan.game;
+package com.team22.catan.player;
 
 import com.team22.catan.actions.Action;
 import com.team22.catan.actions.BuildRoad;
 import com.team22.catan.actions.BuildSettlement;
 import com.team22.catan.actions.EndTurn;
 import com.team22.catan.actions.GenerateResources;
+import com.team22.catan.game.Game;
+import com.team22.catan.game.GameState;
+import com.team22.catan.game.Player;
 
 public class HumanPlayer extends Player {
 

@@ -1,21 +1,23 @@
-package com.team22.catan.game;
+package com.team22.catan.player;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import com.team22.catan.actions.Action;
+import com.team22.catan.game.Game;
+import com.team22.catan.game.Player;
 
-public class ValueEvaluationHandler extends ConstraintHandler {
+public class ActionScoreSelector extends ActionSelector {
     private ActionEvaluator evaluator;
     private Random rng;
 
-    public ValueEvaluationHandler(ActionEvaluator evaluator, Random rng) {
+    public ActionScoreSelector(ActionEvaluator evaluator, Random rng) {
         this.evaluator = evaluator;
         this.rng = rng;
     }
 
     @Override
-    public Action handleRequest(Game game, Player player, List<Action> availableActions) {
+    public Action chooseAction(Game game, Player player, List<Action> availableActions) {
         double highestScore = -1.0;
         List<Action> tiedBestActions = new ArrayList<>();
 

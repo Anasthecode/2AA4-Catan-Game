@@ -12,6 +12,7 @@ import com.team22.catan.actions.DisplayInventory;
 import com.team22.catan.actions.GenerateResources;
 import com.team22.catan.board.NodePosition;
 import com.team22.catan.board.RelativeNodeLocation;
+import com.team22.catan.player.Parser;
 import com.team22.catan.structures.Settlement;
 
 public class ParserTest {

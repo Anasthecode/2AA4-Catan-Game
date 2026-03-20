@@ -1,6 +1,7 @@
-package com.team22.catan.game;
+package com.team22.catan.player;
 
 import com.team22.catan.actions.Action;
+import com.team22.catan.game.Player;
 
 /**
  * Strategy Pattern Interface for evaluating the value of an action.

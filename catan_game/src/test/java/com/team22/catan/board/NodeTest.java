@@ -9,11 +9,11 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import com.team22.catan.game.ComputerPlayer;
 import com.team22.catan.game.GameState;
-import com.team22.catan.game.Parser;
 import com.team22.catan.game.Player;
 import com.team22.catan.game.Player.PlayerColor;
+import com.team22.catan.player.ComputerPlayer;
+import com.team22.catan.player.Parser;
 import com.team22.catan.structures.Road;
 import com.team22.catan.structures.Settlement;
 

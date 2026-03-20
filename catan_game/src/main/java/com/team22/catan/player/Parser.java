@@ -1,7 +1,9 @@
-package com.team22.catan.game;
+package com.team22.catan.player;
 
 import com.team22.catan.actions.*;
 import com.team22.catan.board.NodePosition;
+import com.team22.catan.game.Game;
+import com.team22.catan.game.Player;
 import com.team22.catan.board.EdgePosition;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -30,7 +32,7 @@ public class Parser {
     }
 
     public void waitForGoCommand(Game game) {
-        System.out.println("Type 'Go' step to the next turn, or type 'undo'/'redo' to step back and forth");
+        System.out.println("Type 'Go' to start the turn, or type 'undo'/'redo' to step back and forth");
         while (true) {
             String input = scanner.nextLine().trim();
             if (GO_PATTERN.matcher(input).matches()) {

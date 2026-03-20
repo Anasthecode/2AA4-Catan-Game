@@ -1,9 +1,10 @@
-package com.team22.catan.game;
+package com.team22.catan.player;
 
 import com.team22.catan.actions.Action;
 import com.team22.catan.actions.BuildCity;
 import com.team22.catan.actions.BuildRoad;
 import com.team22.catan.actions.BuildSettlement;
+import com.team22.catan.game.Player;
 
 public class StandardActionEvaluator implements ActionEvaluator {
 

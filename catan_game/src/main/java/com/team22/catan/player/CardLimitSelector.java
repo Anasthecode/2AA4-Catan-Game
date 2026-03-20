@@ -1,14 +1,16 @@
-package com.team22.catan.game;
+package com.team22.catan.player;
 
 import java.util.List;
 import com.team22.catan.actions.Action;
 import com.team22.catan.actions.EndTurn;
 import com.team22.catan.actions.GenerateResources;
+import com.team22.catan.game.Game;
+import com.team22.catan.game.Player;
 
-public class CardLimitHandler extends ConstraintHandler {
+public class CardLimitSelector extends ActionSelector {
 
     @Override
-    public Action handleRequest(Game game, Player player, List<Action> availableActions) {
+    public Action chooseAction(Game game, Player player, List<Action> availableActions) {
         if (player.getResourceCountTotal() > 7) {
             for (Action action : availableActions) {
                 if (!(action instanceof EndTurn) && !(action instanceof GenerateResources)) {
@@ -19,7 +21,7 @@ public class CardLimitHandler extends ConstraintHandler {
         }
 
         if (nextHandler != null) {
-            return nextHandler.handleRequest(game, player, availableActions);
+            return nextHandler.chooseAction(game, player, availableActions);
         }
         return null;
     }

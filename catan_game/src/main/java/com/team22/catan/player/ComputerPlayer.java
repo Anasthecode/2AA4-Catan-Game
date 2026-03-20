@@ -1,4 +1,4 @@
-package com.team22.catan.game;
+package com.team22.catan.player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,9 @@ import com.team22.catan.actions.EndTurn;
 import com.team22.catan.actions.GenerateResources;
 import com.team22.catan.board.EdgePosition;
 import com.team22.catan.board.NodePosition;
+import com.team22.catan.game.Game;
+import com.team22.catan.game.GameState;
+import com.team22.catan.game.Player;
 import com.team22.catan.structures.City;
 import com.team22.catan.structures.Road;
 import com.team22.catan.structures.Settlement;
@@ -21,7 +24,7 @@ public class ComputerPlayer extends Player {
     private Random rng;
     private Parser parser;
 
-    private ConstraintHandler aiBrain;
+    private ActionSelector aiBrain;
 
     public ComputerPlayer(String name, PlayerColor color, Random rng, Parser parser) {
         super(name, color);
@@ -30,8 +33,8 @@ public class ComputerPlayer extends Player {
 
         ActionEvaluator standardEvaluator = new StandardActionEvaluator();
 
-        ConstraintHandler cardLimitNode = new CardLimitHandler();
-        ConstraintHandler valueNode = new ValueEvaluationHandler(standardEvaluator, rng);
+        ActionSelector cardLimitNode = new CardLimitSelector();
+        ActionSelector valueNode = new ActionScoreSelector(standardEvaluator, rng);
 
         cardLimitNode.setNext(valueNode);
 
@@ -40,6 +43,9 @@ public class ComputerPlayer extends Player {
 
     @Override
     public void onTurn(Game game) {
+
+        parser.waitForGoCommand(game);
+        
         List<Action> availableActions = getAvailableActions(game);
 
         if (game.getState() == GameState.SETUP) {
@@ -50,7 +56,7 @@ public class ComputerPlayer extends Player {
                 return;
             }
 
-            Action chosenAction = aiBrain.handleRequest(game, this, availableActions);
+            Action chosenAction = aiBrain.chooseAction(game, this, availableActions);
 
             if (chosenAction != null) {
                 game.executeAction(chosenAction);

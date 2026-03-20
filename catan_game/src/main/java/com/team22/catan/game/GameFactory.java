@@ -8,6 +8,9 @@ import com.team22.catan.board.Board;
 import com.team22.catan.board.CatanBoard;
 import com.team22.catan.board.VisualizerDecorator;
 import com.team22.catan.game.Player.PlayerColor;
+import com.team22.catan.player.ComputerPlayer;
+import com.team22.catan.player.HumanPlayer;
+import com.team22.catan.player.Parser;
 
 public class GameFactory {
   private Random rng;
