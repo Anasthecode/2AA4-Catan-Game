@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:Codegen="http://www.eclipse.org/papyrus/Codegen/1" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML">
+  <uml:Model xmi:id="_ZTcgcO16EfCO659FWEe4mA" name="catan">
+    <packageImport xmi:type="uml:PackageImport" xmi:id="_ZYjp8O16EfCO659FWEe4mA">
+      <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+    </packageImport>
+    <packagedElement xmi:type="uml:Class" xmi:id="_nFoWkO19EfCO659FWEe4mA" name="Structure" isAbstract="true">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_NbsZcPVIEfCnWIE4ASJ2FA" name="structureColour" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RqiYcPVIEfCnWIE4ASJ2FA" name="LiteralInteger1" value="1"/>
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Rqi_gPVIEfCnWIE4ASJ2FA" name="LiteralUnlimitedNatural1" value="1"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_YAvFgPVIEfCnWIE4ASJ2FA" name="pointWorth" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+      </ownedAttribute>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_hA8hwPVIEfCnWIE4ASJ2FA" name="getStructureColour">
+        <ownedParameter xmi:type="uml:Parameter" xmi:id="_9xO2QPVIEfCnWIE4ASJ2FA" name="structureColour" direction="return">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+        </ownedParameter>
+      </ownedOperation>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_gUAt0PVJEfCnWIE4ASJ2FA" name="getPointWorth">
+        <ownedParameter xmi:type="uml:Parameter" xmi:id="_j3BhkPVJEfCnWIE4ASJ2FA" name="pointWorth" direction="return">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedParameter>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_uVkkEPVJEfCnWIE4ASJ2FA" name="SettlementStructure" isAbstract="true">
+      <generalization xmi:type="uml:Generalization" xmi:id="_5TCvwPchEfCnWIE4ASJ2FA" general="_nFoWkO19EfCO659FWEe4mA"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_zVWQwPVJEfCnWIE4ASJ2FA" name="resourceYield" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_4K1ZAPVJEfCnWIE4ASJ2FA" name="locationNode" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EJavaObject"/>
+      </ownedAttribute>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_N6-rkPVKEfCnWIE4ASJ2FA" name="getResource" visibility="public">
+        <ownedParameter xmi:type="uml:Parameter" xmi:id="_T7cZMPVKEfCnWIE4ASJ2FA" name="resource" direction="return">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+        </ownedParameter>
+      </ownedOperation>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_bcw1kPVKEfCnWIE4ASJ2FA" name="getLocationNode">
+        <ownedParameter xmi:type="uml:Parameter" xmi:id="_c8SuoPVKEfCnWIE4ASJ2FA" name="resource" direction="return">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EJavaObject"/>
+        </ownedParameter>
+      </ownedOperation>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_uCpyoPVKEfCnWIE4ASJ2FA" name="Settlement">
+      <generalization xmi:type="uml:Generalization" xmi:id="_9Fa1MPchEfCnWIE4ASJ2FA" general="_uVkkEPVJEfCnWIE4ASJ2FA"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_rqKmoPceEfCnWIE4ASJ2FA" name="Settlement"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_xQqmwPVKEfCnWIE4ASJ2FA" name="City">
+      <generalization xmi:type="uml:Generalization" xmi:id="_8SGh4PchEfCnWIE4ASJ2FA" general="_uVkkEPVJEfCnWIE4ASJ2FA"/>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_nmc5kPceEfCnWIE4ASJ2FA" name="City"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Class" xmi:id="_3Xd7QPceEfCnWIE4ASJ2FA" name="Road">
+      <generalization xmi:type="uml:Generalization" xmi:id="_0Go8UPchEfCnWIE4ASJ2FA" general="_nFoWkO19EfCO659FWEe4mA"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="__2k1kPceEfCnWIE4ASJ2FA" name="startNode" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EJavaObject"/>
+      </ownedAttribute>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_HZdYMPcfEfCnWIE4ASJ2FA" name="endNode" visibility="private">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EJavaObject"/>
+      </ownedAttribute>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_VAsC4PcfEfCnWIE4ASJ2FA" name="getStartNode">
+        <ownedParameter xmi:type="uml:Parameter" xmi:id="_dFHzYPcfEfCnWIE4ASJ2FA" name="startNode" visibility="public" direction="return">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EJavaObject"/>
+        </ownedParameter>
+      </ownedOperation>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_sUuxIPcfEfCnWIE4ASJ2FA" name="getEndNode">
+        <ownedParameter xmi:type="uml:Parameter" xmi:id="_uqEQ0PcfEfCnWIE4ASJ2FA" name="endNode" direction="return">
+          <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EJavaObject"/>
+        </ownedParameter>
+      </ownedOperation>
+      <ownedOperation xmi:type="uml:Operation" xmi:id="_2Z_J4PcfEfCnWIE4ASJ2FA" name="Road"/>
+    </packagedElement>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_kD_0wO2BEfCO659FWEe4mA">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_kEC4EO2BEfCO659FWEe4mA" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.eclipse.org/papyrus/Codegen/1#/"/>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://Codegen_PROFILES/Codegen.profile.uml#_fPDsIBa-EearhdjjJ6cVzQ"/>
+    </profileApplication>
+  </uml:Model>
+  <Codegen:GeneratorHint xmi:id="_kEKz4O2BEfCO659FWEe4mA" base_Element="_ZTcgcO16EfCO659FWEe4mA" generatorID="Standard Java">
+    <language xmi:type="Codegen:Language" href="pathmap://Codegen_PROFILES/languages.uml#_2Zt6YCjREeayco6FJ_OtTQ"/>
+  </Codegen:GeneratorHint>
+</xmi:XMI>
