@@ -21,111 +21,111 @@ import com.team22.catan.structures.Settlement;
 
 public class ComputerPlayer extends Player {
 
-    private Random rng;
-    private Parser parser;
+  private Random rng;
+  private Parser parser;
 
-    private ActionSelector aiBrain;
+  private ActionSelector aiBrain;
 
-    public ComputerPlayer(String name, PlayerColor color, Random rng, Parser parser) {
-        super(name, color);
-        this.rng = rng;
-        this.parser = parser;
+  public ComputerPlayer(String name, PlayerColor color, Random rng, Parser parser) {
+    super(name, color);
+    this.rng = rng;
+    this.parser = parser;
 
-        ActionEvaluator standardEvaluator = new StandardActionEvaluator();
+    ActionEvaluator standardEvaluator = new StandardActionEvaluator();
 
-        ActionSelector cardLimitNode = new CardLimitSelector();
-        ActionSelector valueNode = new ActionScoreSelector(standardEvaluator, rng);
+    ActionSelector cardLimitNode = new CardLimitSelector();
+    ActionSelector valueNode = new ActionScoreSelector(standardEvaluator, rng);
 
-        cardLimitNode.setNext(valueNode);
+    cardLimitNode.setNext(valueNode);
 
-        this.aiBrain = cardLimitNode;
-    }
+    this.aiBrain = cardLimitNode;
+  }
 
-    @Override
-    public void onTurn(Game game) {
+  @Override
+  public void onTurn(Game game) {
 
-        parser.waitForGoCommand(game);
-        
-        List<Action> availableActions = getAvailableActions(game);
+    parser.waitForGoCommand(game);
 
-        if (game.getState() == GameState.SETUP) {
-            setupTurn(game);
-        } else {
-            if (availableActions.isEmpty()) {
-                game.executeAction(new EndTurn(this, game));
-                return;
-            }
+    List<Action> availableActions = getAvailableActions(game);
 
-            Action chosenAction = aiBrain.chooseAction(game, this, availableActions);
-
-            if (chosenAction != null) {
-                game.executeAction(chosenAction);
-            } else {
-                game.executeAction(new EndTurn(this, game));
-            }
-        }
-    }
-
-    private void setupTurn(Game game) {
-        List<Action> possibleSettlementPlacements = new ArrayList<>();
-        List<Action> possibleRoadPlacements = new ArrayList<>();
-
-        if (!getSetupSettlement()) {
-            for (NodePosition nodePosition : game.getBoard().getNodePositions()) {
-                if (game.getBoard().canPlaceSettlementAt(nodePosition, this, game.getState())) {
-                    possibleSettlementPlacements.add(new BuildSettlement(this, game, nodePosition));
-                }
-            }
-
-            game.executeAction(possibleSettlementPlacements.get(rng.nextInt(possibleSettlementPlacements.size())));
-        }
-
-        if (!getSetupRoad()) {
-            for (EdgePosition edgePosition : game.getBoard().getEdgePositions()) {
-                if (game.getBoard().canPlaceRoadAt(edgePosition, this, game.getState())) {
-                    possibleRoadPlacements.add(new BuildRoad(this, game, edgePosition));
-                }
-            }
-
-            game.executeAction(possibleRoadPlacements.get(rng.nextInt(possibleRoadPlacements.size())));
-        }
-
+    if (game.getState() == GameState.SETUP) {
+      setupTurn(game);
+    } else {
+      if (availableActions.isEmpty()) {
         game.executeAction(new EndTurn(this, game));
+        return;
+      }
+
+      Action chosenAction = aiBrain.chooseAction(game, this, availableActions);
+
+      if (chosenAction != null) {
+        game.executeAction(chosenAction);
+      } else {
+        game.executeAction(new EndTurn(this, game));
+      }
+    }
+  }
+
+  private void setupTurn(Game game) {
+    List<Action> possibleSettlementPlacements = new ArrayList<>();
+    List<Action> possibleRoadPlacements = new ArrayList<>();
+
+    if (!getSetupSettlement()) {
+      for (NodePosition nodePosition : game.getBoard().getNodePositions()) {
+        if (game.getBoard().canPlaceSettlementAt(nodePosition, this, game.getState())) {
+          possibleSettlementPlacements.add(new BuildSettlement(this, game, nodePosition));
+        }
+      }
+
+      game.executeAction(possibleSettlementPlacements.get(rng.nextInt(possibleSettlementPlacements.size())));
     }
 
-    private List<Action> getAvailableActions(Game game) {
-        List<Action> actionsToReturn = new ArrayList<>();
-
-        if (!getDiceRolled()) {
-            actionsToReturn.add(new GenerateResources(this, game));
+    if (!getSetupRoad()) {
+      for (EdgePosition edgePosition : game.getBoard().getEdgePositions()) {
+        if (game.getBoard().canPlaceRoadAt(edgePosition, this, game.getState())) {
+          possibleRoadPlacements.add(new BuildRoad(this, game, edgePosition));
         }
+      }
 
-        for (NodePosition nodePosition : game.getBoard().getNodePositions()) {
-            if (game.getBoard().canPlaceSettlementAt(nodePosition, this, game.getState()) &&
-                    canAfford(new Settlement(this).getCost())) {
-
-                actionsToReturn.add(new BuildSettlement(this, game, nodePosition));
-            }
-
-            if (game.getBoard().canPlaceCityAt(nodePosition, this, game.getState()) &&
-                    canAfford(new City(this).getCost())) {
-
-                actionsToReturn.add(new BuildCity(this, game, nodePosition));
-            }
-        }
-
-        for (EdgePosition edgePosition : game.getBoard().getEdgePositions()) {
-            if (game.getBoard().canPlaceRoadAt(edgePosition, this, game.getState()) &&
-                    canAfford(new Road(this).getCost())) {
-
-                actionsToReturn.add(new BuildRoad(this, game, edgePosition));
-            }
-        }
-
-        if ((getResourceCountTotal() < 7 || actionsToReturn.isEmpty()) && getDiceRolled()) {
-            actionsToReturn.add(new EndTurn(this, game));
-        }
-
-        return actionsToReturn;
+      game.executeAction(possibleRoadPlacements.get(rng.nextInt(possibleRoadPlacements.size())));
     }
+
+    game.executeAction(new EndTurn(this, game));
+  }
+
+  private List<Action> getAvailableActions(Game game) {
+    List<Action> actionsToReturn = new ArrayList<>();
+
+    if (!getDiceRolled()) {
+      actionsToReturn.add(new GenerateResources(this, game));
+    }
+
+    for (NodePosition nodePosition : game.getBoard().getNodePositions()) {
+      if (game.getBoard().canPlaceSettlementAt(nodePosition, this, game.getState()) &&
+          canAfford(new Settlement(this).getCost())) {
+
+        actionsToReturn.add(new BuildSettlement(this, game, nodePosition));
+      }
+
+      if (game.getBoard().canPlaceCityAt(nodePosition, this, game.getState()) &&
+          canAfford(new City(this).getCost())) {
+
+        actionsToReturn.add(new BuildCity(this, game, nodePosition));
+      }
+    }
+
+    for (EdgePosition edgePosition : game.getBoard().getEdgePositions()) {
+      if (game.getBoard().canPlaceRoadAt(edgePosition, this, game.getState()) &&
+          canAfford(new Road(this).getCost())) {
+
+        actionsToReturn.add(new BuildRoad(this, game, edgePosition));
+      }
+    }
+
+    if (getDiceRolled()) {
+      actionsToReturn.add(new EndTurn(this, game));
+    }
+
+    return actionsToReturn;
+  }
 }
