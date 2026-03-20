@@ -58,6 +58,8 @@ public class ComputerPlayer extends Player {
           for (Action action : availableActions) {
               double score = evaluator.evaluate(action, this);
 
+              System.out.println(getName() + " considered " + action.getClass().getSimpleName() + " | Score: " + score);
+
               if (score > highestScore) {
                   highestScore = score;
                   tiedBestActions.clear();
