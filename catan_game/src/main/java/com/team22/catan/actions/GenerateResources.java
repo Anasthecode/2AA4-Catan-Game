@@ -9,6 +9,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import com.team22.catan.board.AxialPosition;
+import com.team22.catan.game.CatanSettings;
 import com.team22.catan.game.Game;
 import com.team22.catan.game.GameState;
 import com.team22.catan.game.Player;
@@ -21,6 +23,7 @@ public class GenerateResources implements Action {
 
   private int roll;
   private Map<Player, Map<Resource, Integer>> initialPlayerInventories;
+  private AxialPosition initialRobberPosition;
 
   public GenerateResources(Player roller, Game game) {
     this.roller = roller;
@@ -33,12 +36,13 @@ public class GenerateResources implements Action {
     for (Player player : game.getPlayers()) {
       initialPlayerInventories.put(player, player.getInventory());
     }
+
+    initialRobberPosition = game.getBoard().getRobberPosition();
   }
 
   @Override
   public boolean execute() {
     if (game.getState() == GameState.PLAYING) {
-      System.out.println("Roll: " + roll);
       if (roll == 0) {
         roll = game.rollDice();
       }
@@ -56,7 +60,7 @@ public class GenerateResources implements Action {
       roller.setDiceRolled(true);
       return true;
     } else {
-      System.out.println("Cannot roll the dice right now");
+      System.out.println("Cannot roll dice right now");
       return false;
     }
   }
@@ -95,11 +99,12 @@ public class GenerateResources implements Action {
   @Override
   public void undo() {
     System.out.println("Undoing dice roll " + roll);
-    // Old and new inventories are guaranteed to have all possible resources, so no need to check
+    // Old and new inventories are guaranteed to have all possible resources, so no
+    // need to check
     for (Player player : game.getPlayers()) {
       Map<Resource, Integer> newInventory = player.getInventory();
       Map<Resource, Integer> oldInventory = initialPlayerInventories.get(player);
-      
+
       for (Entry<Resource, Integer> resource : newInventory.entrySet()) {
         int difference = resource.getValue() - oldInventory.get(resource.getKey());
         player.addResource(resource.getKey(), -difference);
@@ -107,5 +112,7 @@ public class GenerateResources implements Action {
     }
 
     roller.setDiceRolled(false);
+
+    game.getBoard().setRobberPosition(initialRobberPosition);
   }
 }

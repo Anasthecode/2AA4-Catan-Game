@@ -32,20 +32,14 @@ public class Parser {
     }
 
     public void waitForGoCommand(Game game) {
-        System.out.println("Type 'Go' to start the turn, or type 'undo'/'redo' to step back and forth");
+        System.out.println("Type 'Go' to continue the turn");
         while (true) {
             String input = scanner.nextLine().trim();
             if (GO_PATTERN.matcher(input).matches()) {
                 return;
             }
-
-            if (UNDO_PATTERN.matcher(input).matches()) {
-                game.undo();
-            } else if (REDO_PATTERN.matcher(input).matches()) {
-                game.redo();
-            } else {
-              System.out.println("Waiting for command...");
-            }
+            
+            System.out.println("Waiting for command...");
 
         }
     }

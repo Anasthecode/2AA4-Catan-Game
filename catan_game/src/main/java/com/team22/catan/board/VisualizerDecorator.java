@@ -365,6 +365,16 @@ public class VisualizerDecorator implements Board {
   }
 
   @Override
+  public AxialPosition getRobberPosition() {
+    return aBoard.getRobberPosition();
+  }
+
+  @Override
+  public void setRobberPosition(AxialPosition position) {
+    aBoard.setRobberPosition(position);
+  }
+
+  @Override
   public TileType[] getTileTypes() {
     return aBoard.getTileTypes();
   }

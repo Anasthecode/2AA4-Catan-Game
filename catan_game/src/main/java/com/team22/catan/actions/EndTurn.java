@@ -16,12 +16,16 @@ public class EndTurn implements Action {
   private Player player;
   private Game game;
 
+  private GameState previousState;
+
   /**
    * 
    */
   public EndTurn(Player player, Game game) {
     this.player = player;
     this.game = game;
+
+    this.previousState = game.getState();
   }
 
   @Override
@@ -41,13 +45,6 @@ public class EndTurn implements Action {
   public void undo() {
     System.out.println("Going back to previous player's turn");
     player.setDiceRolled(true);
-    int currentPlayerIndex = game.getCurrentPlayerIndex();
-    currentPlayerIndex--;
-    if (currentPlayerIndex < 0) {
-      currentPlayerIndex = game.getPlayers().size() - 1;
-    }
-
-    game.setCurrentPlayerIndex(currentPlayerIndex);
 
     // If they ended their turn during the setup phase,they must have placed a settlement and road.
     // Assert that these remain true as a result (somewhat of a hack)
@@ -55,5 +52,7 @@ public class EndTurn implements Action {
       player.setSetupRoad(true);
       player.setSetupSettlement(true);
     }
+
+    game.onUndoEndTurn(previousState);
   }
 }

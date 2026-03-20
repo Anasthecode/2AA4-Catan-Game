@@ -27,6 +27,8 @@ public class CatanBoard implements Board {
 	private TileType[] boardLayout;
 	private int[] tokenLayout;
 
+  private AxialPosition robberPosition;
+
 	/**
 	 *
 	 */
@@ -57,7 +59,9 @@ public class CatanBoard implements Board {
 			addTile(position, tokenLayout[tokenIndex], boardLayout[tileIndex]);
 			if (boardLayout[tileIndex] != TileType.DESERT) {
 				tokenIndex++;
-			}
+			} else {
+        robberPosition = position;
+      }
 
 			tileIndex++;
 		}
@@ -240,28 +244,32 @@ public class CatanBoard implements Board {
 	}
 
 	public Set<Player> moveRobberToRandomTile(Random rng) {
-		List<Tile> allTiles = getOrderedTiles();
-		Tile currentRobberTile = null;
+		Tile currentRobberTile = tiles.get(robberPosition);
 
 		// Find the current robber and remove it
-		for (Tile t : allTiles) {
-			if (t.hasRobber()) {
-				currentRobberTile = t;
-				t.setRobber(false);
-				break;
-			}
-		}
+		currentRobberTile.setRobber(false);
 
 		// Pick a new random tile that isn't the current one
 		Tile newRobberTile;
 		do {
-			newRobberTile = allTiles.get(rng.nextInt(allTiles.size()));
+			newRobberTile = tiles.get(getTilePositions().get(rng.nextInt(tiles.size())));
 		} while (newRobberTile.equals(currentRobberTile));
 
 		newRobberTile.setRobber(true);
+    robberPosition = newRobberTile.getPosition();
 		System.out.println("The robber was moved to " + newRobberTile.getPosition());
 		return newRobberTile.playersOnSurroundingNodes();
 	}
+
+  @Override
+  public AxialPosition getRobberPosition(){
+    return robberPosition;
+  }
+
+  @Override
+  public void setRobberPosition(AxialPosition position) {
+    robberPosition = position;
+  }
 
 	@Override
 	public int[] getTokens() {

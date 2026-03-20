@@ -20,13 +20,10 @@ public class HumanPlayer extends Player {
 
   @Override
   public void onTurn(Game game) {
-
-    System.out.println("It is your turn, " + getName() + ".");
-
     if (game.getState() == GameState.SETUP) {
       setupTurn(game);
     } else if (getDiceRolled()) {
-      System.out.println("Enter a command (List, Build [type] [id], Go):");
+      System.out.println("Enter a command (List, Build [type] [id]) or (undo / redo) to redo parts of your turn:");
       Action action = parser.parseCommand(this, game);
 
       if (action instanceof GenerateResources) {
@@ -36,7 +33,7 @@ public class HumanPlayer extends Player {
       }
 
     } else {
-      System.out.println("Enter a command (Roll, List, Build [type] [id]):");
+      System.out.println("Enter a command (Roll, List, Build [type] [id]) or (undo / redo) to redo parts of your turn:");
       Action action = parser.parseCommand(this, game);
       if (action != null) {
         game.executeAction(action);
@@ -45,8 +42,8 @@ public class HumanPlayer extends Player {
   }
 
   private void setupTurn(Game game) {
-    while (!getSetupSettlement()) {
-      System.out.println("Place your initial settlement (Build settlement [id])");
+    if (!getSetupSettlement()) {
+      System.out.println("Place your initial settlement (Build settlement [id]) or (undo / redo) to redo parts of your turn:");
 
       Action action = parser.parseCommand(this, game);
 
@@ -55,10 +52,12 @@ public class HumanPlayer extends Player {
       } else if (action != null) {
         game.executeAction(action);
       }
+
+      return;
     }
 
-    while (!getSetupRoad()) {
-      System.out.println("Place your initial road connecting to the settlement (Build road [id, id])");
+    if (!getSetupRoad()) {
+      System.out.println("Place your initial road connecting to the settlement (Build road [id, id]) or (undo / redo) to redo parts of your turn:");
 
       Action action = parser.parseCommand(this, game);
 
@@ -67,6 +66,8 @@ public class HumanPlayer extends Player {
       } else if (action != null) {
         game.executeAction(action);
       }
+
+      return;
     }
 
     game.executeAction(new EndTurn(this, game));

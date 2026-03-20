@@ -8,8 +8,10 @@ package com.team22.catan.game;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
+import java.util.Map.Entry;
 
 import com.team22.catan.actions.Action;
 import com.team22.catan.board.Board;
@@ -58,18 +60,6 @@ public class Game {
     return new ArrayList<>(players);
   }
 
-  public int getCurrentPlayerIndex() {
-    return currentPlayerIndex;
-  }
-
-  public void setCurrentPlayerIndex(int index) {
-    if (index < 0 || index >= players.size()) {
-      throw new IllegalArgumentException("Player index must be between 0 and the player count");
-    }
-
-    currentPlayerIndex = index;
-  }
-
   /**
    * @return Returns the board obj
    */
@@ -94,8 +84,6 @@ public class Game {
     System.out.println("Starting Catan game with " + players.size() + " players");
     System.out.println("Playing for " + turns + " turns");
 
-    setup();
-    System.out.println("\n############### GAME START ###############");
     System.out.println("\n########## TURN " + currentTurn + " ###############");
     System.out.println("\n##### " + players.get(currentPlayerIndex).getName() + "'s turn #####");
 
@@ -105,40 +93,6 @@ public class Game {
     }
 
     endGame();
-  }
-
-  private void setup() {
-    System.out.println("############### SETUP PHASE ###############");
-    while (currentPlayerIndex < players.size()) {
-      Player currentPlayer = players.get(currentPlayerIndex);
-      System.out.println("\n##### " + currentPlayer.getName() + "'s turn #####\n");
-      processPlayerTurn();
-      currentPlayerIndex++;
-    }
-
-    for (Player player : players) {
-      player.setSetupSettlement(false);
-      player.setSetupRoad(false);
-    }
-
-    Collections.reverse(players);
-    currentPlayerIndex = 0;
-    while (currentPlayerIndex < players.size()) {
-      System.out.println("\n##### " + players.get(currentPlayerIndex).getName() + "'s turn #####");
-      processPlayerTurn();
-      currentPlayerIndex++;
-    }
-
-    Collections.reverse(players);
-    currentPlayerIndex = 0;
-
-    System.out.println("\n##### Handing out initial items #####\n");
-    for (int i = 2; i <= 12; i++) {
-      board.notifyTilesOfRoll(i);
-    }
-
-    System.out.println("\n############### SETUP OVER ###############");
-    gameState = GameState.PLAYING;
   }
 
   private void processPlayerTurn() {
@@ -160,7 +114,7 @@ public class Game {
       System.out.println("Nothing to undo");
       return;
     }
-    
+
     Action action = actionHistory.pop();
     if (action != null) {
       action.undo();
@@ -181,29 +135,85 @@ public class Game {
   }
 
   public void onEndTurn() {
-    checkWinCondition();
+    if (gameState == GameState.SETUP) {
+      endSetupTurn();
+    }
 
-    if (currentPlayerIndex == players.size() - 1 && gameState == GameState.PLAYING) {
-      System.out.println("\nVictory Point Standings:");
-      displayVPStandings();
+    if (currentPlayerIndex == players.size() - 1 && currentTurn < turns) {
+      currentTurn++;
+      System.out.println("\n########## TURN " + currentTurn + " ###############");
+    } else if (currentTurn >= turns) {
+      System.out.println("Maximum turns reached. Game ending.");
+      gameState = GameState.END;
+      displayResults();
+      return;
+    }
 
-      if (currentTurn < turns) {
-        currentTurn++;
-        System.out.println("\n########## TURN " + currentTurn + " ###############");
-      } else {
-        System.out.println("Maximum turns reached. Game ending.");
-        gameState = GameState.END;
+    currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+    Player nextPlayer = players.get(currentPlayerIndex);
+
+    System.out.println("\n##### " + nextPlayer.getName() + "'s turn #####");
+  }
+
+  public void onUndoEndTurn(GameState previousState) {
+    if (previousState == GameState.SETUP) {
+      undoEndSetupTurn();
+    }
+
+    if (currentPlayerIndex == 0 && currentTurn > 1) {
+      currentTurn--;
+    } else if (currentPlayerIndex == 0 && currentTurn <= 1) {
+      throw new IllegalStateException("Cannot go back a turn on turn 1");
+    }
+
+    currentPlayerIndex--;
+    if (currentPlayerIndex < 0) {
+      currentPlayerIndex = players.size() - 1;
+    }
+  }
+
+  private void endSetupTurn() {
+    if (currentPlayerIndex == players.size() - 1) {
+      for (Player player : players) {
+        player.setSetupRoad(false);
+        player.setSetupSettlement(false);
+      }
+
+      if (currentTurn == 2) {
+        // Dice are assumed to be 6 sided, hence multiply by 6 to get max roll
+        for (int i = CatanSettings.NUMBER_OF_DICE; i <= CatanSettings.NUMBER_OF_DICE * 6; i++) {
+          board.notifyTilesOfRoll(i);
+        }
+
+        gameState = GameState.PLAYING;
+      }
+
+      Collections.reverse(players);
+    }
+  }
+
+  private void undoEndSetupTurn() {
+    if (currentPlayerIndex == 0) {
+      for (Player player : players) {
+        player.setSetupRoad(true);
+        player.setSetupSettlement(true);
+      }
+
+      if (currentTurn == 3) {
+        gameState = GameState.SETUP;
+        emptyPlayerInventories();
       }
     }
 
-    if (gameState == GameState.PLAYING) {
-      currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-      Player nextPlayer = players.get(currentPlayerIndex);
+    Collections.reverse(players);
+  }
 
-      System.out.println("\n##### " + nextPlayer.getName() + "'s turn #####");
-
-    } else if (gameState == GameState.END) {
-      displayResults();
+  private void emptyPlayerInventories() {
+    for (Player player : players) {
+      Map<Resource, Integer> inventory = player.getInventory();
+      for (Entry<Resource, Integer> resource : inventory.entrySet()) {
+        player.addResource(resource.getKey(), -resource.getValue());
+      }
     }
   }
 

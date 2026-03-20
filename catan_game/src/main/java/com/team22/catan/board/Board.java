@@ -32,5 +32,7 @@ public interface Board {
   public void placeRoadAt(EdgePosition position, Road Road, GameState gameState);
   public Road removeRoadAt(EdgePosition position);
 
+  public AxialPosition getRobberPosition();
+  public void setRobberPosition(AxialPosition position);
   public Set<Player> moveRobberToRandomTile(Random rng);
 }
