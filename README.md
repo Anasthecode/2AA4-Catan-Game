@@ -75,6 +75,9 @@ To fully evaluate the interactive CLI and the live visualizer, you will need to 
 - **Rule Enforcement:** Validates all moves, preventing floating settlements, overlapping roads, or building without sufficient resources.
 - **The Robber Mechanism:** Automatically triggers on a dice roll of 7, forcing players with more than 7 cards to discard half their hand, and allowing the roller to steal a random resource from an adjacent player.
 - **Automated Opponents:** Computer agents dynamically assess the board state and randomly execute valid actions until a player reaches the victory point threshold.
+- **Undo/Redo History:** Players can reverse and re-apply actions infinitely using the `undo` and `redo` commands, managed via the Command design pattern.
+- **Rule-Based Machine Intelligence:** Computer agents dynamically evaluate the board and score potential moves (e.g., prioritizing Victory Points or hand-size management) using the Strategy pattern.
+- **Strict Constraints AI:** The engine uses the Chain of Responsibility pattern to force AI players to resolve immediate threats (like holding >7 cards when a 7 is rolled) before evaluating standard moves.
 
 ## Board Layout & Coordinate System
 
