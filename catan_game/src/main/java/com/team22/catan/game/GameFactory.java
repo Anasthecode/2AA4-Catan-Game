@@ -25,9 +25,9 @@ public class GameFactory {
       List<Player> players = new ArrayList<>();
       Parser parser = new Parser();
 
-      // players.add(new HumanPlayer("Human", PlayerColor.values()[0], parser));
+      players.add(new HumanPlayer("Human", PlayerColor.values()[0], parser));
 
-      for (int i = 0; i < numberOfPlayers; i++) {
+      for (int i = 1; i < numberOfPlayers; i++) {
           players.add(new ComputerPlayer("Computer " + i, PlayerColor.values()[i], rng, parser));
       }
 

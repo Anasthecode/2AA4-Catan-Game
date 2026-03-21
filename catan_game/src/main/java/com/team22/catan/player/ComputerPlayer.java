@@ -48,7 +48,7 @@ public class ComputerPlayer extends Player {
   @Override
   public void onTurn(Game game) {
 
-    // parser.waitForGoCommand(game);
+    parser.waitForGoCommand(game);
 
     List<Action> availableActions = getAvailableActions(game);
 
