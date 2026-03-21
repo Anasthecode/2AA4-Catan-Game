@@ -389,7 +389,7 @@ public class VisualizerDecorator implements Board {
   }
 
   @Override
-  public int longestRoad(Player player) {
+  public List<EdgePosition> longestRoad(Player player) {
     return aBoard.longestRoad(player);
   }
 

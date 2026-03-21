@@ -4,6 +4,7 @@
 
 package com.team22.catan.board;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,117 +22,117 @@ import com.team22.catan.structures.Road;
  * 
  */
 public class Edge {
-	/**
-	 * 
-	 */
-	private Road road;
-	private EdgePosition position;
-	private Node startNode;
-	private Node endNode;
+  /**
+   * 
+   */
+  private Road road;
+  private EdgePosition position;
+  private Node startNode;
+  private Node endNode;
 
-	/**
-	 * 
-	 */
-	public Edge(EdgePosition position) {
-		this.position = position;
-		road = null;
-		startNode = null;
-		endNode = null;
-	}
+  /**
+   * 
+   */
+  public Edge(EdgePosition position) {
+    this.position = position;
+    road = null;
+    startNode = null;
+    endNode = null;
+  }
 
-	public List<NodePosition> endpoints() {
-		return position.endpoints();
-	}
+  public List<NodePosition> endpoints() {
+    return position.endpoints();
+  }
 
-	public Node getStartNode() {
-		return startNode;
-	}
+  public Node getStartNode() {
+    return startNode;
+  }
 
-	public Node getEndNode() {
-		return endNode;
-	}
+  public Node getEndNode() {
+    return endNode;
+  }
 
-	public void setNodes(Node startNode, Node endNode) {
-		this.startNode = startNode;
-		this.endNode = endNode;
-	}
+  public void setNodes(Node startNode, Node endNode) {
+    this.startNode = startNode;
+    this.endNode = endNode;
+  }
 
-	public EdgePosition getPosition() {
-		return position;
-	}
+  public EdgePosition getPosition() {
+    return position;
+  }
 
-	public boolean hasRoad() {
-		return road != null;
-	}
+  public boolean hasRoad() {
+    return road != null;
+  }
 
-	public boolean canPlaceRoad(Player player, GameState gameState) {
-		if (hasRoad()) {
-			return false;
-		}
+  public boolean canPlaceRoad(Player player, GameState gameState) {
+    if (hasRoad()) {
+      return false;
+    }
 
-		if (gameState == GameState.SETUP) {
-			for (Edge edge : startNode.getEdges()) {
-				if (edge.hasRoad() && !endNode.hasStructure()) {
-					return false;
-				}
-			}
+    if (gameState == GameState.SETUP) {
+      for (Edge edge : startNode.getEdges()) {
+        if (edge.hasRoad() && !endNode.hasStructure()) {
+          return false;
+        }
+      }
 
-			for (Edge edge : endNode.getEdges()) {
-				if (edge.hasRoad() && !startNode.hasStructure()) {
-					return false;
-				}
-			}
-		}
+      for (Edge edge : endNode.getEdges()) {
+        if (edge.hasRoad() && !startNode.hasStructure()) {
+          return false;
+        }
+      }
+    }
 
-		if ((startNode.hasStructure() && startNode.getStructure().getOwner().equals(player)) ||
-				(endNode.hasStructure() && endNode.getStructure().getOwner().equals(player))) {
-			return true;
-		}
+    if ((startNode.hasStructure() && startNode.getStructure().getOwner().equals(player)) ||
+        (endNode.hasStructure() && endNode.getStructure().getOwner().equals(player))) {
+      return true;
+    }
 
-		for (Edge edge : startNode.getEdges()) {
-			if (edge.hasRoad() && edge.getRoad().getOwner().equals(player)) {
-				return true;
-			}
-		}
+    for (Edge edge : startNode.getEdges()) {
+      if (edge.hasRoad() && edge.getRoad().getOwner().equals(player)) {
+        return true;
+      }
+    }
 
-		for (Edge edge : endNode.getEdges()) {
-			if (edge.hasRoad() && edge.getRoad().getOwner().equals(player)) {
-				return true;
-			}
-		}
+    for (Edge edge : endNode.getEdges()) {
+      if (edge.hasRoad() && edge.getRoad().getOwner().equals(player)) {
+        return true;
+      }
+    }
 
-		return false;
-	}
+    return false;
+  }
 
-	/**
-	 * 
-	 * @param road
-	 */
-	public void placeRoad(Road road, GameState gameState) {
-		if (canPlaceRoad(road.getOwner(), gameState)) {
-			this.road = road;
-		} else {
-			throw new IllegalStateException("Cannot place road at " + position);
-		}
-	}
+  /**
+   * 
+   * @param road
+   */
+  public void placeRoad(Road road, GameState gameState) {
+    if (canPlaceRoad(road.getOwner(), gameState)) {
+      this.road = road;
+    } else {
+      throw new IllegalStateException("Cannot place road at " + position);
+    }
+  }
 
-	public Road removeRoad() {
-		if (hasRoad()) {
-			Road previousRoad = road;
-			road = null;
-			return previousRoad;
-		} else {
-			throw new NoSuchElementException("No road currently on edge " + position);
-		}
-	}
+  public Road removeRoad() {
+    if (hasRoad()) {
+      Road previousRoad = road;
+      road = null;
+      return previousRoad;
+    } else {
+      throw new NoSuchElementException("No road currently on edge " + position);
+    }
+  }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public Road getRoad() {
-		return road;
-	}
+  /**
+   * 
+   * @return
+   */
+  public Road getRoad() {
+    return road;
+  }
 
   /**
    * Gets the longest road starting from this edge via a depth first search
@@ -140,8 +141,53 @@ public class Edge {
    * https://github.com/seansegal/tincisnotcatan/blob/master/src/main/java/edu/brown/cs/board/Path.java
    * 
    * @return the length of the longest road
-    */
-  public int getLongestRoad(Player player) {
+   */
+  public List<Edge> getLongestRoad(Player player) {
+    Map<Edge, Integer> lengths = computeEdgeLengths(player);
+
+    int maxLength = 0;
+    Edge maxEdge = null;
+    for (Edge edge : lengths.keySet()) {
+      int length = lengths.get(edge);
+      if (length > maxLength) {
+        maxLength = length;
+        maxEdge = edge;
+      }
+    }
+
+    if (maxLength == 0) {
+      return new ArrayList<>();
+    }
+
+    List<Edge> longestPath = new ArrayList<>();
+    Edge currentEdge = maxEdge;
+    while (lengths.get(currentEdge) >= 1) {
+      boolean foundNextEdge = false;
+      longestPath.add(currentEdge);
+      for (Edge edge : currentEdge.getStartNode().getEdges()) {
+        if (lengths.containsKey(edge) && lengths.get(edge) == lengths.get(currentEdge) - 1) {
+          currentEdge = edge;
+          foundNextEdge = true;
+          break;
+        }
+      }
+
+      if (foundNextEdge) {
+        continue;
+      }
+
+      for (Edge edge : currentEdge.getEndNode().getEdges()) {
+        if (lengths.containsKey(edge) && lengths.get(edge) == lengths.get(currentEdge) - 1) {
+          currentEdge = edge;
+          break;
+        }
+      }
+    }
+
+    return longestPath;
+  }
+
+  private Map<Edge, Integer> computeEdgeLengths(Player player) {
     Set<Edge> visited = new HashSet<>();
     Stack<Edge> toVist = new Stack<>();
     Map<Edge, Integer> lengths = new HashMap<>();
@@ -171,39 +217,31 @@ public class Edge {
       }
     }
 
-    int maxLength = 0;
-    for (Edge edge : visited) {
-      int length = lengths.get(edge);
-      if (length > maxLength) {
-        maxLength = length;
-      }
-    }
-
-    return maxLength;
+    return lengths;
   }
 
-	@Override
-	public String toString() {
-		return position.toString();
-	}
+  @Override
+  public String toString() {
+    return position.toString();
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
 
-		if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
 
-		Edge otherEdge = (Edge) obj;
-		if (position.getQ() == otherEdge.getPosition().getQ() &&
-				position.getR() == otherEdge.getPosition().getR() &&
-				position.getRelativeLocation() == otherEdge.getPosition().getRelativeLocation()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+    Edge otherEdge = (Edge) obj;
+    if (position.getQ() == otherEdge.getPosition().getQ() &&
+        position.getR() == otherEdge.getPosition().getR() &&
+        position.getRelativeLocation() == otherEdge.getPosition().getRelativeLocation()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

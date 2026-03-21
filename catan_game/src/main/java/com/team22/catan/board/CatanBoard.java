@@ -18,198 +18,198 @@ import com.team22.catan.structures.Settlement;
  *
  */
 public class CatanBoard implements Board {
-	private Map<AxialPosition, Tile> tiles; // 19 Tiles
-	private Map<NodePosition, Node> nodes; // 54 Nodes
-	private Map<EdgePosition, Edge> edges; // 72 Edges
+  private Map<AxialPosition, Tile> tiles; // 19 Tiles
+  private Map<NodePosition, Node> nodes; // 54 Nodes
+  private Map<EdgePosition, Edge> edges; // 72 Edges
 
-	private AxialPosition centre;
-	private int size;
-	private TileType[] boardLayout;
-	private int[] tokenLayout;
+  private AxialPosition centre;
+  private int size;
+  private TileType[] boardLayout;
+  private int[] tokenLayout;
 
   private AxialPosition robberPosition;
 
-	/**
-	 *
-	 */
-	public CatanBoard(TileType[] boardLayout, int[] tokenLayout) {
-		tiles = new HashMap<>();
-		nodes = new HashMap<>();
-		edges = new HashMap<>();
+  /**
+   *
+   */
+  public CatanBoard(TileType[] boardLayout, int[] tokenLayout) {
+    tiles = new HashMap<>();
+    nodes = new HashMap<>();
+    edges = new HashMap<>();
 
-		centre = new AxialPosition(0, 0);
-		int numberOfTiles = Math.min(boardLayout.length, tokenLayout.length +
-				Collections.frequency(Arrays.asList(boardLayout), TileType.DESERT));
-		this.size = calculateRadius(numberOfTiles);
-		this.boardLayout = Arrays.copyOf(boardLayout, numberOfTiles);
-		this.tokenLayout = Arrays.copyOf(tokenLayout, numberOfTiles);
+    centre = new AxialPosition(0, 0);
+    int numberOfTiles = Math.min(boardLayout.length, tokenLayout.length +
+        Collections.frequency(Arrays.asList(boardLayout), TileType.DESERT));
+    this.size = calculateRadius(numberOfTiles);
+    this.boardLayout = Arrays.copyOf(boardLayout, numberOfTiles);
+    this.tokenLayout = Arrays.copyOf(tokenLayout, numberOfTiles);
 
-		addTiles();
-	}
+    addTiles();
+  }
 
-	private int calculateRadius(int numberOfTiles) {
-		return (int) Math.ceil(Math.round(
-				((1f / 6f) * Math.sqrt(12f * numberOfTiles - 3f) - 0.5f) * 1000f) / 1000f);
-	}
+  private int calculateRadius(int numberOfTiles) {
+    return (int) Math.ceil(Math.round(
+        ((1f / 6f) * Math.sqrt(12f * numberOfTiles - 3f) - 0.5f) * 1000f) / 1000f);
+  }
 
-	private void addTiles() {
-		int tokenIndex = 0, tileIndex = 0;
+  private void addTiles() {
+    int tokenIndex = 0, tileIndex = 0;
 
-		for (AxialPosition position : getTilePositions()) {
-			addTile(position, tokenLayout[tokenIndex], boardLayout[tileIndex]);
-			if (boardLayout[tileIndex] != TileType.DESERT) {
-				tokenIndex++;
-			} else {
+    for (AxialPosition position : getTilePositions()) {
+      addTile(position, tokenLayout[tokenIndex], boardLayout[tileIndex]);
+      if (boardLayout[tileIndex] != TileType.DESERT) {
+        tokenIndex++;
+      } else {
         robberPosition = position;
       }
 
-			tileIndex++;
-		}
-	}
+      tileIndex++;
+    }
+  }
 
-	private void addTile(AxialPosition position, int token, TileType type) {
-		if (type == TileType.DESERT) {
-			token = 0;
-		}
+  private void addTile(AxialPosition position, int token, TileType type) {
+    if (type == TileType.DESERT) {
+      token = 0;
+    }
 
-		Tile tile = new Tile(position, token, type);
-		assignNodesToTile(tile);
-		assignEdgesToTile(tile);
+    Tile tile = new Tile(position, token, type);
+    assignNodesToTile(tile);
+    assignEdgesToTile(tile);
 
-		for (EdgePosition edgePosition : tile.borders()) {
-			Edge edge = tile.getEdge(edgePosition);
-			Node startNode = nodes.get(edge.endpoints().get(0));
-			Node endNode = nodes.get(edge.endpoints().get(1));
-			edge.setNodes(startNode, endNode);
+    for (EdgePosition edgePosition : tile.borders()) {
+      Edge edge = tile.getEdge(edgePosition);
+      Node startNode = nodes.get(edge.endpoints().get(0));
+      Node endNode = nodes.get(edge.endpoints().get(1));
+      edge.setNodes(startNode, endNode);
 
-			if (!startNode.getEdges().contains(edge)) {
-				startNode.addEdge(edge);
-			}
+      if (!startNode.getEdges().contains(edge)) {
+        startNode.addEdge(edge);
+      }
 
-			if (!endNode.getEdges().contains(edge)) {
-				endNode.addEdge(edge);
-			}
-		}
+      if (!endNode.getEdges().contains(edge)) {
+        endNode.addEdge(edge);
+      }
+    }
 
-		tiles.put(position, tile);
-	}
+    tiles.put(position, tile);
+  }
 
-	private void assignNodesToTile(Tile tile) {
-		List<NodePosition> tileNodePositions = tile.corners();
+  private void assignNodesToTile(Tile tile) {
+    List<NodePosition> tileNodePositions = tile.corners();
 
-		for (NodePosition nodePosition : tileNodePositions) {
-			if (!nodes.containsKey(nodePosition)) {
-				Node nodeToBeAdded = new Node(nodePosition);
-				tile.addNode(nodeToBeAdded);
-				nodes.put(nodePosition, nodeToBeAdded);
-			} else {
-				tile.addNode(nodes.get(nodePosition));
-			}
-		}
-	}
+    for (NodePosition nodePosition : tileNodePositions) {
+      if (!nodes.containsKey(nodePosition)) {
+        Node nodeToBeAdded = new Node(nodePosition);
+        tile.addNode(nodeToBeAdded);
+        nodes.put(nodePosition, nodeToBeAdded);
+      } else {
+        tile.addNode(nodes.get(nodePosition));
+      }
+    }
+  }
 
-	private void assignEdgesToTile(Tile tile) {
-		List<EdgePosition> tileEdgePositions = tile.borders();
+  private void assignEdgesToTile(Tile tile) {
+    List<EdgePosition> tileEdgePositions = tile.borders();
 
-		for (EdgePosition edgePosition : tileEdgePositions) {
-			if (!edges.containsKey(edgePosition)) {
-				Edge edgeToBeAdded = new Edge(edgePosition);
-				tile.addEdge(edgeToBeAdded);
-				edges.put(edgePosition, edgeToBeAdded);
-			} else {
-				tile.addEdge(edges.get(edgePosition));
-			}
-		}
-	}
+    for (EdgePosition edgePosition : tileEdgePositions) {
+      if (!edges.containsKey(edgePosition)) {
+        Edge edgeToBeAdded = new Edge(edgePosition);
+        tile.addEdge(edgeToBeAdded);
+        edges.put(edgePosition, edgeToBeAdded);
+      } else {
+        tile.addEdge(edges.get(edgePosition));
+      }
+    }
+  }
 
-	@Override
-	public void notifyTilesOfRoll(int roll) {
-		for (Tile tile : tiles.values()) {
-			tile.generateResource(roll);
-		}
-	}
+  @Override
+  public void notifyTilesOfRoll(int roll) {
+    for (Tile tile : tiles.values()) {
+      tile.generateResource(roll);
+    }
+  }
 
-	@Override
-	public List<AxialPosition> getTilePositions() {
-		List<AxialPosition> orderedPositions = new ArrayList<>();
-		orderedPositions.add(centre);
-		for (int ring = 1; ring <= size; ring++) {
-			AxialPosition currentTilePosition = centre.add(Direction.DOWNRIGHT.getVector().scale(ring));
-			for (int i = 0; i < 6; i++) {
-				for (int j = 0; j < ring; j++) {
-					orderedPositions.add(currentTilePosition);
-					// Enum is laid out such that indexing Direction.values()[i] will be correct
-					currentTilePosition = currentTilePosition.neighbour(Direction.values()[i]);
-				}
-			}
-		}
+  @Override
+  public List<AxialPosition> getTilePositions() {
+    List<AxialPosition> orderedPositions = new ArrayList<>();
+    orderedPositions.add(centre);
+    for (int ring = 1; ring <= size; ring++) {
+      AxialPosition currentTilePosition = centre.add(Direction.DOWNRIGHT.getVector().scale(ring));
+      for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < ring; j++) {
+          orderedPositions.add(currentTilePosition);
+          // Enum is laid out such that indexing Direction.values()[i] will be correct
+          currentTilePosition = currentTilePosition.neighbour(Direction.values()[i]);
+        }
+      }
+    }
 
-		return orderedPositions;
-	}
+    return orderedPositions;
+  }
 
-	@Override
-	public List<NodePosition> getNodePositions() {
-		Set<NodePosition> nodePositions = new LinkedHashSet<>();
-		for (Tile tile : getOrderedTiles()) {
-			for (NodePosition nodePosition : tile.corners()) {
-				nodePositions.add(nodePosition);
-			}
-		}
+  @Override
+  public List<NodePosition> getNodePositions() {
+    Set<NodePosition> nodePositions = new LinkedHashSet<>();
+    for (Tile tile : getOrderedTiles()) {
+      for (NodePosition nodePosition : tile.corners()) {
+        nodePositions.add(nodePosition);
+      }
+    }
 
-		return new ArrayList<>(nodePositions);
-	}
+    return new ArrayList<>(nodePositions);
+  }
 
-	@Override
-	public Collection<EdgePosition> getEdgePositions() {
-		return edges.keySet();
-	}
+  @Override
+  public Collection<EdgePosition> getEdgePositions() {
+    return edges.keySet();
+  }
 
-	@Override
-	public boolean canPlaceSettlementAt(NodePosition position, Player player, GameState gameState) {
-		return nodes.get(position).canPlaceSettlement(player, gameState);
-	}
+  @Override
+  public boolean canPlaceSettlementAt(NodePosition position, Player player, GameState gameState) {
+    return nodes.get(position).canPlaceSettlement(player, gameState);
+  }
 
-	@Override
-	public void placeSettlementAt(
-			NodePosition position, Settlement settlement, GameState gameState) {
+  @Override
+  public void placeSettlementAt(
+      NodePosition position, Settlement settlement, GameState gameState) {
 
-		nodes.get(position).placeSettlement(settlement, gameState);
-	}
+    nodes.get(position).placeSettlement(settlement, gameState);
+  }
 
-	@Override
-	public Settlement removeSettlementAt(NodePosition position) {
-		return nodes.get(position).removeSettlement();
-	}
+  @Override
+  public Settlement removeSettlementAt(NodePosition position) {
+    return nodes.get(position).removeSettlement();
+  }
 
-	@Override
-	public boolean canPlaceCityAt(NodePosition position, Player player, GameState gameState) {
-		return nodes.get(position).canPlaceCity(player, gameState);
-	}
+  @Override
+  public boolean canPlaceCityAt(NodePosition position, Player player, GameState gameState) {
+    return nodes.get(position).canPlaceCity(player, gameState);
+  }
 
-	@Override
-	public void placeCityAt(NodePosition position, City city, GameState gameState) {
-		nodes.get(position).placeCity(city, gameState);
-	}
+  @Override
+  public void placeCityAt(NodePosition position, City city, GameState gameState) {
+    nodes.get(position).placeCity(city, gameState);
+  }
 
-	@Override
-	public City removeCityAt(NodePosition position) {
-		return nodes.get(position).removeCity();
-	}
+  @Override
+  public City removeCityAt(NodePosition position) {
+    return nodes.get(position).removeCity();
+  }
 
-	@Override
-	public boolean canPlaceRoadAt(EdgePosition position, Player player, GameState gameState) {
-		return edges.get(position).canPlaceRoad(player, gameState);
-	}
+  @Override
+  public boolean canPlaceRoadAt(EdgePosition position, Player player, GameState gameState) {
+    return edges.get(position).canPlaceRoad(player, gameState);
+  }
 
-	@Override
-	public void placeRoadAt(EdgePosition position, Road Road, GameState gameState) {
-		edges.get(position).placeRoad(Road, gameState);
-	}
+  @Override
+  public void placeRoadAt(EdgePosition position, Road Road, GameState gameState) {
+    edges.get(position).placeRoad(Road, gameState);
+  }
 
-	@Override
-	public Road removeRoadAt(EdgePosition position) {
-		return edges.get(position).removeRoad();
-	}
+  @Override
+  public Road removeRoadAt(EdgePosition position) {
+    return edges.get(position).removeRoad();
+  }
 
   @Override
   public Player getEdgeOwnerAt(EdgePosition position) {
@@ -229,78 +229,87 @@ public class CatanBoard implements Board {
     return null;
   }
 
-	/**
-	 *
-	 * @return
-	 */
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (Tile tile : getOrderedTiles()) {
-			sb.append(tile + ", " + tile.getPosition() + ", " + tile.getToken() + "\n");
-		}
+  /**
+   *
+   * @return
+   */
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    for (Tile tile : getOrderedTiles()) {
+      sb.append(tile + ", " + tile.getPosition() + ", " + tile.getToken() + "\n");
+    }
 
-		return sb.toString();
-	}
-
-	@Override
-	public TileType[] getTileTypes() {
-		TileType[] types = new TileType[tiles.size()];
-		for (int i = 0; i < types.length; i++) {
-			types[i] = getOrderedTiles().get(i).getTileType();
-		}
-
-		return types;
-	}
-
-	private List<Tile> getOrderedTiles() {
-		List<Tile> orderedTiles = new ArrayList<>();
-		for (AxialPosition position : getTilePositions()) {
-			orderedTiles.add(tiles.get(position));
-		}
-
-		return orderedTiles;
-	}
-
-	public Set<Player> moveRobber(AxialPosition position) {
-		Tile currentRobberTile = tiles.get(robberPosition);
-		if (currentRobberTile.getPosition().equals(position)) {
-			throw new IllegalArgumentException("Robber must be moved to a new position");
-		}
-
-		// Find the current robber and remove it
-		currentRobberTile.setRobber(false);
-
-		tiles.get(position).setRobber(true);
-    robberPosition = position;
-		System.out.println("The robber was moved to " + position);
-		return tiles.get(position).playersOnSurroundingNodes();
-	}
+    return sb.toString();
+  }
 
   @Override
-  public AxialPosition getRobberPosition(){
+  public TileType[] getTileTypes() {
+    TileType[] types = new TileType[tiles.size()];
+    for (int i = 0; i < types.length; i++) {
+      types[i] = getOrderedTiles().get(i).getTileType();
+    }
+
+    return types;
+  }
+
+  private List<Tile> getOrderedTiles() {
+    List<Tile> orderedTiles = new ArrayList<>();
+    for (AxialPosition position : getTilePositions()) {
+      orderedTiles.add(tiles.get(position));
+    }
+
+    return orderedTiles;
+  }
+
+  public Set<Player> moveRobber(AxialPosition position) {
+    Tile currentRobberTile = tiles.get(robberPosition);
+    if (currentRobberTile.getPosition().equals(position)) {
+      throw new IllegalArgumentException("Robber must be moved to a new position");
+    }
+
+    // Find the current robber and remove it
+    currentRobberTile.setRobber(false);
+
+    tiles.get(position).setRobber(true);
+    robberPosition = position;
+    System.out.println("The robber was moved to " + position);
+    return tiles.get(position).playersOnSurroundingNodes();
+  }
+
+  @Override
+  public AxialPosition getRobberPosition() {
     return robberPosition;
   }
 
-	@Override
-	public int[] getTokens() {
-		int[] tokens = new int[tiles.size()];
-		for (int i = 0; i < tokens.length; i++) {
-			tokens[i] = getOrderedTiles().get(i).getToken();
-		}
+  @Override
+  public int[] getTokens() {
+    int[] tokens = new int[tiles.size()];
+    for (int i = 0; i < tokens.length; i++) {
+      tokens[i] = getOrderedTiles().get(i).getToken();
+    }
 
-		return tokens;
-	}
+    return tokens;
+  }
 
   @Override
-  public int longestRoad(Player player) {
-    int longestRoad = 0;
+  public List<EdgePosition> longestRoad(Player player) {
+    int longestRoadLength = 0;
+    List<Edge> longestRoad = null;
+
     for (Edge edge : edges.values()) {
-      int road = edge.getLongestRoad(player);
-      if (road > longestRoad) {
-        longestRoad = road;
+      List<Edge> path = edge.getLongestRoad(player);
+      int road = path.size();
+      if (road > longestRoadLength) {
+        longestRoadLength = road;
+        longestRoad = path;
       }
     }
 
-    return longestRoad;
+    List<EdgePosition> longestRoadPositions = new ArrayList<>();
+    for (Edge edge : longestRoad) {
+      longestRoadPositions.add(edge.getPosition());
+    }
+
+    return longestRoadPositions;
   }
 }
