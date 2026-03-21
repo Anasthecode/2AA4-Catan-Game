@@ -33,12 +33,14 @@ public class ComputerPlayer extends Player {
 
     ActionEvaluator standardEvaluator = new StandardActionEvaluator();
 
+    ActionSelector adjacentRoadsNode = new RoadConnectionSelector();
     ActionSelector cardLimitNode = new CardLimitSelector();
     ActionSelector valueNode = new ActionScoreSelector(standardEvaluator, rng);
 
+    adjacentRoadsNode.setNext(cardLimitNode);
     cardLimitNode.setNext(valueNode);
 
-    this.aiBrain = cardLimitNode;
+    this.aiBrain = adjacentRoadsNode;
   }
 
   @Override

@@ -65,7 +65,7 @@ public class Edge {
 	}
 
 	public boolean canPlaceRoad(Player player, GameState gameState) {
-		if (road != null) {
+		if (hasRoad()) {
 			return false;
 		}
 

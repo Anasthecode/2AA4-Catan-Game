@@ -359,6 +359,21 @@ public class VisualizerDecorator implements Board {
   }
 
   @Override
+  public boolean hasRoadAt(EdgePosition position) {
+    return aBoard.hasRoadAt(position);
+  }
+  
+  @Override
+  public Player getEdgeOwnerAt(EdgePosition position) {
+    return aBoard.getEdgeOwnerAt(position);
+  }
+
+  @Override
+  public Player getNodeOwnerAt(NodePosition position) {
+    return aBoard.getNodeOwnerAt(position);
+  }
+
+  @Override
   public Set<Player> moveRobber(AxialPosition position) {
     return aBoard.moveRobber(position);
   }

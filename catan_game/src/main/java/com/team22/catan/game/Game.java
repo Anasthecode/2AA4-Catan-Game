@@ -135,11 +135,6 @@ public class Game {
   }
 
   public void onEndTurn() {
-    // TEMPORARY
-    for (Player player : players) {
-      System.out.println(player.getName() + " longest road: " + board.longestRoad(player));
-    }
-
     if (gameState == GameState.SETUP) {
       endSetupTurn();
     }

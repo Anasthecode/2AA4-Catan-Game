@@ -40,31 +40,6 @@ public class Node {
 		this.edges = edges;
 	}
 
-	public List<EdgePosition> protrudes() {
-		List<EdgePosition> protrudingEdgePositions = new ArrayList<>();
-		switch (position.getRelativeLocation()) {
-			case NORTH:
-				protrudingEdgePositions.add(new EdgePosition(
-						position.getQ() + 1, position.getR() -1, RelativeEdgeLocation.WEST));
-				protrudingEdgePositions.add(new EdgePosition(
-						position.getQ(), position.getR(), RelativeEdgeLocation.NORTHWEST));
-				protrudingEdgePositions.add(
-						new EdgePosition(position.getQ(), position.getR(), RelativeEdgeLocation.NORTHEAST));
-				break;
-
-			case SOUTH:
-				protrudingEdgePositions.add(new EdgePosition(
-						position.getQ(), position.getR(), RelativeEdgeLocation.NORTHWEST));
-				protrudingEdgePositions.add(new EdgePosition(
-						position.getQ() - 1, position.getR() + 1, RelativeEdgeLocation.NORTHEAST));
-				protrudingEdgePositions.add(new EdgePosition(
-						position.getQ(), position.getR() + 1, RelativeEdgeLocation.WEST));
-				break;
-		}
-
-		return protrudingEdgePositions;
-	}
-
 	public void notifyStructureOfResource(Resource resource) {
     if (!hasStructure()) {
       throw new NoSuchElementException("No structure on node " + position);

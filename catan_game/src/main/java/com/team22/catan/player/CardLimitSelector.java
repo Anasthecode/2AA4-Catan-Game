@@ -1,6 +1,5 @@
 package com.team22.catan.player;
 
-import java.util.ArrayList;
 import java.util.List;
 import com.team22.catan.actions.Action;
 import com.team22.catan.actions.EndTurn;
@@ -12,17 +11,17 @@ public class CardLimitSelector extends ActionSelector {
 
   @Override
   public Action chooseAction(Game game, Player player, List<Action> availableActions) {
-    List<Action> newAvailableActions = new ArrayList<>(availableActions);
     if (player.getResourceCountTotal() > 7) {
       for (Action action : availableActions) {
-        if (action instanceof EndTurn || action instanceof GenerateResources) {
-          newAvailableActions.remove(action);
+        if (!(action instanceof EndTurn) && !(action instanceof GenerateResources)) {
+          System.out.println("Triggered card limit node");
+          return action;
         }
       }
     }
 
     if (nextHandler != null) {
-      return nextHandler.chooseAction(game, player, newAvailableActions);
+      return nextHandler.chooseAction(game, player, availableActions);
     }
 
     return null;

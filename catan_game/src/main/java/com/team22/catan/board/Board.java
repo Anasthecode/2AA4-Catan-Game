@@ -30,6 +30,10 @@ public interface Board {
   public boolean canPlaceRoadAt(EdgePosition position, Player player, GameState gameState);
   public void placeRoadAt(EdgePosition position, Road Road, GameState gameState);
   public Road removeRoadAt(EdgePosition position);
+  public boolean hasRoadAt(EdgePosition position);
+
+  public Player getEdgeOwnerAt(EdgePosition position);
+  public Player getNodeOwnerAt(NodePosition position);
 
   public Set<Player> moveRobber(AxialPosition position);
   public AxialPosition getRobberPosition();

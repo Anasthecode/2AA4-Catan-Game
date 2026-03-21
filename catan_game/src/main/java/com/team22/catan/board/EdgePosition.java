@@ -13,103 +13,115 @@ import java.util.Objects;
  * 
  */
 public class EdgePosition {
-	/**
-	 * 
-	 */
-	private int q;
-	/**
-	 * 
-	 */
-	private int r;
-	private RelativeEdgeLocation location;
+  /**
+   * 
+   */
+  private int q;
+  /**
+   * 
+   */
+  private int r;
+  private RelativeEdgeLocation location;
 
-	public EdgePosition(int q, int r, RelativeEdgeLocation location) {
-		this.q = q;
-		this.r = r;
-		this.location = location;
-	}
+  public EdgePosition(int q, int r, RelativeEdgeLocation location) {
+    this.q = q;
+    this.r = r;
+    this.location = location;
+  }
 
-	/**
-	 * 
-	 * @return 
-	 */
-	public int getQ() {
-		return q;
-	}
+  /**
+   * 
+   * @return
+   */
+  public int getQ() {
+    return q;
+  }
 
-	/**
-	 * 
-	 * @return 
-	 */
-	public int getR() {
-		return r;
-	}
+  /**
+   * 
+   * @return
+   */
+  public int getR() {
+    return r;
+  }
 
-	/**
-	 * 
-	 * @return 
-	 */
-	public RelativeEdgeLocation getRelativeLocation() {
-		return location;
-	}
+  /**
+   * 
+   * @return
+   */
+  public RelativeEdgeLocation getRelativeLocation() {
+    return location;
+  }
 
-	public List<NodePosition> endpoints() {
-		List<NodePosition> endNodes = new ArrayList<>();
-		switch (location) {
-			case NORTHEAST:
-				endNodes.add(new NodePosition(
-					q + 1, r - 1, RelativeNodeLocation.SOUTH));
-				endNodes.add(new NodePosition(
-					q, r, RelativeNodeLocation.NORTH));
-				break;
-			
-			case NORTHWEST:
-				endNodes.add(
-					new NodePosition(q, r, RelativeNodeLocation.NORTH));
-				endNodes.add(
-					new NodePosition(q, r - 1, RelativeNodeLocation.SOUTH));
-				break;
+  public List<NodePosition> endpoints() {
+    List<NodePosition> endNodes = new ArrayList<>();
+    switch (location) {
+      case NORTHEAST:
+        endNodes.add(new NodePosition(
+            q + 1, r - 1, RelativeNodeLocation.SOUTH));
+        endNodes.add(new NodePosition(
+            q, r, RelativeNodeLocation.NORTH));
+        break;
 
-			case WEST:
-				endNodes.add(
-					new NodePosition(q, r - 1, RelativeNodeLocation.SOUTH));
-				endNodes.add(
-					new NodePosition(q - 1, r + 1, RelativeNodeLocation.NORTH));
-				break;
-		}
-		
-		return endNodes;
-	}
+      case NORTHWEST:
+        endNodes.add(
+            new NodePosition(q, r, RelativeNodeLocation.NORTH));
+        endNodes.add(
+            new NodePosition(q, r - 1, RelativeNodeLocation.SOUTH));
+        break;
 
-	@Override
-	public String toString() {
-		return "(" + q + ", " + r + ", " + location + ")";
-	}
+      case WEST:
+        endNodes.add(
+            new NodePosition(q, r - 1, RelativeNodeLocation.SOUTH));
+        endNodes.add(
+            new NodePosition(q - 1, r + 1, RelativeNodeLocation.NORTH));
+        break;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
+    return endNodes;
+  }
 
-		if (obj == null) {
-			return false;
-		}
+  public boolean connectsTo(EdgePosition otherEdge) {
+    for (NodePosition node1 : otherEdge.endpoints()) {
+      for (NodePosition node2 : endpoints()) {
+        if (node1.equals(node2)) {
+          return true;
+        }
+      }
+    }
 
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
+    return false;
+  }
 
-		EdgePosition otherPos = (EdgePosition) obj;
-		if (q == otherPos.getQ() && r == otherPos.getR() && location == otherPos.getRelativeLocation()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+  @Override
+  public String toString() {
+    return "(" + q + ", " + r + ", " + location + ")";
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(q, r, getRelativeLocation());
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+
+    if (obj == null) {
+      return false;
+    }
+
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+
+    EdgePosition otherPos = (EdgePosition) obj;
+    if (q == otherPos.getQ() && r == otherPos.getR() && location == otherPos.getRelativeLocation()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(q, r, getRelativeLocation());
+  }
 }

@@ -4,6 +4,8 @@
 
 package com.team22.catan.board;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /************************************************************/
@@ -11,78 +13,103 @@ import java.util.Objects;
  * 
  */
 public class NodePosition {
-	/**
-	 * 
-	 */
-	private int q;
-	/**
-	 * 
-	 */
-	private int r;
-	private RelativeNodeLocation location;
+  /**
+   * 
+   */
+  private int q;
+  /**
+   * 
+   */
+  private int r;
+  private RelativeNodeLocation location;
 
-	public NodePosition(int q, int r, RelativeNodeLocation location) {
-		this.q = q;
-		this.r = r;
-		this.location = location;
-	}
+  public NodePosition(int q, int r, RelativeNodeLocation location) {
+    this.q = q;
+    this.r = r;
+    this.location = location;
+  }
 
-	/**
-	 * 
-	 * @return 
-	 */
-	public int getQ() {
-		return q;
-	}
+  /**
+   * 
+   * @return
+   */
+  public int getQ() {
+    return q;
+  }
 
-	/**
-	 * 
-	 * @return 
-	 */
-	public int getR() {
-		return r;
-	}
+  /**
+   * 
+   * @return
+   */
+  public int getR() {
+    return r;
+  }
 
-	/**
-	 * 
-	 * @return 
-	 */
-	public RelativeNodeLocation getRelativeLocation() {
-		return location;
-	}
+  /**
+   * 
+   * @return
+   */
+  public RelativeNodeLocation getRelativeLocation() {
+    return location;
+  }
 
-	/**
-	 * 
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
+  public List<EdgePosition> protrudes() {
+    List<EdgePosition> protrudingEdgePositions = new ArrayList<>();
+    switch (location) {
+      case NORTH:
+        protrudingEdgePositions.add(new EdgePosition(
+            q + 1, r - 1, RelativeEdgeLocation.WEST));
+        protrudingEdgePositions.add(new EdgePosition(
+            q, r, RelativeEdgeLocation.NORTHWEST));
+        protrudingEdgePositions.add(
+            new EdgePosition(q, r, RelativeEdgeLocation.NORTHEAST));
+        break;
 
-		if (obj == null) {
-			return false;
-		}
+      case SOUTH:
+        protrudingEdgePositions.add(new EdgePosition(
+            q, r, RelativeEdgeLocation.NORTHWEST));
+        protrudingEdgePositions.add(new EdgePosition(
+            q - 1, r + 1, RelativeEdgeLocation.NORTHEAST));
+        protrudingEdgePositions.add(new EdgePosition(
+            q, r + 1, RelativeEdgeLocation.WEST));
+        break;
+    }
 
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
+    return protrudingEdgePositions;
+  }
 
-		NodePosition otherPos = (NodePosition) obj;
-		if (q == otherPos.getQ() && r == otherPos.getR() && location == otherPos.getRelativeLocation()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+  /**
+   * 
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
 
-	@Override
-	public int hashCode() {
-			return Objects.hash(q, r, getRelativeLocation());
-	}
+    if (obj == null) {
+      return false;
+    }
 
-	@Override
-	public String toString() {
-		return "(" + q + ", " + r + ", " + location + ")";
-	}
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+
+    NodePosition otherPos = (NodePosition) obj;
+    if (q == otherPos.getQ() && r == otherPos.getR() && location == otherPos.getRelativeLocation()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(q, r, getRelativeLocation());
+  }
+
+  @Override
+  public String toString() {
+    return "(" + q + ", " + r + ", " + location + ")";
+  }
 }

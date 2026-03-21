@@ -81,4 +81,28 @@ public class BuildRoad implements Action {
       }
     }
   }
+
+  // Getters used for equality checks
+  public EdgePosition roadPlacementPosition() {
+    return edgePosition;
+  }
+
+  public Player playerPlacingRoad() {
+    return player;
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == null) {
+      return false;
+    }
+
+    if (!getClass().equals(other.getClass())) {
+      return false;
+    }
+
+    BuildRoad otherBuildRoad = (BuildRoad) other;
+    return edgePosition.equals(otherBuildRoad.roadPlacementPosition()) &&
+           player.equals(playerPlacingRoad());
+  }
 }

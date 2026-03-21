@@ -211,6 +211,29 @@ public class CatanBoard implements Board {
 		return edges.get(position).removeRoad();
 	}
 
+  @Override
+  public boolean hasRoadAt(EdgePosition position) {
+    return edges.get(position).hasRoad();
+  }
+
+  @Override
+  public Player getEdgeOwnerAt(EdgePosition position) {
+    if (edges.get(position).hasRoad()) {
+      return edges.get(position).getRoad().getOwner();
+    }
+
+    return null;
+  }
+
+  @Override
+  public Player getNodeOwnerAt(NodePosition position) {
+    if (nodes.get(position).hasStructure()) {
+      return nodes.get(position).getStructure().getOwner();
+    }
+
+    return null;
+  }
+
 	/**
 	 *
 	 * @return
