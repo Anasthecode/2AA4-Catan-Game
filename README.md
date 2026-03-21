@@ -10,7 +10,7 @@
 - Jack Wyand [@jackwyand](https://github.com/jackwyand)
 - Uzair Khan [@UzairKhan12112005](https://github.com/UzairKhan12112005)
 
-**Date:** March 11th, 2026
+**Date:** March 20th, 2026
 **Course:** SFWRENG 2AA4 - Software Design I - Introduction to Software Development
 
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=Anasthecode_2AA4-Catan-Game)](https://sonarcloud.io/summary/new_code?id=Anasthecode_2AA4-Catan-Game)
