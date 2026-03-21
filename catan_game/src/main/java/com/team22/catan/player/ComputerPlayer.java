@@ -34,10 +34,12 @@ public class ComputerPlayer extends Player {
     ActionEvaluator standardEvaluator = new StandardActionEvaluator();
 
     ActionSelector adjacentRoadsNode = new RoadConnectionSelector();
+    ActionSelector longestRoadNode = new LongestRoadSelector();
     ActionSelector cardLimitNode = new CardLimitSelector();
     ActionSelector valueNode = new ActionScoreSelector(standardEvaluator, rng);
 
-    adjacentRoadsNode.setNext(cardLimitNode);
+    adjacentRoadsNode.setNext(longestRoadNode);
+    longestRoadNode.setNext(cardLimitNode);
     cardLimitNode.setNext(valueNode);
 
     this.aiBrain = adjacentRoadsNode;
@@ -46,7 +48,7 @@ public class ComputerPlayer extends Player {
   @Override
   public void onTurn(Game game) {
 
-    parser.waitForGoCommand(game);
+    // parser.waitForGoCommand(game);
 
     List<Action> availableActions = getAvailableActions(game);
 

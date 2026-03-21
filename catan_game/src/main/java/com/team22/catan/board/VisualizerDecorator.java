@@ -357,11 +357,6 @@ public class VisualizerDecorator implements Board {
 
     return aBoard.removeRoadAt(position);
   }
-
-  @Override
-  public boolean hasRoadAt(EdgePosition position) {
-    return aBoard.hasRoadAt(position);
-  }
   
   @Override
   public Player getEdgeOwnerAt(EdgePosition position) {

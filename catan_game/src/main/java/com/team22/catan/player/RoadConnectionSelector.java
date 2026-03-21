@@ -44,7 +44,6 @@ public class RoadConnectionSelector extends ActionSelector {
           if (buildRoadActions.containsKey(adjacentEdge) &&
               adjacentEdge.connectsTo(edgePosition) &&
               adjacentEdge.connectsTo(secondaryAdjacentEdge)) {
-            System.out.println("Triggered adjacent road node due to " + edgePosition + " and " + secondaryAdjacentEdge);
             return buildRoadActions.get(adjacentEdge);
           }
         }

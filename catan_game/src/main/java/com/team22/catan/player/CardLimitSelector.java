@@ -14,7 +14,6 @@ public class CardLimitSelector extends ActionSelector {
     if (player.getResourceCountTotal() > 7) {
       for (Action action : availableActions) {
         if (!(action instanceof EndTurn) && !(action instanceof GenerateResources)) {
-          System.out.println("Triggered card limit node");
           return action;
         }
       }
