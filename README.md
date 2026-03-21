@@ -21,6 +21,12 @@ This is the repository for a Java-based Catan simulation made for the SFWRENG 2A
 
 The simulation engine runs a full game between a mix of human and computer-controlled agents, strictly enforcing the rules defined by the official Catan rulebook (including distance rules, connection rules, and resource costs). The game is driven by a Finite State Machine (`SETUP`, `PLAYING`, `END`) and features a robust Command Line Interface (CLI) that parses human input using Regular Expressions. The engine uses the Decorator design pattern to silently intercept board updates and export the live game state to JSON, allowing for real-time graphical rendering via a Python visualizer.
 
+The engine utilizes several formal Object-Oriented Design Patterns, including:
+* **Decorator:** Silently intercepts board updates to export live game state for real-time Python visualization.
+* **Command:** Encapsulates game actions to provide full Undo/Redo history tracking.
+* **Strategy:** Evaluates the mathematical value of AI moves without hardcoding logic into the player classes.
+* **Chain of Responsibility:** Filters strict game constraints (like hand limits) before normal AI evaluation occurs.
+
 ## How to Run the Project
 
 To fully evaluate the interactive CLI and the live visualizer, you will need to run the Java engine and the Python visualizer simultaneously in two separate terminal windows.
@@ -72,39 +78,35 @@ To fully evaluate the interactive CLI and the live visualizer, you will need to 
 
 ## Board Layout & Coordinate System
 
-Below is the mapping of our axial coordinate system, showing the specific Node IDs and Edge connections used by the engine and visualizer. When using the CLI (e.g., `Build settlement 12`), refer to this map for valid Node IDs.
-
+Below is the mapping of our axial coordinate system, showing the specific Node IDs and Edge connections used by the engine and visualizer. When using the CLI (e.g., Build settlement 12), refer to this map for valid Node IDs.
 ![Board Layout Map](README/BoardLayout.png)
 
 ## UML Class Diagram
 
-Below is the architectural design of the game engine, highlighting the core patterns used to satisfy the Assignment 2 requirements (including the `VisualizerDecorator`, the Action/Command classes, and the `GameState` machine).
-
+Below is the updated architectural design of the game engine, highlighting the core patterns used to satisfy the Assignment 3 requirements (Command, Strategy, and Chain of Responsibility).
 ![UML Diagram](README/UMLDiagram.jpg)
 
-# Assignment 2 Checklist
+# Assignment 3 Checklist
 
-## Technical content
-- [x] Every task in the assignment addressed
-- [x] Human player integrated (R2.1)
-- [x] Step forward / `Go` functionality implemented (R2.4)
-- [x] Robber mechanism implemented (R2.5)
+## Technical Content
+- [x] R3.1: Undo/Redo functionality implemented using the Command pattern.
+- [x] R3.2: Machine Intelligence value evaluation implemented using the Strategy pattern (VP = 1.0, Build = 0.8, Card Drain = 0.5).
+- [x] R3.3: Machine Intelligence constraints implemented using the Chain of Responsibility pattern.
 
 ## Delivery
 
 ### Software
-- [x] Requirements addressed
-- [x] Software properly tested (JUnit Boundary/Partition testing)
-- [x] Demonstrator implemented and documented
-- [x] Visualizer integration works seamlessly without crashing
+- [x] Design patterns properly introduced to the design (UML updated).
+- [x] Design patterns properly introduced to the implementation (Java Code).
+- [x] Executable `.jar` attached to the GitHub Release.
 
 ### Management
-- [x] SonarQube analysis linked in the README file
-- [x] Kanban board maintained and publicly available
-- [x] Commits linked to work items 
-- [x] Deliverable tagged in Git
+- [x] SonarQube analysis passing and linked.
+- [x] Kanban board updated with Assignment 3 tasks.
+- [x] Commits linked to work items.
 
 ### Report
-- [x] Reflection points elaborated (OO design, SOLID principles, Automata)
-- [x] Report written
-- [x] Report submitted
+- [x] Task 1 Reflection written (Command Pattern justification).
+- [x] Task 2 Reflection written (Strategy Pattern justification).
+- [x] Task 3 Reflection written (Chain of Responsibility Pattern justification).
+- [x] Final PDF Report submitted.
